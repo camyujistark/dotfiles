@@ -1,14 +1,14 @@
 ---
 corpus_notes: '{{ "~/Documents/Corpus" | expanduser }}'
 
-imap_nickname: FB
-imap_server: outlook.office365.com
-imap_user: glh@fb.com
-imap_keychain_account: glh+mutt@fb.com
-imap_keychain_name: office365.com
+imap_nickname: work
+imap_server: outlook.gmail.com
+imap_user: cam@cystark.com.au
+imap_keychain_account: cam+mutt@cystark.com.au
+imap_keychain_name: gmail.com
 
-smtp_server: smtp.office365.com
-smtp_from: glh@fb.com
-smtp_user: glh@fb.com
-smtp_keychain_account: glh+mutt@fb.com
-smtp_keychain_name: office365.com
+smtp_server: smtp.gmail.com
+smtp_from: cam@cystark.com.au
+smtp_user: cam@cystark.com.au
+smtp_keychain_account: cam+mutt@cystark.com.au
+smtp_keychain_name: gmail.com

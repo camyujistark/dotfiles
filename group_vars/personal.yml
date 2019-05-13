@@ -1,14 +1,14 @@
 ---
-corpus_notes: '{{ "~/Dropbox/Personal/Corpus" | expanduser }}'
+corpus_notes: '{{ "~/Google\ Drive/Personal/Corpus" | expanduser }}'
 
 imap_nickname: Gmail
 imap_server: imap.gmail.com
-imap_user: greg@hurrell.net
-imap_keychain_account: greg+mutt@hurrell.net
+imap_user: cam@cystark.com.au
+imap_keychain_account: cam+mutt@cystark.com.au
 imap_keychain_name: gmail.com
 
 smtp_server: smtp.gmail.com
-smtp_from: greg@hurrell.net
-smtp_user: greg@hurrell.net
-smtp_keychain_account: greg+mutt@hurrell.net
+smtp_from: cam@cystark.com.au
+smtp_user: cam@cystark.com.au
+smtp_keychain_account: cam+mutt@cystark.com.au
 smtp_keychain_name: gmail.com
