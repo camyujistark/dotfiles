@@ -1,0 +1,29 @@
+# 
+# Bulk Naming
+#
+
+bulkrename() {
+  if [ $# -eq 3 ]; then
+    for i in $(find "$PWD" -type f -iname "*$1*") ; do
+      base=$(basename $i);
+      mv -- "$i" "${i//$base/${base//$2/$3}}";
+    done
+  else
+    echo 'error need three parameters'
+  fi
+}
+
+copy_files_repalce_name() {
+  FILENAME="$1"
+  FILEPATH="$2"
+  REPLACE="$3"
+
+  while read -r line
+  do
+      NAME="$line"
+      NEW_PATH="${filepath/$replace/$NAME}"
+      echo $FILEPATH
+      cp -- "$fILEPATH" "$NEW_PATH";
+      sed -i -e 's/'$REPLACE'/'$NAME'/g' "$NEW_PATH"
+  done < "$FILENAME"
+}

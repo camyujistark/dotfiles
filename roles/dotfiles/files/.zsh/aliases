@@ -3,6 +3,7 @@
 #
 
 alias ....='cd ../..'
+alias vim=nvim
 alias :e=vim
 alias :qa=exit
 alias :sp='test -n "$TMUX" && tmux split-window'
@@ -16,20 +17,21 @@ alias cdtmp='cd $(mktemp -d $TMPDIR/$USER-cdtmp-XXXXXX)'
 alias clip='nc -U ~/.clipper.sock'
 alias d='hash -d'
 alias e=exit
-alias g=git
-alias groot='cd $(git rev-parse --show-toplevel 2> /dev/null || echo -n ".")'
+alias f='ssh -N -f sandbox-clipper'
+alias b='yarn run build'
 alias h=history
 alias j=jump
+alias k='rm -f ~/.ssh/glh@* && ssh sandbox rm -f .clipper.sock'
 alias l='ls -F'
 alias ll='ls -laF'
 alias o='git oneline'
 alias p='git patch'
 alias prettyjson='python -m json.tool'
-alias oo='git oneline -10'
 alias s=ssh
 alias serve='python -m SimpleHTTPServer' # optional arg: port (defaults to 8000)
 alias t=tmux
 alias v=vim
+alias ag='ag --path-to-ignore ~/.ignore'
 
 if command -v nvim &> /dev/null; then
   alias vim=nvim # Use `\vim` or `command vim` to get the real vim.
@@ -39,12 +41,68 @@ fi
 # Suffix aliases
 # (eg. "foo.md" to open Markdown files in "Marked 2.app")
 #
-alias -s md='open -a "Marked 2.app"'
+# alias -s md='open -a "Marked 2.app"'
+alias md='open -a "Marked 2.app"'
 
 #
 # Global aliases
 # (work at any position within the command line)
-#
+docs="$HOME/Documents"
+sites="$docs/Sites"
+alias _s="$sites"
+alias _sc="$HOME/Scripts"
+alias _ass="$docs/Assets"
+alias _zshrc="vim $HOME/.zshrc"
+alias reload="source $HOME/.zshrc"
+alias _a="vim $HOME/.zsh/aliases"
+alias _g="vim $HOME/.zsh/resource/git"
+alias _f="vim $HOME/.zsh/functions"
+alias _v="$HOME/.vim/plugin/mappings"
+alias _d="$HOME/Downloads"
+alias _gc="vim $HOME/.gitconfig"
+alias _h="sudo vim /etc/hosts"
+alias _hs="$HOME/.hammerspoon"
+alias _i="$docs/Assets/images"
+alias _t="$docs/Tuts"
+alias _k="$HOME/.config/karabiner"
+alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
+alias workflows='$HOME/Library/Application\ Support/Alfred\ 3/Alfred.alfredpreferences/workflows'
+
+#filesize
+alias topfilesize="sudo du -a /var/logs | sort -n -r | head -n 5"
+
+alias prettyjson='python -m json.tool'
+alias s=ssh
+alias serve='python -m SimpleHTTPServer' # optional arg: port (defaults to 8000)
+alias t=tmux -2
+alias ag='ag --path-to-ignore ~/.ignore'
+
+
+# Personal
+docs="$HOME/Documents"
+sites="$docs/Sites"
+alias _s="$sites"
+alias _sc="$HOME/Scripts"
+alias _ass="$docs/Assets"
+alias _zshrc="vim $HOME/.zshrc"
+alias reload="source $HOME/.zshrc"
+alias _a="vim $HOME/.zsh/aliases"
+alias _g="vim $HOME/.zsh/resource/git"
+alias _f="vim $HOME/.zsh/functions"
+alias _v="$HOME/.vim/plugin/mappings"
+alias _d="$HOME/Downloads"
+alias _gc="vim $HOME/.gitconfig"
+alias _h="sudo vim /etc/hosts"
+alias _hs="$HOME/.hammerspoon"
+alias _i="$docs/Assets/images"
+alias _t="$docs/Tuts"
+alias _k="$HOME/.config/karabiner"
+alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
+alias workflows='$HOME/Library/Application\ Support/Alfred\ 3/Alfred.alfredpreferences/workflows'
+
+#filesize
+alias topfilesize="sudo du -a /var/logs | sort -n -r | head -n 5"
+
 
 # Mnemonic: "[C]lip"
 alias -g C="|clip"
@@ -65,5 +123,32 @@ alias -g L="|less"
 # Mnemonic: "[R]eset"
 alias -g R=";clear;test -n "$TMUX" && tmux clear-history;"
 
-# Mnemonic: "[W]c"
-alias -g W="|wc -l"
+#Docker
+alias dcsql="docker-compose exec --user root mysql mysql -uroot -ppassword"
+alias dcbash="docker-compose exec --user root phpfpm bash"
+alias dcnginx="docker-compose exec --user root nginx bash"
+alias dcwp="docker-compose exec --user www-data phpfpm wp"
+
+#osx
+alias dsclean='find . -type f -name .DS_Store -delete'
+alias copyLastCmd='fc -ln -1 | awk '\''{$1=$1}1'\'' ORS='\'''\'' | pbcopy'
+
+alias ldir='$(ls -tUd */ | head -1)'
+
+#git
+alias g=git
+alias gs='git status'
+alias ga='git add'
+alias gp='git pull'
+alias gvtb='git add **/src/setup.php && git commit -m "Version That Business" -m "versioning in setup.php" && git push origin master'
+alias gbuild='npm run build && git add dist/* && git commit -m "Build" -m "npm run build" && git push origin master'
+alias groot='cd $(git rev-parse --show-toplevel 2> /dev/null || echo -n ".")'
+alias o='git oneline'
+alias p='git patch'
+alias oo='git oneline -10'
+
+#Chrome Refresh
+alias cr="~/Scripts/chromerefresh.sh"
+
+#Python Path
+# export PYTHONPATH="$HOME/lib/python2.7/site-packages"

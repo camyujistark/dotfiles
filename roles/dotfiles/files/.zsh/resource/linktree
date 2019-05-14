@@ -1,0 +1,93 @@
+# 
+# Linktree
+#
+
+_lt="$sites/linktr.ee"
+
+alias _lt="$_lt"
+alias _lts="$sites/linktr.ee/server;clear"
+alias _lta="$sites/linktr.ee/app;clear"
+
+alias ltprod="bash ~/Scripts/linktree/linktree-links.sh 'prod'"
+alias ltstaging="bash ~/Scripts/linktree/linktree-links.sh 'staging'"
+alias ltdev="bash ~/Scripts/linktree/linktree-links.sh 'dev'"
+alias ltcustom="bash ~/Scripts/linktree/linktree-links.sh 'custom'"
+alias ltanalytics="bash ~/Scripts/linktree/linktree-links.sh 'analytics'"
+
+# ssh commands
+srcssh() { ssh -t ubuntu@$1 vim /srv/www/linktr.ee/current/src/Linktree/}
+appssh() { ssh -t ubuntu@$1 vim /srv/www/linktr.ee/current/app/}
+logssh() { ssh -t ubuntu@$1 tail -f /srv/www/linktr.ee/current/app/logs/prod.log}
+
+lt_tmuxstart() {
+  _lts;
+  tmux split-window -v -c '_lts' &&
+  tmux split-window -v -c '_lts' &&
+  vagrant halt && vagrant up &&
+  tmux send-keys -t 1 "_lts; vagrant ssh" &&
+  tmux send-keys -t 1 Enter &&
+  tmux send-keys -t 2 "_lts; vagrant ssh" &&
+  tmux send-keys -t 2 Enter &&
+  tmux send-keys -t 3 "_lts; vagrant ssh" &&
+  tmux send-keys -t 3 Enter &&
+  sleep 6 &&
+
+  tmux send-keys -t 1 "sudo service nginx restart" &&
+  tmux send-keys -t 1 Enter &&
+  sleep 6 &&
+
+  tmux send-keys -t 2 "cd /srv/www/linktr.ee/current/app; yarn watch;" &&
+  tmux send-keys -t 2 Enter &&
+  tmux send-keys -t 3 "cd /srv/www/linktr.ee/logs; sudo tail -f error.log;" &&
+  tmux send-keys -t 3 Enter &&
+}
+
+lt_restart() {
+  # Exit restart
+  tmux send-keys -t 2 "_lts; vagrant halt" &&
+  tmux send-keys -t 2 Enter &&
+
+  tmux send-keys -t 2 "vagrant up" &&
+  tmux send-keys -t 2 Enter &&
+
+  tmux send-keys -t 2 "vagrant ssh" &&
+  tmux send-keys -t 2 Enter &&
+  sleep 6 &&
+  tmux send-keys -t 2 "sudo service nginx restart; clear" &&
+  tmux send-keys -t 2 Enter;
+
+  tmux send-keys -t 3 "vagrant ssh" &&
+  sleep 6 &&
+  tmux send-keys -t 3 "yarn watch" &&
+  tmux send-keys -t 3 Enter;
+}
+
+lt_destroy() {
+  _lts;
+  vagrant destroy && 
+  sudo vagrant plugin install vagrant-bindfs &&
+  sudo vagrant plugin install vagrant-vbguest &&
+  vagrant up;
+  lt_restart;
+  vagrant ssh -- -t '/srv/www/linktr.ee/current/app/console doctrine:schema:update --force' &&
+  vagrant ssh -- -t 'npm rebuild node-sass --force';
+}
+
+l_sql() {
+  cp ../../linktree_database.sql ../app/app &&
+  vagrant ssh -- -t 'sudo mysql < /srv/www/linktr.ee/current/app/linktree_database.sql' &&
+  rm -rf ../../linktree_database.sql &&
+  vagrant provision;
+}
+
+run_aws_fsecure() {
+  FILENAME="$1"
+  while read -r line
+  do
+    echo "$line" >> output.txt
+    curl --silent -H "x-api-key: eBehiWJNhw5ZxXCJvg0vn3OwiUy3z7pA3L3yQt5N" \
+    -X POST \
+    --data-binary "$line" \
+    https://awsapi.sc.fsapi.com/prod/1/ur  >> output.txt
+  done < "$FILENAME"
+}

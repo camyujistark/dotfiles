@@ -1,0 +1,11 @@
+# 
+# Jira
+#
+
+jnew() {
+  jira-cli new --type=$1 --priority=Medium --project LE $2 | grep issue | pbcopy;
+}
+
+jlist() {
+  jira-cli view --search-jql="$1" --oneline
+}

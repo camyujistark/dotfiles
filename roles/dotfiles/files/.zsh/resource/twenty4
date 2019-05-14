@@ -1,0 +1,29 @@
+wprun() {
+  groot=$(git rev-parse --show-toplevel 2> /dev/null || echo -n ".")
+  commandline_includes="$groot/wp-content/scripts/commandline-includes.php"
+  if [ -n "$2" ] ; then
+    files=$2
+  else
+    files=$(ag --nobreak --nonumbers --noheading -l . | fzf)
+  fi
+  php -r 'include "'$commandline_includes'"; include "'$files'"; '$1';'
+}
+
+# Mopidy
+alias pi-mopidy="sshpass -p 24242424 ssh pi@192.168.128.15 'nohup sh run-mopidy.sh </dev/null &>/dev/null &' && echo 'mopidy restarted'"
+
+# choices
+alias choicesssh="sshpass -p m3sNiBi2SAMV8pz ssh root@119.9.42.182"
+alias choicesrsync="sshpass -p m3sNiBi2SAMV8pz rsync -avz -e root@119.9.42.182:/home/choiceswebalt/public_html/wp-content/uploads/ /home/cystark/Documents/Sites/choicesmulti/wp-content/uploads/"
+alias choicesvarnish="sshpass -p m3sNiBi2SAMV8pz ssh root@119.9.42.182 'service varnish restart'; curl 'https://waf.sucuri.net/api?k=f2726dd805022f27337e363d98b4ff2a&s=dc50923fe958c8c654e919ed1aea1dd5&a=clearcache'"
+alias choicessqldump="sshpass -p IAGe.{?my$m%A=ih ssh root@103.209.152.54 'mysqldump choicesf_cfver2 | gzip > database_dump.sql.gz'; echo 'zipped on simplebiz server' && sshpass -p IAGe.{?my$m%A=ih scp -v root@103.209.152.54:database_dump.sql.gz ~/Downloads"
+alias inspiringsqldump="sshpass -p m3sNiBi2SAMV8pz ssh root@119.9.42.182 'mysqldump inspiring-choices | gzip > inspiring_database_dump.sql.gz'; echo 'zipped on choiceswebalt' && sshpass -p m3sNiBi2SAMV8pz scp -v root@119.9.42.182:inspiring_database_dump.sql.gz ~/Downloads"
+
+
+#Scripts
+alias new_plugin="sh ~/scripts/bash/plugin_bootstrap.sh"
+alias bb_new="sh ~/scripts/bash/bb_new.sh"
+
+#choices push
+choicespush() { b; gall "$1"; choicesvarnish; }
+

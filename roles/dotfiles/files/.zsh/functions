@@ -7,39 +7,45 @@ function ag() {
   command ag --pager="less -iFMRSX" --color-path=34\;3 --color-line-number=35 --color-match=35\;1\;4 "$@"
 }
 
+# Marked 2 start
+function mark() {
+  if [ $1 ]; then
+    open -a "Marked 2" $1;
+  else
+    open -a "Marked 2";
+  fi
+}
+
 # fd - "find directory"
-# Inspired by: https://github.com/junegunn/fzf/wiki/examples#changing-directory
+# From: https://github.com/junegunn/fzf/wiki/examples#changing-directory
 function fd() {
   local DIR
-  DIR=$(bfs ${1:-.} -type d 2> /dev/null | sk --no-multi) && cd "$DIR"
+  DIR=$(bfs ${1:-.} -type d 2> /dev/null | fzf +m) && cd "$DIR"
 }
 
 # fh - "find [in] history"
-# Inspired by: https://github.com/junegunn/fzf/wiki/examples#command-history
+# From: https://github.com/junegunn/fzf/wiki/examples#command-history
 function fh() {
-  print -z $(fc -l 1 | sk --no-multi --tac | sed 's/ *[0-9]*\*\{0,1\} *//')
-}
-
-# Print headers, following redirects.
-# Based on: https://stackoverflow.com/a/10060342/2103996
-function headers() {
-  emulate -L zsh
-
-  if [ $# -ne 1 ]; then
-    echo "error: a host argument is required"
-    return 1
-  fi
-
-  local REMOTE=$1
-
-  curl -sSL -D - "$REMOTE" -o /dev/null
+  print -z $(fc -l 1 | fzf +s --tac | sed 's/ *[0-9]* *//')
 }
 
 function history() {
   emulate -L zsh
 
   # This is a function because Zsh aliases can't take arguments.
-  fc -l 1
+  local DEFAULT=-1000
+  builtin history ${1:-$DEFAULT}
+}
+
+function mosh() {
+  emulate -L zsh
+
+  if [[ -z "$@" ]]; then
+    # common case: getting to my workstation
+    command mosh -6 sandbox
+  else
+    command mosh "$@"
+  fi
 }
 
 function mvim() {
@@ -67,26 +73,11 @@ function ssh() {
 
   if [[ -z "$@" ]]; then
     # common case: getting to my workstation
-    command ssh dev
+    command ssh sandbox-clipper
   else
     local LOCAL_TERM=$(echo -n "$TERM" | sed -e s/tmux/screen/)
     env TERM=$LOCAL_TERM command ssh "$@"
   fi
-}
-
-# Print information about a remote SSL certificate.
-# Based on: https://serverfault.com/a/661982/219567
-function ssl() {
-  emulate -L zsh
-
-  if [ $# -ne 1 ]; then
-    echo "error: a host argument is required"
-    return 1
-  fi
-
-  local REMOTE=$1
-
-  echo | openssl s_client -showcerts -servername "$REMOTE" -connect "$REMOTE:443" 2>/dev/null | openssl x509 -inform pem -noout -text
 }
 
 function tmux() {
@@ -126,7 +117,7 @@ function tmux() {
   fi
 
   # Attach to existing session, or create one, based on current directory.
-  local SESSION_NAME=$(basename "${$(pwd)//[.:]/_}")
+  SESSION_NAME=$(basename "$(pwd)")
   env SSH_AUTH_SOCK=$SOCK_SYMLINK tmux new -A -s "$SESSION_NAME"
 }
 
@@ -166,24 +157,24 @@ regmv() {
   done
 }
 
-function email() {
-  emulate -L zsh
-
-  if ! tmux has-session -t email 2> /dev/null; then
-    # Make saved attachments go to ~/Downloads by default.
-    tmux new-session -d -s email -c ~/Downloads -n mutt
-    tmux send-keys -t email:mutt mutt Enter
-    tmux new-window -t email -c ~/.mutt -n sync
-    tmux send-keys -t email:sync '~/.mutt/scripts/control.sh --daemon' Enter
-    tmux split-window -t email:sync -v -f -l 8 -c ~/.mutt
-    tmux send-keys -t email:sync.bottom '~/.mutt/scripts/control.sh' Enter
-  fi
-  if [ -z "$TMUX" ]; then
-    tmux attach -t email:mutt
-  else
-    tmux switch-client -t email:mutt
-  fi
-}
+# function email() {
+#   if ! tmux has-session -t email 2> /dev/null; then
+#     # Make saved attachments go to ~/Downloads by default.
+#   if ! tmux has-session -t email 2> /dev/null; then
+#     # Make saved attachments go to ~/Downloads by default.
+#     tmux new-session -d -s email -c ~/Downloads -n mutt
+#     tmux send-keys -t email:mutt mutt Enter
+#     tmux new-window -t email -c ~/.mutt -n sync
+#     tmux send-keys -t email:sync '~/.mutt/scripts/control.sh --daemon' Enter
+#     tmux split-window -t email:sync -v -f -l 8 -c ~/.mutt
+#     tmux send-keys -t email:sync.bottom '~/.mutt/scripts/control.sh' Enter
+#   fi
+#   if [ -z "$TMUX" ]; then
+#     tmux attach -t email:mutt
+#   else
+#     tmux switch-client -t email:mutt
+#   fi
+# }
 
 # Convenience function for jumping to hashed directory aliases
 # (ie. `j rn` -> `jump rn` -> `cd ~rn`).
@@ -196,9 +187,7 @@ function jump() {
     echo "jump: single argument required, got $#"
     return 1
   else
-    local dir="${1%%/*}"
-
-    if [ $(hash -d|cut -d= -f1|grep -c "^${dir}\$") = 0 ]; then
+    if [ $(hash -d|cut -d= -f1|grep -c "^$1\$") = 0 ]; then
       # Not in `hash -d`: assume it's just a dir.
       cd $1
     else
@@ -209,7 +198,6 @@ function jump() {
 
 function _jump_complete() {
   emulate -L zsh
-
   local word completions
   word="$1"
   completions="$(hash -d|cut -d= -f1)"
@@ -219,10 +207,34 @@ function _jump_complete() {
 # Complete filenames and `hash -d` entries.
 compctl -f -K _jump_complete jump
 
-# "[t]ime[w]arp" by setting GIT_AUTHOR_DATE and GIT_COMMITTER_DATE.
-function tw() {
+# WriteRoom-style focused workspace.
+function wr() {
   emulate -L zsh
 
+  local THRESHOLD=200
+  local COLS=$(tput cols)
+  if ! tmux has-session -t WriteRoom 2> /dev/null; then
+    tmux new-session -d -s WriteRoom -c ~/Documents/Corpus -x $(tput cols) -y $(tput lines)
+    # TODO: something less clowny here (want width of created session, not width
+    # of current pane).
+    if [ "$COLS" -gt "$THRESHOLD" ]; then
+      tmux split-window -t WriteRoom -h -p 25
+      tmux split-window -t WriteRoom.1 -b -h -p 25
+      tmux select-pane -t WriteRoom.2
+      tmux send-keys -t WriteRoom.2 "vim -c CommandT" Enter
+    else
+      tmux send-keys -t WriteRoom "vim -c CommandT" Enter
+    fi
+  fi
+  if [ -z "$TMUX" ]; then
+    tmux attach -t WriteRoom
+  else
+    tmux switch-client -t WriteRoom
+  fi
+}
+
+# "[t]ime[w]arp" by setting GIT_AUTHOR_DATE and GIT_COMMITTER_DATE.
+function tw() {
   local TS=$(ts "$@")
   echo "Spawning subshell with timestamp: $TS"
   env GIT_AUTHOR_DATE="$TS" GIT_COMMITTER_DATE="$TS" zsh
@@ -247,3 +259,83 @@ function tick() {
     export GIT_COMMITTER_DATE="$TS $TZ"
   fi
 }
+
+#----
+# Downloads Folder
+pickdwldfiles() {
+dwldfolder=$(find "$HOME/Downloads" -mindepth 1 -print0 | xargs -0 stat -f "%m %N" | sort -rn | cut -f2- -d" ");
+# | sed -e 's/\( \|(\|)\)/\\\1/g' -e 's/[[:space:]]*$//');
+echo "$dwldfolder" | fzf --multi --preview "head -$LINES {}"
+}
+
+fromd() { IFS=$'\n'; a=$(pwd); for file in $(pickdwldfiles); do; mv "$file" "$a"; done; }
+removed() { IFS=$'\n'; for file in $(pickdwldfiles); do; rm "$file"; done; }
+
+fr() {
+  perl -pi -e "s/$1/$2/g" $3;
+}
+
+curl_json_post() {
+  if [ -n "$2" ] ; then
+    curl $1
+  fi
+}
+
+curl_file_upload() {
+  if [ -n "$2" ] ; then
+    curl -F 'filesToUpload[]=\@'$1 $2;
+  fi
+}
+
+kall() {  osascript -e 'tell application "System Events" to get name of (processes where background only is false)' | sed "s/iTerm2//;s/Google\ Chrome//;s/Todoist//;s/Slack//;s/1pass//;s/Calendar//;s/Hammerspoon//;s/Karabiner-Elements//;s/Notion//;" | tr , "\n" | xargs -I {} osascript -e 'quit app "{}"' \; }
+
+#ack
+vack() {
+  if [ -n "$2" ] ; then
+    docs=$(ag --nobreak --nonumbers --noheading -l $2 "$1")
+  else
+    docs=$(ag --nobreak --nonumbers --noheading -l "$1") &&
+    fi
+  doc=$(echo "$docs" | fzf --multi --preview "head -$LINES {}" ) &&
+  ${EDITOR} $( echo "$doc" | tr '\r\n' ' ');
+}
+
+#find
+vfind() {
+  if [ -n "$2" ] ; then
+    docs=$(ag --nobreak --nonumbers --noheading -g $2 "$1")
+  else
+    docs=$(ag --nobreak --nonumbers --noheading -g "$1") &&
+  fi
+  doc=$(echo "$docs" | fzf --multi --preview "head -$LINES {}" ) &&
+  ${EDITOR} -p $( echo "$doc" | tr '\r\n' ' ');
+}
+
+
+todoistsync() {
+  todoist sync;
+  todoist list --filter "today" | grep "Linktree" | cut -f12- -d" " | awk '{$1=$1;print}' | pbcopy;
+}
+
+# Url decode / encode
+url_decode() { php -r "echo urldecode(\"$1\");" }
+url_encode() { php -r "echo urlencode(\"$1\");" }
+
+# alias urldecode='python -c "import sys, urllib as ul;  print ul.unquote_plus(sys.argv[1])"'
+# alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])"'
+
+notify() {
+  if [[ -z "$1" ]] then
+    TEXT="We made it!"
+  else
+    TEXT=$1
+  fi
+  osascript -e 'display notification "'$TEXT'" with title "Script Completed"' 
+}
+
+source $HOME/.zsh/resource/bulknaming
+source $HOME/.zsh/resource/git
+source $HOME/.zsh/resource/linktree
+source $HOME/.zsh/resource/jira
+# source $HOME/.zsh/resource/ubuntu
+# source $HOME/.zsh/resource/twenty4

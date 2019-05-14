@@ -1,0 +1,24 @@
+#
+# Ubuntu 
+#
+
+alias open="gnome-open"
+alias terminal-notifier='reattach-to-user-namespace terminal-notifier'
+
+_ab() { vim "$HOME/.local/share/albert/" }
+
+open_notion() {
+  google-chrome --app="data:text/html,<html><body><script>window.moveTo(2898,1134);window.resizeTo(529,288);window.location='https://www.notion.so';</script></body></html>" --profile-directory="Default";
+}
+
+sticky() {url=$1; google-chrome --app="data:text/html,<html><body><script>moveTo(2898,1134);window.resizeTo(560,343);window.location='$url';</script></body></html>" --profile-directory="Default"; sleep 2; wmctrl -r :ACTIVE: -e 0,2898,1134,560,343 -b toggle,above,sticky;}
+
+switchzwithup() {
+  #Oneliner:  current=$(xmodmap -pke | egrep -i "keycode 111 " ); if [[ $current = *"Up"* ]] ; then xmodmap -e "keycode 111 = z"; else xmodmap -e "keycode 111 = Up" ; fi
+  current=$(xmodmap -pke | egrep -i "keycode 111 " )
+  if [[ $current = *"Up"* ]]; then
+    xmodmap -e "keycode 111 = z"
+  else
+    xmodmap -e "keycode 111 = Up"
+  fi
+}

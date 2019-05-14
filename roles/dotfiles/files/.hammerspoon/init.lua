@@ -4,7 +4,8 @@ hs.grid.MARGINY = 0
 hs.window.animationDuration = 0 -- disable animations
 
 local events = require 'events'
-local iterm = require 'iterm'
+-- local iterm = require 'iterm'
+local karabiner = require 'karabiner'
 local log = require 'log'
 local reloader = require 'reloader'
 
@@ -46,56 +47,303 @@ local grid = {
   centeredSmall = '4,4 4x4',
 }
 
+layoutMap = {
+  {1,
+    { '0,0 12x12' } --fullscreen
+  },
+  {2,
+    { '0,0 6x12', '6,0 6x12'}, -- split vertical
+    { '0,0 9x12', '9,0 3x12' }, -- right toolbar
+    { '0,0 9x12', '9,0 3x12' }, -- split horizontal (bottom small)
+  },
+  {3,
+    { '0,0 6x12', '6,0 6x12'}, --- split vertical (with right split horzontal)
+    { '0,0 9x12', '9,0 3x12' }, -- split hoizontal (with bottom split vertical small)
+    { '0,0 9x12', '9,0 3x12' }, -- three vertical split
+  },
+  {4,
+    { '0,0 6x12', '6,0 6x12'}, --- 3[0] with righttoolbar
+    { '0,0 9x12', '9,0 3x12' }, -- split hoizontal (with bottom split vertical and smaller)
+    { '0,0 9x12', '9,0 3x12' }, -- split hoizontal (with bottom three way split vertical small)
+    { '0,0 9x12', '9,0 3x12' }, -- four squares (split horizotal / split vertical)
+  },
+}
+
+local _grid = {
+  full         =  {x=0, y=0, w=12, h=12},
+  leftSide     =  {x=0, y=0, w=6, h=12},
+  rightSide    =  {x=6, y=0, w=6, h=12},
+  topRight     =  {x=6, y=0, w=6, h=8},
+  bottomRight  =  {x=6, y=6, w=6, h=4},
+  bottomLeft   =  {x=0, y=6, w=6, h=4},
+  topFull      =  {x=0, y=0, w=12, h=8},
+  toolbar      =  {x=9, y=0, w=3, h=12},
+}
+
+local generate_grid = (function(grid)
+  -- '0,0 12x12'
+ return _grid['y'].. ','.. _grid['x'].. ' '.. _grid['w'].. 'x'.. _grid['h']
+end)
+
+local deduct_toolbar = (function(args)
+  count = #args
+  if count == 1 then
+    args[1]['w'] = args[1]['w'] - 3
+  elseif count == 2 then
+    args[1]['w'] = args[1]['w'] - 2
+    args[2]['w'] = args[2]['w'] - 1
+    args[2]['y'] = args[2]['y'] - 1
+  elseif count == 3 then
+    args[1]['w'] = args[1]['w'] - 2
+    args[2]['w'] = args[2]['w'] - 1
+    args[2]['y'] = args[2]['y'] - 1
+    args[3]['w'] = args[3]['w'] - 1
+    args[3]['y'] = args[3]['y'] - 1
+  end
+  return args
+end)
+
+local appMap = {
+  {
+    work = {
+      'com.google.Chrome'
+    },
+    gtd = {
+      'com.todoist.mac.Todoist'
+    },
+    browsing = {
+      'com.google.Chrome'
+    },
+    writing = {
+      'com.brettterpstra.marked2',
+      'com.googlecode.iterm2',
+      'com.bloombuilt.dayone-mac',
+      'notion.id'
+    },
+    alternative = {
+      'com.tinyspeck.slackmacgap',
+      'com.deezer.deezer-desktop'
+    },
+    toolbar = {
+      'com.todoist.mac.Todoist'
+    },
+  }
+}
+
+local layoutMapping = {
+  {
+    _grid.full
+  },
+  {
+    _grid.leftSide,
+    _grid.rightSide
+  },
+  {
+    _grid.leftSide,
+    _grid.topRight,
+    _grid.bottomRight
+  },
+  {
+    _grid.topFull,
+    _grid.bottomLeft,
+    _grid.bottomRight
+  }
+}
+
 local layoutConfig = {
   _before_ = (function()
-    hide('com.spotify.client')
+    -- hide('com.deezer.deezer-desktop')
   end),
 
   _after_ = (function()
-    -- Make sure iTerm appears in front of others.
-    activate('com.googlecode.iterm2')
+    local app = hs.application.get('com.google.Chrome')
+    app:selectMenuItem({ 'Window', 'Bring All to Front' })
+    local app = hs.application.get('com.googlecode.iterm2')
+    app:selectMenuItem({ 'Window', 'Bring All to Front' })
   end),
 
-  ['com.flexibits.fantastical2.mac'] = (function(window)
-    hs.grid.set(window, grid.fullScreen, internalDisplay())
+  ['com.apple.iCal'] = (function(window, forceScreenCount)
+    local count = forceScreenCount or screenCount
+    if count == 1 then
+      hs.grid.set(window, grid.fullScreen, internalDisplay())
+    elseif count == 2 then
+      hs.grid.set(window, grid.leftTwoThirdsLarge, internalDisplay())
+    elseif count == 5 then
+      hs.grid.set(window, grid.leftTopTwoThirdsLarge, internalDisplay())
+    elseif count == 10 then
+      hs.grid.set(window, grid.centerThirdLarge, hs.screen.primaryScreen())
+    else
+      hs.grid.set(window, grid.fullScreen, internalDisplay())
+    end
   end),
 
-  ['com.github.atom'] = (function(window)
-    -- Leave room for simulator to the right.
-    hs.grid.set(window, grid.leftTwoThirds, internalDisplay())
+  ['com.tinyspeck.slackmacgap'] = (function(window, forceScreenCount)
+    local count = forceScreenCount or screenCount
+    if count == 2 then
+      hs.grid.set(window, grid.leftTwoThirdsLarge, internalDisplay())
+    elseif count == 5 or count == 10 then
+      hs.grid.set(window, grid.centerBottomThirdLarge, internalDisplay())
+    else
+      hs.grid.set(window, grid.fullScreen, internalDisplay())
+    end
+  end),
+
+  ['com.todoist.mac.Todoist'] = (function(window, forceScreenCount)
+    local count = forceScreenCount or screenCount
+    if count == 2 or count == 5 or count == 10 then
+      hs.grid.set(window, grid.rightThirdSmall, hs.screen.primaryScreen())
+    else
+      hs.grid.set(window, grid.fullScreen, internalDisplay())
+    end
+  end),
+
+  ['com.deezer.deezer-desktop'] = (function(window, forceScreenCount)
+    local count = forceScreenCount or screenCount
+    if count == 2 then
+      hs.grid.set(window, grid.leftTwoThirdsLarge, internalDisplay())
+    elseif count == 5 then
+      hs.grid.set(window, grid.centerBottomThirdLarge, internalDisplay())
+    else
+      hs.grid.set(window, grid.fullScreen, internalDisplay())
+    end
+  end),
+
+  ['com.bloombuilt.dayone-mac'] = (function(window, forceScreenCount)
+    local count = forceScreenCount or screenCount
+    if count == 1 then
+      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+    elseif count == 2 then
+      hs.grid.set(window, grid.leftTwoThirdsLarge, hs.screen.primaryScreen())
+    elseif count == 3 then
+      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+    elseif count == 4 then
+      hs.grid.set(window, grid.rightTwoThirds, hs.screen.primaryScreen())
+    elseif count == 5 then
+      hs.grid.set(window, grid.leftTopTwoThirdsLarge, hs.screen.primaryScreen())
+    elseif count == 6 then
+      hs.grid.set(window, grid.bottomHalf, hs.screen.primaryScreen())
+    elseif count == 7 then
+      hs.grid.set(window, grid.bottomThird, hs.screen.primaryScreen())
+    elseif count == 10 then
+      hs.grid.set(window, grid.centerThirdLarge, hs.screen.primaryScreen())
+    end
+  end),
+
+  ['notion.id'] = (function(window, forceScreenCount)
+    local count = forceScreenCount or screenCount
+    if count == 1 then
+      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+    elseif count == 2 then
+      hs.grid.set(window, grid.leftTwoThirdsLarge, hs.screen.primaryScreen())
+    elseif count == 3 then
+      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+    elseif count == 4 then
+      hs.grid.set(window, grid.rightTwoThirds, hs.screen.primaryScreen())
+    elseif count == 5 then
+      hs.grid.set(window, grid.leftTopTwoThirdsLarge, hs.screen.primaryScreen())
+    elseif count == 6 then
+      hs.grid.set(window, grid.topHalf, hs.screen.primaryScreen())
+    elseif count == 7 then
+      hs.grid.set(window, grid.topTwoThirds, hs.screen.primaryScreen())
+    elseif count == 10 then
+      hs.grid.set(window, grid.centerThirdLarge, hs.screen.primaryScreen())
+    end
   end),
 
   ['com.google.Chrome'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
-      hs.grid.set(window, grid.fullScreen)
-    else
       hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
-    end
-  end),
-
-  ['com.google.Chrome.canary'] = (function(window, forceScreenCount)
-    local count = forceScreenCount or screenCount
-    if count == 1 then
-      hs.grid.set(window, grid.fullScreen)
-    else
-      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+    elseif count == 2 then
+      hs.grid.set(window, grid.leftTwoThirdsLarge, hs.screen.primaryScreen())
+    elseif count == 3 then
+      hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+    elseif count == 4 then
+      hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
+    elseif count == 5 then
+      hs.grid.set(window, grid.leftTopTwoThirdsLarge, hs.screen.primaryScreen())
+      dev_window = hs.window.find('DevTools')
+      if(dev_window) then
+        -- Focus on existing window
+        hs.grid.set(dev_window, grid.leftBottomThirdSmall, hs.screen.primaryScreen())
+      end
+    elseif count == 6 then
+      hs.grid.set(window, grid.topHalf, hs.screen.primaryScreen())
+    elseif count == 7 then
+      hs.grid.set(window, grid.topTwoThirds, hs.screen.primaryScreen())
+    elseif count == 8 then
+      hs.grid.set(window, grid.topHalf, hs.screen.primaryScreen())
+      dev_window = hs.window.find('DevTools')
+      if(dev_window) then
+        -- Focus on existing window
+        hs.grid.set(dev_window, grid.bottomLeft, hs.screen.primaryScreen())
+      end
+    elseif count == 9 then
+      hs.grid.set(window, grid.topTwoThirds, hs.screen.primaryScreen())
+      dev_window = hs.window.find('DevTools')
+      if(dev_window) then
+        -- Focus on existing window
+        hs.grid.set(dev_window, grid.bottomThirdLeft, hs.screen.primaryScreen())
+      end
+    elseif count == 10 then
+      hs.grid.set(window, grid.leftThirdSmall, hs.screen.primaryScreen())
+      dev_window = hs.window.find('DevTools')
+      if(dev_window) then
+        -- Focus on existing window
+        hs.grid.set(dev_window, grid.leftBottomThirdSmall, hs.screen.primaryScreen())
+      end
     end
   end),
 
   ['com.googlecode.iterm2'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
-      hs.grid.set(window, grid.fullScreen)
-    else
       hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+    elseif count == 2 then
+      hs.grid.set(window, grid.leftTwoThirdsLarge, hs.screen.primaryScreen())
+    elseif count == 3 then
+      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+    elseif count == 4 then
+      hs.grid.set(window, grid.rightTwoThirds, hs.screen.primaryScreen())
+    elseif count == 5 then
+      hs.grid.set(window, grid.centerBottomThirdLarge, hs.screen.primaryScreen())
+    elseif count == 6 then
+      hs.grid.set(window, grid.bottomHalf, hs.screen.primaryScreen())
+    elseif count == 7 then
+      hs.grid.set(window, grid.bottomThird, hs.screen.primaryScreen())
+    elseif count == 8 then
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    elseif count == 9 then
+      hs.grid.set(window, grid.bottomThirdRight, hs.screen.primaryScreen())
+    elseif count == 10 then
+      hs.grid.set(window, grid.centerThirdLarge, hs.screen.primaryScreen())
     end
   end),
-
-  ['com.tinyspeck.slackmacgap'] = (function(window)
-    hs.grid.set(window, grid.fullScreen, internalDisplay())
-  end),
 }
+
+-- here --
+prepareScreencast = (function()
+  local screen = 'Color LCD'
+  local top = {x=0, y=0, w=1, h=.92}
+  local bottom = {x=.4, y=.82, w=.5, h=.1}
+  local windowLayout = {
+    {'iTerm2', nil, screen, top, nil, nil},
+    {'Google Chrome', nil, screen, top, nil, nil},
+    {'KeyCastr', nil, screen, bottom, nil, nil},
+  }
+
+  hs.application.launchOrFocus('KeyCastr')
+  local chrome = hs.appfinder.appFromName('Google Chrome')
+  local iterm = hs.appfinder.appFromName('iTerm2')
+  for key, app in pairs(hs.application.runningApplications()) do
+    if app == chrome or app == iterm or app:name() == 'KeyCastr' then
+      app:unhide()
+    else
+      app:hide()
+    end
+  end
+  hs.layout.apply(windowLayout)
+end)
 
 --
 -- Utility and helper functions.
@@ -250,9 +498,135 @@ chain = (function(movements)
   end
 end)
 
+switch_app = (function(app)
+  hs.application.launchOrFocus(app)
+end)
+
+chrome_switch_to = (function(ppl)
+
+  local chrome = hs.appfinder.appFromName('Google Chrome')
+
+  if not chrome then
+    return
+  end
+
+  front = hs.window.frontmostWindow()
+
+  if not chrome:isFrontmost() and string.find(front:title(), 'DevTools') then
+
+    chrome:activate()
+
+  else
+
+    local str_menu_item
+    if ppl == "DevTools" then
+        window = hs.window.find('DevTools')
+        if(window) then
+          -- Focus on existing window
+          window:focus()
+          return
+        else
+          -- Open New Window
+          str_menu_item = {"View", "Developer", "Developer Tools"}
+        end
+    elseif ppl == "Incognito"  then
+        str_menu_item = {"File", "New Incognito Window"}
+    else
+        str_menu_item = {"People", ppl}
+    end
+
+    local menu_item = chrome:findMenuItem(str_menu_item, true)
+
+    if (menu_item) then
+        chrome:selectMenuItem(str_menu_item, true)
+    end
+  end
+end)
+
+chromeAlien = (function()
+  -- get alien chrome --
+  local chrome = hs.appfinder.appFromName('Google Chrome')
+  if not chrome then
+    return
+  end
+  local str_menu_item = {"People", "Alien"}
+  local menu_item = chrome:findMenuItem(str_menu_item, true)
+  if (menu_item) then
+      chrome:selectMenuItem(str_menu_item, true)
+  end
+end)
+
+switchTo = (function(movements, func)
+  local cycleLength = #movements
+  local sequenceNumber = 1
+
+  return function()
+    local win = hs.window.frontmostWindow()
+    local id = win:id()
+    local now = hs.timer.secondsSinceEpoch()
+    local screen = win:screen()
+
+    if
+      lastSeenChain ~= movements
+    then
+      sequenceNumber = 1
+      lastSeenChain = movements
+    elseif (sequenceNumber == 1) then
+      -- At end of chain, restart chain on next screen.
+      screen = screen:next()
+    end
+    lastSeenAt = now
+    lastSeenWindow = id
+
+    func(movements[sequenceNumber])
+
+    sequenceNumber = sequenceNumber % cycleLength + 1
+  end
+end)
 --
 -- Key bindings.
 --
+
+-- Mash to be matched to holding down enter
+local mash = {'ctrl', 'alt', 'shift','cmd'}
+
+-- hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Numi') end)
+-- hs.hotkey.bind(mash, ',', function() hs.application.launchOrFocus('Harvest') end)
+-- hs.hotkey.bind(mash, ".", function() hs.application.launprint('Postman') end)
+-- hs.hotkey.bind(mash, 'y', function() hs.application.launchOrFocus('Sequel Pro') end)
+-- hs.hotkey.bind(mash, 'f', function() hs.application.launchOrFocus('Firefox') end)
+
+--- Toggle Chrome and Terminal
+hs.hotkey.bind(mash, 'a', function()
+  local window = hs.window.frontmostWindow()
+  local application = window:application()
+  local bundleID = application:bundleID()
+
+  -- launch or focus
+  if bundleID == 'com.google.Chrome' then
+    -- iterm --
+    hs.application.launchOrFocus('iTerm')
+  else
+    chromeAlien()
+  end
+end)
+
+hs.hotkey.bind(mash, "'", switchTo({ 'DevTools','Alien' }, chrome_switch_to))
+hs.hotkey.bind(mash, ',', switchTo({ 'Home','Bolster' }, chrome_switch_to))
+hs.hotkey.bind(mash, ".", function() chrome_switch_to('Home') end)
+
+hs.hotkey.bind(mash, 'o', function() hs.application.launchOrFocus('iTerm') end)
+hs.hotkey.bind(mash, 'e', function() hs.application.launchOrFocus('Notion') end)
+hs.hotkey.bind(mash, 'u', function() hs.application.launchOrFocus('Day One') end)
+hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Marked 2') end)
+hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Sequel Pro') end)
+
+hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('Todoist') end)
+hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Calendar') end)
+hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Slack') end)
+hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('Firefox Developer Edition') end)
+hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocus('Airtable') end)
+hs.hotkey.bind(mash, 'b', function() hs.application.launchOrFocus('Anki') end)
 
 hs.hotkey.bind({'ctrl', 'alt'}, 'up', chain({
   grid.topHalf,
@@ -315,37 +689,13 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'f4', (function()
   reloader.reload()
 end))
 
---
--- Screencast layout
---
+hs.hotkey.bind(mash, '1', switchTo({ 1, 2 }, activateLayout))
+hs.hotkey.bind(mash, '2', switchTo({ 3, 4 }, activateLayout))
+hs.hotkey.bind(mash, '3', switchTo({ 5, 10  }, activateLayout))
+hs.hotkey.bind(mash, '4', switchTo({ 6, 7, 8, 9 }, activateLayout))
 
-prepareScreencast = (function()
-  local screen = 'Color LCD'
-  local top = {x=0, y=0, w=1, h=.92}
-  local bottom = {x=.4, y=.82, w=.5, h=.1}
-  local windowLayout = {
-    {'iTerm2', nil, screen, top, nil, nil},
-    {'Google Chrome', nil, screen, top, nil, nil},
-    {'KeyCastr', nil, screen, bottom, nil, nil},
-  }
-
-  hs.application.launchOrFocus('KeyCastr')
-  local chrome = hs.appfinder.appFromName('Google Chrome')
-  local iterm = hs.appfinder.appFromName('iTerm2')
-  for key, app in pairs(hs.application.runningApplications()) do
-    if app == chrome or app == iterm or app:name() == 'KeyCastr' then
-      app:unhide()
-    else
-      app:hide()
-    end
-  end
-  hs.layout.apply(windowLayout)
-end)
-
--- `open hammerspoon://screencast`
-hs.urlevent.bind('screencast', prepareScreencast)
-
-iterm.init()
+-- iterm.init()
+karabiner.init()
 reloader.init()
 initEventHandling()
 events.subscribe('reload', tearDownEventHandling)

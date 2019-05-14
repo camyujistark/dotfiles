@@ -1,80 +1,34 @@
-# Host-specific config here.
+# Directory shortcuts:
 
-PATH=$PATH:$HOME/.zsh/host/LFRW044-bin
-export PATH
+function __directory_shortcuts() {
+  local ALLOY_EDITOR=~/code/portal/liferay-portal/modules/apps/frontend-editor/frontend-editor-alloyeditor-web
+  local DEPLOY=~/code/portal/bundles/deploy
+  local TOMCAT=~/code/portal/bundles/tomcat-9.0.10
 
-# To make builds work better:
-export ANT_OPTS="-Xmx8192m -XX:MaxPermSize=2048m"
-export GRADLE_OPTS="$ANT_OPTS"
+  test -d "$ALLOY_EDITOR" && hash -d alloy="$ALLOY_EDITOR"
+  test -d "$DEPLOY" && hash -d deploy="$DEPLOY"
+  test -d "$TOMCAT" && hash -d tomcat="$TOMCAT"
 
-# Settings originally in: ~/code/portal/bundles/tomcat-9.0.17/bin/setenv.sh
+  unfunction __directory_shortcuts
+}
+__directory_shortcuts
 
-# Recommend settings from https://github.com/julien/notes/blob/master/portal.md
-#
-#   CATALINA_OPTS=
-#     $CATALINA_OPTS
-#     -Dfile.encoding=UTF8
-#     -Djava.net.preferIPv4Stack=true
-#     -Dorg.apache.catalina.loader.WebappClassLoader.ENABLE_CLEAR_REFERENCES=false
-#     -Duser.timezone=GMT
-#     -Xms4096m
-#     -Xmx4096m
-#     -XX:MaxNewSize=2048m
-#     -XX:MaxMetaspaceSize=768m
-#     -XX:MetaspaceSize=768m
-#     -XX:NewSize=2560m
-#     -XX:SurvivorRatio=7
-#
-# Out-of-thebox 9.0.10 opts:
-#
-#   CATALINA_OPTS=
-#     $CATALINA_OPTS
-#     -Dfile.encoding=UTF8
-#     -Djava.net.preferIPv4Stack=true
-#     -Dorg.apache.catalina.loader.WebappClassLoader.ENABLE_CLEAR_REFERENCES=false
-#     -Duser.timezone=GMT
-#     -Xms2560m
-#     -Xmx2560m
-#     -XX:MaxNewSize=1536m
-#     -XX:MaxMetaspaceSize=512m
-#     -XX:MetaspaceSize=512m
-#     -XX:NewSize=1536m
-#     -XX:SurvivorRatio=7
-#
-# Out-of-the-box 9.0.17 opts:
-#
-#   CATALINA_OPTS=
-#     $CATALINA_OPTS
-#     -Dfile.encoding=UTF8
-#     -Djava.net.preferIPv4Stack=true
-#     -Duser.timezone=GMT
-#     -Xms2560m
-#     -Xmx2560m
-#     -XX:MaxNewSize=1536m
-#     -XX:MaxMetaspaceSize=512m
-#     -XX:MetaspaceSize=512m
-#     -XX:NewSize=1536m
-#     -XX:SurvivorRatio=7
-#
-# Opts we're actually using:
-#
-#   -XX:MaxNewSize=2048m -> 2560m to avoid:
-#
-#     NewSize (2621440k) is greater than the MaxNewSize (2097152k). A new
-#     max generation size of 2621440k will be used.
-#
-#   -Djava.net.preferIPv4Stack=true -> false, to listen on IPv6 (http://[::1]:8080)
-#
-CATALINA_OPTS="-Dfile.encoding=UTF8"
-CATALINA_OPTS="${CATALINA_OPTS} -Djava.net.preferIPv4Stack=false"
-CATALINA_OPTS="${CATALINA_OPTS} -Dorg.apache.catalina.loader.WebappClassLoader.ENABLE_CLEAR_REFERENCES=false"
-CATALINA_OPTS="${CATALINA_OPTS} -Duser.timezone=GMT"
-CATALINA_OPTS="${CATALINA_OPTS} -Xms4096m"
-CATALINA_OPTS="${CATALINA_OPTS} -Xmx4096m"
-CATALINA_OPTS="${CATALINA_OPTS} -XX:MaxNewSize=2560m"
-CATALINA_OPTS="${CATALINA_OPTS} -XX:MaxMetaspaceSize=768m"
-CATALINA_OPTS="${CATALINA_OPTS} -XX:MetaspaceSize=768m"
-CATALINA_OPTS="${CATALINA_OPTS} -XX:NewSize=2560m"
-CATALINA_OPTS="${CATALINA_OPTS} -XX:SurvivorRatio=7"
+# Perform daily builds of portal codebases.
+function daily() {
+  if ! ssh-add -l > /dev/null; then
+    ssh-add ~/.ssh/id_rsa_2048b_20180102
+  fi
 
-export CATALINA_OPTS
+  parallel -v --halt-on-error soon,fail=1 'cd {} && git checkout master && git pull --ff-only origin master' ::: ~/code/portal{,-ee}/liferay-binaries-cache-2017 && \
+  parallel -v --halt-on-error soon,fail=1 'cd {} && git checkout master && git pull --ff-only upstream master' ::: ~/code/portal{/liferay-portal,-ee/liferay-portal-ee} && \
+  parallel -v --halt-on-error soon,fail=1 --line-buffer 'set -o pipefail; cd {} && ant all 2>&1 | tee $PWD/ant-$(basename $(dirname {})).out && git tag "daily/good/$(date +%Y-%m-%d)"' ::: ~/code/portal{/liferay-portal,-ee/liferay-portal-ee}
+}
+
+# Reset the dev database by dropping all tables.
+function truncatedb() {
+  echo "set foreign_key_checks=1;" | (echo "select concat('drop table if exists ', table_name, ';') from information_schema.tables where table_schema='lportal_master';" | mysql -u root -B | tail -n +2 && cat;) | (echo "set foreign_key_checks=0;" && cat;) | mysql -u root lportal_master
+
+  echo
+  echo "Done"
+  echo "Now run 'ant all', maybe..."
+}

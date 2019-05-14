@@ -1,0 +1,601 @@
+# OH MY ZSH Git commands
+
+# Query/use custom command for `git`.
+zstyle -s ":vcs_info:git:*:-all-" "command" _omz_git_git_cmd
+: ${_omz_git_git_cmd:=git}
+
+#
+# Functions
+#
+
+# The name of the current branch
+# Back-compatibility wrapper for when this function was defined here in
+# the plugin, before being pulled in to core lib/git.zsh as git_current_branch()
+# to fix the core -> git plugin dependency.
+function current_branch() {
+  git_current_branch
+}
+# The list of remotes
+function current_repository() {
+  if ! $_omz_git_git_cmd rev-parse --is-inside-work-tree &> /dev/null; then
+    return
+  fi
+  echo $($_omz_git_git_cmd remote -v | cut -d':' -f 2)
+}
+# Pretty log messages
+function _git_log_prettily(){
+  if ! [ -z $1 ]; then
+    git log --pretty=$1
+  fi
+}
+# Warn if the current branch is a WIP
+function work_in_progress() {
+  if $(git log -n 1 2>/dev/null | grep -q -c "\-\-wip\-\-"); then
+    echo "WIP!!"
+  fi
+}
+
+#
+# Aliases
+# (sorted alphabetically)
+#
+
+alias g='git'
+
+alias ga='git add'
+alias gaa='git add --all'
+alias gapa='git add --patch'
+alias gau='git add --update'
+alias gav='git add --verbose'
+alias gap='git apply'
+
+alias gb='git branch'
+alias gba='git branch -a'
+alias gbd='git branch -d'
+alias gbda='git branch --no-color --merged | command grep -vE "^(\*|\s*(master|develop|dev)\s*$)" | command xargs -n 1 git branch -d'
+alias gbD='git branch -D'
+alias gbl='git blame -b -w'
+alias gbnm='git branch --no-merged'
+alias gbr='git branch --remote'
+alias gbs='git bisect'
+alias gbsb='git bisect bad'
+alias gbsg='git bisect good'
+alias gbsr='git bisect reset'
+alias gbss='git bisect start'
+
+alias gc='git commit -v'
+alias gc!='git commit -v --amend'
+alias gcn!='git commit -v --no-edit --amend'
+alias gca='git commit -v -a'
+alias gca!='git commit -v -a --amend'
+alias gcan!='git commit -v -a --no-edit --amend'
+alias gcans!='git commit -v -a -s --no-edit --amend'
+alias gcam='git commit -a -m'
+alias gcsm='git commit -s -m'
+alias gcb='git checkout -b'
+alias gcf='git config --list'
+alias gcl='git clone --recurse-submodules'
+alias gclean='git clean -id'
+alias gpristine='git reset --hard && git clean -dfx'
+alias gcm='git checkout master'
+alias gcd='git checkout develop'
+alias gcmsg='git commit -m'
+alias gco='git checkout'
+alias gcount='git shortlog -sn'
+compdef _git gcount
+alias gcp='git cherry-pick'
+alias gcpa='git cherry-pick --abort'
+alias gcpc='git cherry-pick --continue'
+alias gcs='git commit -S'
+
+alias gd='git diff'
+alias gdca='git diff --cached'
+alias gdcw='git diff --cached --word-diff'
+alias gdct='git describe --tags `git rev-list --tags --max-count=1`'
+alias gds='git diff --staged'
+alias gdt='git diff-tree --no-commit-id --name-only -r'
+alias gdw='git diff --word-diff'
+
+gdv() { git diff -w "$@" | view - }
+compdef _git gdv=git-diff
+
+alias gf='git fetch'
+alias gfa='git fetch --all --prune'
+alias gfo='git fetch origin'
+
+function gfg() { git ls-files | grep $@ }
+compdef _grep gfg
+
+alias gg='git gui citool'
+alias gga='git gui citool --amend'
+
+ggf() {
+  [[ "$#" != 1 ]] && local b="$(git_current_branch)"
+  git push --force origin "${b:=$1}"
+}
+ggfl() {
+  [[ "$#" != 1 ]] && local b="$(git_current_branch)"
+  git push --force-with-lease origin "${b:=$1}"
+}
+compdef _git ggf=git-checkout
+
+ggl() {
+  if [[ "$#" != 0 ]] && [[ "$#" != 1 ]]; then
+    git pull origin "${*}"
+  else
+    [[ "$#" == 0 ]] && local b="$(git_current_branch)"
+    git pull origin "${b:=$1}"
+  fi
+}
+compdef _git ggl=git-checkout
+
+ggp() {
+  if [[ "$#" != 0 ]] && [[ "$#" != 1 ]]; then
+    git push origin "${*}"
+  else
+    [[ "$#" == 0 ]] && local b="$(git_current_branch)"
+    git push origin "${b:=$1}"
+  fi
+}
+compdef _git ggp=git-checkout
+
+ggpnp() {
+  if [[ "$#" == 0 ]]; then
+    ggl && ggp
+  else
+    ggl "${*}" && ggp "${*}"
+  fi
+}
+compdef _git ggpnp=git-checkout
+
+ggu() {
+  [[ "$#" != 1 ]] && local b="$(git_current_branch)"
+  git pull --rebase origin "${b:=$1}"
+}
+compdef _git ggu=git-checkout
+
+alias ggpur='ggu'
+compdef _git ggpur=git-checkout
+
+alias ggpull='git pull origin "$(git_current_branch)"'
+compdef _git ggpull=git-checkout
+
+alias ggpush='git push origin "$(git_current_branch)"'
+compdef _git ggpush=git-checkout
+
+alias ggsup='git branch --set-upstream-to=origin/$(git_current_branch)'
+alias gpsup='git push --set-upstream origin $(git_current_branch)'
+
+alias ghh='git help'
+
+alias gignore='git update-index --assume-unchanged'
+alias gignored='git ls-files -v | grep "^[[:lower:]]"'
+alias git-svn-dcommit-push='git svn dcommit && git push github master:svntrunk'
+compdef _git git-svn-dcommit-push=git
+
+alias gk='\gitk --all --branches'
+compdef _git gk='gitk'
+alias gke='\gitk --all $(git log -g --pretty=%h)'
+compdef _git gke='gitk'
+
+alias gl='git pull'
+alias glg='git log --stat'
+alias glgp='git log --stat -p'
+alias glgg='git log --graph'
+alias glgga='git log --graph --decorate --all'
+alias glgm='git log --graph --max-count=10'
+alias glo='git log --oneline --decorate'
+alias glol="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
+alias glols="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --stat"
+alias glod="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset'"
+alias glods="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short"
+alias glola="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --all"
+alias glog='git log --oneline --decorate --graph'
+alias gloga='git log --oneline --decorate --graph --all'
+alias glp="_git_log_prettily"
+compdef _git glp=git-log
+
+alias gm='git merge'
+alias gmom='git merge origin/master'
+alias gmt='git mergetool --no-prompt'
+alias gmtvim='git mergetool --no-prompt --tool=vimdiff'
+alias gmum='git merge upstream/master'
+alias gma='git merge --abort'
+
+alias gp='git push'
+alias gpd='git push --dry-run'
+alias gpf='git push --force-with-lease'
+alias gpf!='git push --force'
+alias gpoat='git push origin --all && git push origin --tags'
+compdef _git gpoat=git-push
+alias gpu='git push upstream'
+alias gpv='git push -v'
+
+alias gr='git remote'
+alias gra='git remote add'
+alias grb='git rebase'
+alias grba='git rebase --abort'
+alias grbc='git rebase --continue'
+alias grbd='git rebase develop'
+alias grbi='git rebase -i'
+alias grbm='git rebase master'
+alias grbs='git rebase --skip'
+alias grh='git reset'
+alias grhh='git reset --hard'
+alias groh='git reset origin/$(git_current_branch) --hard'
+alias grm='git rm'
+alias grmc='git rm --cached'
+alias grmv='git remote rename'
+alias grrm='git remote remove'
+alias grset='git remote set-url'
+alias grt='cd "$(git rev-parse --show-toplevel || echo .)"'
+alias gru='git reset --'
+alias grup='git remote update'
+alias grv='git remote -v'
+
+alias gsb='git status -sb'
+alias gsd='git svn dcommit'
+alias gsh='git show'
+alias gsi='git submodule init'
+alias gsps='git show --pretty=short --show-signature'
+alias gsr='git svn rebase'
+alias gss='git status -s'
+alias gst='git status'
+
+# use the default stash push on git 2.13 and newer
+autoload -Uz is-at-least
+is-at-least 2.13 "$(git --version 2>/dev/null | awk '{print $3}')" \
+  && alias gsta='git stash push' \
+  || alias gsta='git stash save'
+
+alias gstaa='git stash apply'
+alias gstc='git stash clear'
+alias gstd='git stash drop'
+alias gstl='git stash list'
+alias gstp='git stash pop'
+alias gsts='git stash show --text'
+alias gstall='git stash --all'
+alias gsu='git submodule update'
+
+alias gts='git tag -s'
+alias gtv='git tag | sort -V'
+alias gtl='gtl(){ git tag --sort=-v:refname -n -l ${1}* }; noglob gtl'
+
+alias gunignore='git update-index --no-assume-unchanged'
+alias gunwip='git log -n 1 | grep -q -c "\-\-wip\-\-" && git reset HEAD~1'
+alias gup='git pull --rebase'
+alias gupv='git pull --rebase -v'
+alias gupa='git pull --rebase --autostash'
+alias gupav='git pull --rebase --autostash -v'
+alias glum='git pull upstream master'
+
+alias gwch='git whatchanged -p --abbrev-commit --pretty=medium'
+alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign -m "--wip-- [skip ci]"'
+
+
+
+# 
+# GIT
+#
+
+gvmod() { _s $1; vim `git status --porcelain | sed -ne 's/^ M //p'` }
+# TODO: Make so if not in git root then go to correct location
+
+gdo() { if [ -d "$1" ] ; then _s $1 ; fi; ${EDITOR} -p `git diff --name-only | uniq`; }
+
+gmcb() { #Git merge current branch
+  current=$(git rev-parse --abbrev-ref HEAD);
+  git checkout master; git pull;
+  git merge $current;
+}
+
+gstatus() {
+  #In Linux an M is placed before each change
+  changes=$(git status -s | sed -e "s/M *//" -e "s/?? //") &&
+  select=$(echo "$changes" | fzf -m)
+  echo "$select"
+}
+
+g--() {
+  git checkout -- $(gstatus)
+}
+
+gdiff() {
+  if [ "$1" == "-h" ]; then
+    diff=$(git diff HEAD --name-only)
+  elif [ "$1" == "-2" ]; then
+    diff=$(git diff HEAD~2 --name-only)
+  elif [ "$1" == "-3" ]; then
+    diff=$(git diff HEAD~3 --name-only)
+  elif [ "$1" == "-4" ]; then
+    diff=$(git diff HEAD~4 --name-only)
+  elif [ "$1" == "-m" ]; then
+    diff=$(git diff master...HEAD --name-only)
+  else
+    diff=$(git diff @{u}...HEAD --name-only)
+    # equal
+    # @{u}...HEAD
+    # git rev-parse --abbrev-ref --symbolic-full-name @{u}
+  fi
+  echo $diff
+}
+
+vdiff() {
+  flag=$1
+  diff=$(gdiff $flag)
+  GROOT="$(git rev-parse --show-toplevel 2> /dev/null || echo -n '.')";
+  CURRENT=$(pwd)
+
+  # params contains more than spaces
+  if [[ $diff = *[!\ ]* ]]; then
+    cd "$GROOT"
+    ${EDITOR} $(echo $diff | tr '\r\n' ' ')
+    cd "$CURRENT"
+  else
+    echo 'Ay. Nothing to see here!'
+  fi
+}
+
+gac() {
+  diff=$(git ls-files -m | fzf --multi --preview "head -$LINES {}" )
+  git add $(echo $diff | tr '\r\n' ' ');
+  if [[ -z "$1" ]] ; then
+    git commit
+  else
+    git commit -m "$1"
+  fi
+}
+
+merge_conflicts() {
+  top=$(git rev-parse --show-toplevel 2> /dev/null || echo -n ".");
+  docs=$(ag -l '<<<<<<<' $top);
+  echo "$docs";
+}
+
+fmi() {
+  doc=$(merge_conflicts | fzf --multi --preview "head -$LINES {}" ) &&
+  ${EDITOR} -p $( echo "$doc" | tr '\r\n' ' ');
+  # git mergetool $( echo "$doc" | tr '\r\n' ' ');
+}
+
+branch() {
+  branches=$(git branch -vv) &&
+  branch=$(echo "$branches" | fzf +m) &&
+  b=$(echo "$branch" | sed "s/\* //" | awk '{print $1}' | sed "s/.* //")
+  echo $b;
+}
+
+gall() {
+  if [[ -z "$1" ]] ; then
+    git add --all && git commit && git push;
+  elif [[ -z "$2" ]] ; then
+    git add --all && git commit -m $1 && git push ;
+  else
+    git add --all && git commit -m $1 -m $2 && git push ;
+  fi;
+}
+
+gallup() {
+  if [[ -z "$2" ]] ; then
+    git add --all && git commit -m $1 && git push -u origin $(git branch | grep \* | cut -d ' ' -f2);
+  else
+    git add --all && git commit -m $1 -m $2 && git push -u origin $(git branch | grep \* | cut -d ' ' -f2);
+  fi;
+}
+
+gup() {
+  if [[ -z "$2" ]] ; then
+    git commit -m $1 && git push -u origin $(git branch | grep \* | cut -d ' ' -f2);
+  else
+    git commit -m $1 -m $2 && git push -u origin $(git branch | grep \* | cut -d ' ' -f2);
+  fi;
+}
+
+ghistory() { git rev-list --all | xargs git grep "$1" }
+
+select_branch() {
+  branches=$(git branch -vv) &&
+  branch=$(echo "$branches" | fzf +m) &&
+  select=$(echo "$branch" | awk '{print $1}' | sed "s/.* //");
+  echo $select;
+}
+
+clean_branches() {
+# Todo - make it so you can select more than one
+  select=$(select_branch) &&
+  git branch -D "$select" &&
+  git branch -D -r "origin/$select" &&
+  git push origin --delete "$select"
+}
+
+fshow() {
+  git log --graph --color=always \
+      --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
+  fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
+      --header "Press CTRL-S to toggle sort" \
+      --preview "echo {} | grep -o '[a-f0-9]\{7\}' | head -1 |
+                 xargs -I % sh -c 'git show --color=always % | head -$LINES'" \
+      --bind "enter:execute:echo {} | grep -o '[a-f0-9]\{7\}' | head -1 |
+              xargs -I % sh -c 'vim fugitive://\$(git rev-parse --show-toplevel)/.git//% < /dev/tty'"
+}
+
+# git_next() { gall "merge"; g skip; fmi; }
+
+fbr() {
+  local branches branch
+  branches=$(git branch -vv) &&
+  branch=$(echo "$branches" | fzf +m) &&
+  git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //")
+}
+
+
+# fstash - easier way to deal with stashes
+# type fstash to get a list of your stashes
+# enter shows you the contents of the stash
+# ctrl-d shows a diff of the stash against your current HEAD
+# ctrl-b checks the stash out as a branch, for easier merging
+fstash() {
+  local out q k sha
+  while out=$(
+    git stash list --pretty="%C(yellow)%h %>(14)%Cgreen%cr %C(blue)%gs" |
+    fzf --ansi --no-sort --query="$q" --print-query \
+        --expect=ctrl-d,ctrl-b);
+  do
+    mapfile -t out <<< "$out"
+    q="${out[0]}"
+    k="${out[1]}"
+    sha="${out[-1]}"
+    sha="${sha%% *}"
+    [[ -z "$sha" ]] && continue
+    if [[ "$k" == 'ctrl-d' ]]; then
+      git diff $sha
+    elif [[ "$k" == 'ctrl-b' ]]; then
+      git stash branch "stash-$sha" $sha
+      break;
+    else
+      git stash show -p $sha
+    fi
+  done
+}
+
+stashcheck() {
+  git stash && git checkout $1 && git stash pop;
+}
+
+stashft() {
+  git stash && git checkout -b feature/$1 && git pull origin master && git stash pop
+}
+
+stashhf() {
+  git stash && git checkout -b hotfix/$1 && git pull origin master && git stash pop
+}
+
+gscs() {
+  local branches branch
+  branches=$(git branch -vv) &&
+  branch=$(echo "$branches" | fzf +m) &&
+  git stash && git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //") && git stash pop
+}
+
+grc() {
+  if [ -n "$2" ] ; then
+    git reset HEAD $1 && git checkout $2 $1
+  else
+    git reset HEAD $1 && git checkout --ours $1
+  fi
+}
+
+graw() {
+  GPATH=${1/github.com/raw.githubusercontent.com}
+  GPATH=${GPATH/blob\//}
+  wget -nd $GPATH
+}
+
+# Sync current git commit with master
+gsync() {
+# Todo would like to make remote optional
+ COMMITID=$(git log --format="%H" -n 1);
+ git checkout $COMMITID;
+ git merge remotes/origin/master;
+}
+
+# if gsync goes well - run to merge into branch of choice
+gtempmerge() {
+  select=$(select_branch);
+  git branch temp;
+  git checkout $select;
+  git merge temp;
+  git branch -D temp;
+}
+
+todos() {
+  GROOT="$(git rev-parse --show-toplevel 2> /dev/null || echo -n '.')";
+  ag -R 'TODO|FIXME' --ignore-dir={vendor,node_modules,dist} $GROOT;
+}
+
+gpush() {
+# with ci
+if todos 2>&1 > /dev/null; then
+  echo 'TODOS EXIST'; 
+fi
+}
+
+gitco() {
+  git checkout $(git branch | fzf);
+}
+
+# GIT heart FZF
+# -------------
+
+is_in_git_repo() {
+  git rev-parse HEAD > /dev/null 2>&1
+}
+
+fzf-down() {
+  fzf --height 50% "$@" --border
+}
+
+gf() {
+  is_in_git_repo || return
+  git -c color.status=always status --short |
+  fzf-down -m --ansi --nth 2..,.. \
+    --preview '(git diff --color=always -- {-1} | sed 1,4d; cat {-1}) | head -500' |
+  cut -c4- | sed 's/.* -> //'
+}
+
+gb() {
+  is_in_git_repo || return
+  git branch -a --color=always | grep -v '/HEAD\s' | sort |
+  fzf-down --ansi --multi --tac --preview-window right:70% \
+    --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" $(sed s/^..// <<< {} | cut -d" " -f1) | head -'$LINES |
+  sed 's/^..//' | cut -d' ' -f1 |
+  sed 's#^remotes/##'
+}
+
+gt() {
+  is_in_git_repo || return
+  git tag --sort -version:refname |
+  fzf-down --multi --preview-window right:70% \
+    --preview 'git show --color=always {} | head -'$LINES
+}
+
+gh() {
+  is_in_git_repo || return
+  git log --date=short --format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" --graph --color=always |
+  fzf-down --ansi --no-sort --reverse --multi --bind 'ctrl-s:toggle-sort' \
+    --header 'Press CTRL-S to toggle sort' \
+    --preview 'grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always | head -'$LINES |
+  grep -o "[a-f0-9]\{7,\}"
+}
+
+gr() {
+  is_in_git_repo || return
+  git remote -v | awk '{print $1 "\t" $2}' | uniq |
+  fzf-down --tac \
+    --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" {1} | head -200' |
+  cut -d$'\t' -f1
+}
+
+join-lines() {
+  local item
+  while read item; do
+    echo -n "${(q)item} "
+  done
+}
+
+bind-git-helper() {
+  local c
+  for c in $@; do
+    eval "fzf-g$c-widget() { local result=\$(g$c | join-lines); zle reset-prompt; LBUFFER+=\$result }"
+    eval "zle -N fzf-g$c-widget"
+    eval "bindkey '^g^$c' fzf-g$c-widget"
+  done
+}
+bind-git-helper f b t r h
+unset -f bind-git-helper
+
+
+# Make key bindings
+bash $HOME/.zsh/bindkey
+
+

@@ -1,0 +1,109 @@
+##### 
+# Command aliases
+##### 
+
+# WP based aliases
+#
+
+# Project Based
+_cpwpcore() { cp -R "$HOME/Documents/Assets/wp/core/" . }
+
+#Theme
+_wt() {
+  #if there is a parameter
+  if [ -n "$1" ] ; then
+    _s $1; cd wp-content/themes;
+    if [ -d "$1" ] ; then
+      $1;
+    elseif
+      'inkcabin';
+    else
+      cd $(find "$(pwd)" -maxdepth 1 -not -path "*twenty*" -type d );
+    fi
+  else
+    #go to the top level and find the relevant theme folder
+    $(git rev-parse --show-toplevel 2> /dev/null || echo -n "."); cd wp-content/themes;
+    cd $(find "$(pwd)" -maxdepth 1 -not -path "*twenty*" -type d );
+  fi;
+}
+
+_wv() { _s $1; cd wp-content/themes;
+  if [ -d "$1" ]
+  then
+    vim $1;
+  else
+    cd $(find "$(pwd)" -maxdepth 1 -not -path "*twenty*" -type d );
+  fi
+}
+
+_wtb() { _wt $1; b }
+
+# Plugins
+_wpp() { "wp-content/plugins/" }
+_wp() { _s $1; _wpp; }
+_wpe() { _wp $1; ${EDITOR} }
+
+# Mu-Plugins
+_wpm() { "wp-content/mu-plugins/" }
+_wm() { _s $1; _wpm; }
+_wme() { _wm $1; ${EDITOR} }
+
+# Uploads
+_wpu() { "wp-content/uploads/" }
+_wu() { _s $1; _wpu; }
+_wue() { _wu $1; ${EDITOR} . }
+
+# cp plugin to directory
+_cpp() { cp -R ~/Documents/Plugins/$1 . }
+_lnp() { ln -s ~/Documents/Plugins/$1 . }
+
+wprun() {
+  groot=$(git rev-parse --show-toplevel 2> /dev/null || echo -n ".")
+  commandline_includes="$groot/wp-content/scripts/commandline-includes.php"
+  if [ -n "$2" ] ; then
+    files=$2
+  else
+    files=$(ag --nobreak --nonumbers --noheading -l . | fzf)
+  fi
+  php -r 'include "'$commandline_includes'"; include "'$files'"; '$1';'
+}
+
+wprun() {
+  groot=$(git rev-parse --show-toplevel 2> /dev/null || echo -n ".")
+  commandline_includes="$groot/wp-content/scripts/commandline-includes.php"
+  if [ -n "$2" ] ; then
+    files=$2
+  else
+    files=$(ag --nobreak --nonumbers --noheading -l . | fzf)
+  fi
+  php -r 'include "'$commandline_includes'"; include "'$files'"; '$1';'
+}
+
+#open folder in vim
+folder() {
+  if [ -n "$2" ] ; then
+    $(find "$2" -type d -iname "$1" -not -path "*node_modules*" -not -path "*bower_components*")
+  else
+    $(find "$(pwd)" -type d -iname "$1" -not -path "*node_modules*" -not -path "*bower_components*"
+  fi
+}
+
+#open folder in vim
+vfolder() {
+  if [ -n "$2" ] ; then
+    ${EDITOR} -p $(find "$2" -type d -iname "*$1*" -not -path "*node_modules*" -not -path "*bower_components*")
+  else
+    ${EDITOR} -p $(find "$(pwd)" -type d -iname "*$1*" -not -path "*node_modules*" -not -path "*bower_components*")
+  fi
+}
+
+#open folder in finder
+ofolder() {
+    #TODO: Need to get this going - currently the $2 does not work and cant open
+    #multiple files in one hit "*$1*" does not work
+  if [ -n "$2" ] ; then
+    open $(find "$2" -type d -iname "*$1*" -not -path "*node_modules*" -not -path "*bower_components*")
+  else
+    open $(find "$(pwd)" -type d -iname "$1" -not -path "*node_modules*" -not -path "*bower_components*")
+  fi
+}
