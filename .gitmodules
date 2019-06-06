@@ -173,6 +173,3 @@
 [submodule "roles/dotfiles/files/.zsh/skim"]
 	path = roles/dotfiles/files/.zsh/skim
 	url = https://github.com/lotabout/skim.git
-[submodule "roles/dotfiles/files/.vim/pack/bundle/start/ale"]
-	path = roles/dotfiles/files/.vim/pack/bundle/start/ale
-	url = https://github.com/w0rp/ale.git
