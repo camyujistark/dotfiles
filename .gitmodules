@@ -176,3 +176,9 @@
 [submodule "roles/dotfiles/files/.vim/pack/bundle/start/ale"]
 	path = roles/dotfiles/files/.vim/pack/bundle/start/ale
 	url = https://github.com/w0rp/ale
+[submodule "roles/dotfiles/files/.vim/pack/bundle/start/deoplete-ternjs"]
+	path = roles/dotfiles/files/.vim/pack/bundle/start/deoplete-ternjs
+	url = https://github.com/carlitux/deoplete-ternjs
+[submodule "roles/dotfiles/files/.vim/pack/bundle/start/nvim-typescript"]
+	path = roles/dotfiles/files/.vim/pack/bundle/start/nvim-typescript
+	url = https://github.com/mhartington/nvim-typescript
