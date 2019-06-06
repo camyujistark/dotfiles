@@ -182,6 +182,6 @@
 [submodule "roles/dotfiles/files/.vim/pack/bundle/start/nvim-typescript"]
 	path = roles/dotfiles/files/.vim/pack/bundle/start/nvim-typescript
 	url = https://github.com/mhartington/nvim-typescript
-[submodule "yats.vim"]
-	path = yats.vim
+[submodule "roles/dotfiles/files/.vim/pack/bundle/start/yats.vim"]
+	path = roles/dotfiles/files/.vim/pack/bundle/start/yats.vim
 	url = https://github.com/HerringtonDarkholme/yats.vim
