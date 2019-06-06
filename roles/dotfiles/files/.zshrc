@@ -401,3 +401,8 @@ if [ -e /etc/motd ]; then
     tee $HOME/.hushlogin < /etc/motd
   fi
 fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Make ag default for fzf search instead of default find
+export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
