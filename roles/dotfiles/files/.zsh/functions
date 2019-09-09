@@ -271,6 +271,13 @@ echo "$dwldfolder" | fzf --multi --preview "head -$LINES {}"
 fromd() { IFS=$'\n'; a=$(pwd); for file in $(pickdwldfiles); do; mv "$file" "$a"; done; }
 removed() { IFS=$'\n'; for file in $(pickdwldfiles); do; rm "$file"; done; }
 
+# Make string to file name format. Spaces to underscores. Remove all special characters
+string_() { echo $1 | tr -d ':' | tr -d '#' | sed -e 's/^[[:space:]]*//' | tr -s ' ' | tr ' ' '_'}
+
+mkdir_() { mkdir $(string_ $1)}
+
+linestofolders() { while read line; do mkdir_ "$line"; done < $1}
+
 fr() {
   perl -pi -e "s/$1/$2/g" $3;
 }

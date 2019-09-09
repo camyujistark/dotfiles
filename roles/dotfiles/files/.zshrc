@@ -406,3 +406,16 @@ fi
 
 # Make ag default for fzf search instead of default find
 export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
+
+# added by travis gem
+[ -f /Users/cameronstark/.travis/travis.sh ] && source /Users/cameronstark/.travis/travis.sh
+
+# tabtab source for serverless package
+# uninstall by removing these lines or running `tabtab uninstall serverless`
+[[ -f /Users/cameronstark/Documents/sites/improve-typing/src/server/node_modules/tabtab/.completions/serverless.zsh ]] && . /Users/cameronstark/Documents/sites/improve-typing/src/server/node_modules/tabtab/.completions/serverless.zsh
+# tabtab source for sls package
+# uninstall by removing these lines or running `tabtab uninstall sls`
+[[ -f /Users/cameronstark/Documents/sites/improve-typing/src/server/node_modules/tabtab/.completions/sls.zsh ]] && . /Users/cameronstark/Documents/sites/improve-typing/src/server/node_modules/tabtab/.completions/sls.zsh
+# tabtab source for slss package
+# uninstall by removing these lines or running `tabtab uninstall slss`
+[[ -f /Users/cameronstark/Documents/sites/improve-typing/src/server/node_modules/tabtab/.completions/slss.zsh ]] && . /Users/cameronstark/Documents/sites/improve-typing/src/server/node_modules/tabtab/.completions/slss.zsh
