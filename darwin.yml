@@ -3,6 +3,7 @@
   roles:
     - { role: iterm, tags: iterm }
     - { role: homebrew, tags: homebrew }
+    - { role: fzf, tags: fzf }
     - { role: dotfiles, tags: dotfiles }
     - { role: launchd, tags: launchd }
     - { role: terminfo, tags: terminfo }
