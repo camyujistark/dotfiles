@@ -55,16 +55,17 @@ alias _ass="$docs/Assets"
 alias _zshrc="vim $HOME/.zshrc"
 alias reload="source $HOME/.zshrc"
 alias _a="vim $HOME/.zsh/aliases"
-alias _g="vim $HOME/.zsh/resource/git"
-alias _f="vim $HOME/.zsh/functions"
-alias _v="$HOME/.vim/plugin/mappings"
+alias _brew="vim $HOME/Documents/dotfiles/roles/homebrew/templates/Brewfile"
 alias _d="$HOME/Downloads"
+alias _f="vim $HOME/.zsh/functions"
+alias _g="vim $HOME/.zsh/resource/git"
 alias _gc="vim $HOME/.gitconfig"
 alias _h="sudo vim /etc/hosts"
 alias _hs="$HOME/.hammerspoon"
 alias _i="$docs/Assets/images"
-alias _t="$docs/Tuts"
 alias _k="$HOME/.config/karabiner"
+alias _t="$docs/Tuts"
+alias _v="$HOME/.vim/plugin/mappings"
 alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 alias workflows='$HOME/Library/Application\ Support/Alfred\ 3/Alfred.alfredpreferences/workflows'
 
@@ -149,6 +150,12 @@ alias oo='git oneline -10'
 
 #Chrome Refresh
 alias cr="~/Scripts/chromerefresh.sh"
+
+#Cheatsheets
+alias Cheatsheets="cd ~/Documents/Cheatsheets"
+alias vimcheatsheet="md ~/Documents/Cheatsheets/vim.md"
+alias tmuxcheatsheet="md ~/Documents/Cheatsheets/tmux.md"
+alias cheatsheet="md ~/Documents/Cheatsheets/golbal.md"
 
 #Python Path
 # export PYTHONPATH="$HOME/lib/python2.7/site-packages"
