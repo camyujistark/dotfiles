@@ -496,7 +496,7 @@ local mash = {'ctrl', 'alt', 'shift','cmd'}
 -- end)
 
 -- Remove Bolster and make it two chrome instances
-hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Insomnia') end)
+hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Postman') end)
 hs.hotkey.bind(mash, ',', function() hs.application.launchOrFocus('Harvest') end)
 hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Numi') end)
 -- "p" for 1pass
