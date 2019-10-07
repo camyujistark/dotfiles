@@ -31,6 +31,7 @@ local grid = {
   topTwoThirds = '0,0 12x8',
   rightHalf = '6,0 6x12',
   rightThird = '8,0 4x12',
+  rightFiveTwelveQuarterOffset = '4,0 5x12',
   rightToolBar = '9,0 3x12',
   rightTwoThirds = '4,0 8x12',
   bottomHalf = '0,6 12x6',
@@ -187,7 +188,7 @@ local layoutConfig = {
     if count == 1 then
       hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
     else
-      hs.grid.set(window, grid.fullScreen, internalDisplay())
+      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
     end
   end),
 
@@ -201,12 +202,21 @@ local layoutConfig = {
     hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
   end),
 
+  ['com.figma.Desktop'] = (function(window, forceScreenCount)
+    local count = forceScreenCount or screenCount
+    if count == 1 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    else
+      hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
+    end
+  end),
+
   ['notion.id'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
       hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
     else
-      hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
     end
   end),
 
@@ -215,7 +225,7 @@ local layoutConfig = {
     if count == 1 then
       hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
     else
-      hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
     end
   end),
 
@@ -224,7 +234,7 @@ local layoutConfig = {
     if count == 1 then
       hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
     else
-      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
     end
   end),
 }
@@ -499,17 +509,16 @@ local mash = {'ctrl', 'alt', 'shift','cmd'}
 hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Postman') end)
 hs.hotkey.bind(mash, ',', function() hs.application.launchOrFocus('Harvest') end)
 hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Numi') end)
--- "p" for 1pass
-hs.hotkey.bind(mash, 'f', function() hs.application.launchOrFocus('Figma') end)
 
 hs.hotkey.bind(mash, "a", chrome_switch_to('Cam'))
 hs.hotkey.bind(mash, "o", chrome_switch_to('Alien'))
 hs.hotkey.bind(mash, 'e', function() hs.application.launchOrFocus('iTerm') end)
-hs.hotkey.bind(mash, 'u', function() hs.application.launchOrFocus('Todoist') end)
-hs.hotkey.bind(mash, "i", function() hs.application.launchOrFocus('Slack') end)
+hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocus('Notion') end)
+hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end)
+hs.hotkey.bind(mash, "d", function() hs.application.launchOrFocus('Figma') end)
 -- hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Day One') end)
 
-hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('Notion') end)
+hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('Slack') end)
 hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Calendar') end)
 hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Deezer') end)
 hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') end)

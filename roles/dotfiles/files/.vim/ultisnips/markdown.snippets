@@ -1,6 +1,61 @@
+snippet date
+`date +%Y%m%d_%H%m`
+endsnippet
+
+snippet dateh5
+##### `date +%Y%m%d_%H%m`
+endsnippet
+
+snippet bug_date
+---
+
+🐛 **`date +%Y%m%d_%H%m`**
+
+${1:Some text here}
+
+**BUG**: ${2: what is the bug}
+
+**FIX**: ${3: how you fix the bug}
+
+${4: anything extra
+
+}
+endsnippet
+
+snippet meeting_date
+---
+
+💬 **`date +%Y%m%d_%H%m`**
+
+${1:Some text here}
+
+endsnippet
+
+snippet note_date
+---
+
+📒 **`date +%Y%m%d_%H%m`**
+
+${1:Some text here}
+
+endsnippet
+
+snippet codeing_date
+---
+
+⌨️ **`date +%Y%m%d_%H%m`**
+
+${1:Some text here}
+
+endsnippet
+
 snippet header
 ---
 tags: $1
 ---
 $0
+endsnippet
+
+snippet todo
+- [ ] $0
 endsnippet

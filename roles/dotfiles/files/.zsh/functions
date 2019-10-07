@@ -340,6 +340,22 @@ notify() {
   osascript -e 'display notification "'$TEXT'" with title "Script Completed"' 
 }
 
+tvim() { 
+  if [[ -z "$1" ]] then
+    FILE="new"
+  else
+    FILE=$1
+  fi
+  # resize window on load, load todo.md buffer and focus on main window
+  vim -O $FILE todos.md -c ":vertical resize 80" \
+                        -c ":wincmd l" \
+                        -c ":b todos.md" \
+                        -c ":99999" \
+                        -c ":sp" \
+                        -c "e ~/Documents/Notes/divi.md" \
+                        -c ":wincmd h";
+}
+
 source $HOME/.zsh/resource/bulknaming
 source $HOME/.zsh/resource/git
 source $HOME/.zsh/resource/linktree
