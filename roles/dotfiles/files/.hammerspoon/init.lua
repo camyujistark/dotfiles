@@ -170,52 +170,76 @@ local layoutConfig = {
   ['com.apple.iCal'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
     elseif count == 2 then
-      hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    elseif count == 3 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
     end
   end),
 
   ['com.tinyspeck.slackmacgap'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
-      hs.grid.set(window, grid.fullScreen, internalDisplay())
+      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+    elseif count == 2 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    elseif count == 3 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
     end
   end),
 
   ['com.todoist.mac.Todoist'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
+      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+    elseif count == 2 then
       hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
-    else
+    elseif count == 3 then
       hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
     end
   end),
 
   ['com.deezer.deezer-desktop'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
-    hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    if count == 1 then
+      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+    elseif count == 2 then
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    elseif count == 3 then
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    end
   end),
 
-  ['WhasApp'] = (function(window, forceScreenCount)
+  ['WhatsApp'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
-    hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    if count == 1 then
+      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+    elseif count == 2 then
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    elseif count == 3 then
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    end
   end),
 
   ['com.figma.Desktop'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
+      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+    elseif count == 2 then
       hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    else
-      hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
+    elseif count == 3 then
+      hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
     end
   end),
 
   ['notion.id'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
+      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+    elseif count == 2 then
       hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    else
+    elseif count == 3 then
       hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
     end
   end),
@@ -223,8 +247,10 @@ local layoutConfig = {
   ['com.google.Chrome'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
+      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+    elseif count == 2 then
       hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    else
+    elseif count == 3 then
       hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
     end
   end),
@@ -232,8 +258,10 @@ local layoutConfig = {
   ['com.googlecode.iterm2'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
+      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+    elseif count == 2 then
       hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    else
+    elseif count == 3 then
       hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
     end
   end),
@@ -507,7 +535,7 @@ local mash = {'ctrl', 'alt', 'shift','cmd'}
 
 -- Remove Bolster and make it two chrome instances
 hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Postman') end)
-hs.hotkey.bind(mash, ',', function() hs.application.launchOrFocus('Harvest') end)
+hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Figma') end)
 hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Numi') end)
 
 hs.hotkey.bind(mash, "a", chrome_switch_to('Cam'))
@@ -515,7 +543,7 @@ hs.hotkey.bind(mash, "o", chrome_switch_to('Alien'))
 hs.hotkey.bind(mash, 'e', function() hs.application.launchOrFocus('iTerm') end)
 hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocus('Notion') end)
 hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end)
-hs.hotkey.bind(mash, "d", function() hs.application.launchOrFocus('Figma') end)
+hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Harvest') end)
 -- hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Day One') end)
 
 hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('Slack') end)
@@ -587,8 +615,8 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'f4', (function()
   reloader.reload()
 end))
 
-hs.hotkey.bind(mash, '1', switchTo({ 1, 2 }, activateLayout))
-hs.hotkey.bind(mash, '2', switchTo({ 3, 4 }, activateLayout))
+hs.hotkey.bind(mash, '1', function() activateLayout(1) end)
+hs.hotkey.bind(mash, '2', switchTo({ 2, 3 }, activateLayout))
 hs.hotkey.bind(mash, '3', switchTo({ 5, 10  }, activateLayout))
 hs.hotkey.bind(mash, '4', switchTo({ 6, 7, 8, 9 }, activateLayout))
 
