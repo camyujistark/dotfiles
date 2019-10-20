@@ -7,6 +7,18 @@ function ag() {
   command ag --pager="less -iFMRSX" --color-path=34\;3 --color-line-number=35 --color-match=35\;1\;4 "$@"
 }
 
+# Using Argsdo instead through vim
+# function search_replace() {
+#   PATTERN=$1
+#   REPLACEMENT=$1
+#
+#   if [ $2 ]; then
+#     ag -l "$PATTERN" | xargs sed -i -e 's/'$PATTERN'/'$REPLACEMENT'/g';
+#   else
+#     echo 'Need two parameters';
+#   fi
+# }
+
 # Marked 2 start
 function mark() {
   if [ $1 ]; then
