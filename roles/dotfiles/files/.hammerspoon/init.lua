@@ -172,8 +172,16 @@ local layoutConfig = {
     if count == 1 then
       hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
     elseif count == 2 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
     elseif count == 3 then
+      hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+    elseif count == 4 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    elseif count == 5 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    elseif count == 6 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    elseif count == 7 then
       hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
     end
   end),
@@ -183,9 +191,17 @@ local layoutConfig = {
     if count == 1 then
       hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
     elseif count == 2 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
     elseif count == 3 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.fullScreen, internalDisplay())
+    elseif count == 4 then
+      hs.grid.set(window, grid.leftNoToolBar,  hs.screen.primaryScreen())
+    elseif count == 5 then
+      hs.grid.set(window, grid.leftNoToolBar,  hs.screen.primaryScreen())
+    elseif count == 6 then
+      hs.grid.set(window, grid.fullScreen, internalDisplay())
+    elseif count == 7 then
+      hs.grid.set(window, grid.fullScreen, internalDisplay())
     end
   end),
 
@@ -194,8 +210,16 @@ local layoutConfig = {
     if count == 1 then
       hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
     elseif count == 2 then
-      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
     elseif count == 3 then
+      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+    elseif count == 4 then
+      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
+    elseif count == 5 then
+      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
+    elseif count == 6 then
+      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
+    elseif count == 7 then
       hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
     end
   end),
@@ -207,7 +231,15 @@ local layoutConfig = {
     elseif count == 2 then
       hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 3 then
+      hs.grid.set(window, grid.fullScreen, internalDisplay())
+    elseif count == 4 then
       hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    elseif count == 5 then
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    elseif count == 6 then
+      hs.grid.set(window, grid.fullScreen, internalDisplay())
+    elseif count == 7 then
+      hs.grid.set(window, grid.fullScreen, internalDisplay())
     end
   end),
 
@@ -218,7 +250,15 @@ local layoutConfig = {
     elseif count == 2 then
       hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 3 then
+      hs.grid.set(window, grid.fullScreen, internalDisplay())
+    elseif count == 4 then
       hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    elseif count == 5 then
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    elseif count == 6 then
+      hs.grid.set(window, grid.fullScreen, internalDisplay())
+    elseif count == 7 then
+      hs.grid.set(window, grid.fullScreen, internalDisplay())
     end
   end),
 
@@ -227,8 +267,16 @@ local layoutConfig = {
     if count == 1 then
       hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
     elseif count == 2 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
     elseif count == 3 then
+      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+    elseif count == 4 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    elseif count == 5 then
+      hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
+    elseif count == 6 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    elseif count == 7 then
       hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
     end
   end),
@@ -238,8 +286,16 @@ local layoutConfig = {
     if count == 1 then
       hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
     elseif count == 2 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
     elseif count == 3 then
+      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+    elseif count == 4 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    elseif count == 5 then
+      hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
+    elseif count == 6 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    elseif count == 7 then
       hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
     end
   end),
@@ -249,8 +305,16 @@ local layoutConfig = {
     if count == 1 then
       hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
     elseif count == 2 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
     elseif count == 3 then
+      hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+    elseif count == 4 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    elseif count == 5 then
+      hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
+    elseif count == 6 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    elseif count == 7 then
       hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
     end
   end),
@@ -260,8 +324,16 @@ local layoutConfig = {
     if count == 1 then
       hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
     elseif count == 2 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
     elseif count == 3 then
+      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+    elseif count == 4 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    elseif count == 5 then
+      hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
+    elseif count == 6 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    elseif count == 7 then
       hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
     end
   end),
@@ -546,8 +618,8 @@ hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end
 hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Harvest') end)
 -- hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Day One') end)
 
-hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('Slack') end)
-hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Calendar') end)
+hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('Calendar') end)
+hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Slack') end)
 hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Deezer') end)
 hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') end)
 hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocus('Anki') end) 
@@ -615,10 +687,9 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'f4', (function()
   reloader.reload()
 end))
 
-hs.hotkey.bind(mash, '1', function() activateLayout(1) end)
-hs.hotkey.bind(mash, '2', switchTo({ 2, 3 }, activateLayout))
-hs.hotkey.bind(mash, '3', switchTo({ 5, 10  }, activateLayout))
-hs.hotkey.bind(mash, '4', switchTo({ 6, 7, 8, 9 }, activateLayout))
+hs.hotkey.bind(mash, '1', switchTo({ 1, 2, 3 }, activateLayout))
+hs.hotkey.bind(mash, '2', switchTo({ 4, 5 }, activateLayout))
+hs.hotkey.bind(mash, '3', switchTo({ 6, 7 }, activateLayout))
 
 -- iterm.init()
 karabiner.init()
