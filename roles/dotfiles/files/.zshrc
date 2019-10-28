@@ -429,3 +429,13 @@ load-nvmrc
 
 export NAVI_PATH="~/Documents/Cheatsheets/navi/"
 
+
+# tabtab source for serverless package
+# uninstall by removing these lines or running `tabtab uninstall serverless`
+[[ -f /Users/camstark/Documents/Sites/divi-api/node_modules/tabtab/.completions/serverless.zsh ]] && . /Users/camstark/Documents/Sites/divi-api/node_modules/tabtab/.completions/serverless.zsh
+# tabtab source for sls package
+# uninstall by removing these lines or running `tabtab uninstall sls`
+[[ -f /Users/camstark/Documents/Sites/divi-api/node_modules/tabtab/.completions/sls.zsh ]] && . /Users/camstark/Documents/Sites/divi-api/node_modules/tabtab/.completions/sls.zsh
+# tabtab source for slss package
+# uninstall by removing these lines or running `tabtab uninstall slss`
+[[ -f /Users/camstark/Documents/Sites/divi-api/node_modules/tabtab/.completions/slss.zsh ]] && . /Users/camstark/Documents/Sites/divi-api/node_modules/tabtab/.completions/slss.zsh
