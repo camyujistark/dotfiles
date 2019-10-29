@@ -368,6 +368,13 @@ tvim() {
                         -c ":wincmd h";
 }
 
+AMAZON_SCRAPER_PATH="$HOME/Scripts/python/amazon_scraper/amazon_scrape.py"
+
+amazonmeta() {
+  python $AMAZON_SCRAPER_PATH $1
+}
+
+
 source $HOME/.zsh/resource/bulknaming
 source $HOME/.zsh/resource/git
 source $HOME/.zsh/resource/linktree
