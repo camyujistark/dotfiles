@@ -47,16 +47,8 @@ alias md='open -a "Marked 2.app"'
 #
 # Global aliases
 # (work at any position within the command line)
-docs="$HOME/Documents"
-sites="$docs/Sites"
-alias _s="$sites"
-alias _sa="$sites/site\ assets/"
-alias _sc="$HOME/Scripts"
-alias _n="$docs/Notes"
-alias _ass="$docs/Assets"
-alias _zshrc="vim $HOME/.zshrc"
-alias reload="source $HOME/.zshrc"
 alias _a="vim $HOME/.zsh/aliases"
+alias _ass="$docs/Assets"
 alias _brew="vim $HOME/Documents/dotfiles/roles/homebrew/templates/Brewfile"
 alias _d="$HOME/Downloads"
 alias _dot="$HOME/Documents/dotfiles"
@@ -67,10 +59,19 @@ alias _h="sudo vim /etc/hosts"
 alias _hs="$HOME/.hammerspoon"
 alias _i="$docs/Assets/images"
 alias _k="$HOME/.config/karabiner"
+alias _n="$docs/Notes"
+alias _n="vim "
+alias _s="$sites"
+alias _sa="$sites/site\ assets/"
+alias _sc="$HOME/Scripts"
 alias _t="$docs/Tuts"
 alias _v="$HOME/.vim/plugin/mappings"
+alias _zshrc="vim $HOME/.zshrc"
 alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
+alias reload="source $HOME/.zshrc"
 alias workflows='$HOME/Library/Application\ Support/Alfred\ 3/Alfred.alfredpreferences/workflows'
+docs="$HOME/Documents"
+sites="$docs/Sites"
 
 #filesize
 alias topfilesize="sudo du -a /var/logs | sort -n -r | head -n 5"
@@ -80,32 +81,6 @@ alias s=ssh
 alias serve='python -m SimpleHTTPServer' # optional arg: port (defaults to 8000)
 alias t=tmux -2
 alias ag='ag --path-to-ignore ~/.ignore'
-
-
-# Personal
-docs="$HOME/Documents"
-sites="$docs/Sites"
-alias _s="$sites"
-alias _sc="$HOME/Scripts"
-alias _ass="$docs/Assets"
-alias _zshrc="vim $HOME/.zshrc"
-alias reload="source $HOME/.zshrc"
-alias _a="vim $HOME/.zsh/aliases"
-alias _g="vim $HOME/.zsh/resource/git"
-alias _f="vim $HOME/.zsh/functions"
-alias _v="$HOME/.vim/plugin/mappings"
-alias _d="$HOME/Downloads"
-alias _gc="vim $HOME/.gitconfig"
-alias _h="sudo vim /etc/hosts"
-alias _hs="$HOME/.hammerspoon"
-alias _i="$docs/Assets/images"
-alias _t="$docs/Tuts"
-alias _k="$HOME/.config/karabiner"
-alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
-alias workflows='$HOME/Library/Application\ Support/Alfred\ 3/Alfred.alfredpreferences/workflows'
-
-#filesize
-alias topfilesize="sudo du -a /var/logs | sort -n -r | head -n 5"
 
 
 # Mnemonic: "[C]lip"

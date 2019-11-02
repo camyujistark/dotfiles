@@ -354,18 +354,32 @@ notify() {
 
 tvim() { 
   if [[ -z "$1" ]] then
-    FILE="new"
+    BRANCHNAME=$(git branchname)
   else
-    FILE=$1
+    BRANCHNAME=$1
   fi
   # resize window on load, load todo.md buffer and focus on main window
-  vim -O $FILE todos.md -c ":vertical resize 80" \
+  vim -O "new" todos.md -c ":vertical resize 80" \
                         -c ":wincmd l" \
-                        -c ":b todos.md" \
-                        -c ":99999" \
-                        -c ":sp" \
-                        -c "e ~/Documents/Notes/divi.md" \
-                        -c ":wincmd h";
+                        -c "e ~/Documents/Notes/Work/divi/$BRANCHNAME.md";
+                        # -c ":b todos.md" \
+                        # -c ":99999" \
+                        # -c ":sp" \
+                        # -c ":wincmd h";
+}
+
+divitodos() {
+  selection=$(awk 'function basename(file) {
+    sub(".*/", "", file)
+    sub("\.md", "", file)
+    return file
+  }
+  /\- \[ \]/{print $0, "-------", basename(FILENAME)}' $HOME/Documents/Notes/Work/divi/* | fzf)
+
+  branchname=${selection##*------- };
+
+  echo "git checkout $branchname";
+  tvim "$branchname";
 }
 
 AMAZON_SCRAPER_PATH="$HOME/Scripts/python/amazon_scraper/amazon_scrape.py"
