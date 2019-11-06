@@ -233,7 +233,7 @@ gtempmerge() {
   git branch -D temp;
 }
 
-todos() {
+findtodos() {
   GROOT="$(git rev-parse --show-toplevel 2> /dev/null || echo -n '.')";
   ag -R 'TODO|FIXME' --ignore-dir={vendor,node_modules,dist} $GROOT;
 }
