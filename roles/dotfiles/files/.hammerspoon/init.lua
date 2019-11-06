@@ -297,6 +297,13 @@ local layoutConfig = {
 
   ['com.google.Chrome'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
+
+    -- something like this
+    -- local menu_item = window:findMenuItem({"People", "Cam"})
+    -- if not (menu_item) then
+    --   return
+    -- end
+
     if count == 1 then
       hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
     elseif count == 2 then
