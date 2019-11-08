@@ -155,7 +155,7 @@ local layoutConfig = {
     elseif count == 2 then
       hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
     elseif count == 3 then
-      hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.leftTwoThirds, hs.screen.primaryScreen())
     elseif count == 4 then
       hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
     elseif count == 5 then
@@ -176,9 +176,9 @@ local layoutConfig = {
     elseif count == 2 then
       hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
     elseif count == 3 then
-      hs.grid.set(window, grid.fullScreen, internalDisplay())
+      hs.grid.set(window, grid.leftTwoThirds, hs.screen.primaryScreen())
     elseif count == 4 then
-      hs.grid.set(window, grid.leftHalf, internalDisplay())
+      hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
     elseif count == 5 then
       hs.grid.set(window, grid.leftNoToolBar,  hs.screen.primaryScreen())
     elseif count == 6 then
@@ -218,17 +218,17 @@ local layoutConfig = {
     elseif count == 2 then
       hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 3 then
-      hs.grid.set(window, grid.fullScreen, internalDisplay())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 4 then
-      hs.grid.set(window, grid.fullScreen, internalDisplay())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 5 then
       hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 6 then
       hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 7 then
-      hs.grid.set(window, grid.fullScreen, internalDisplay())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 8 then
-      hs.grid.set(window, grid.fullScreen, internalDisplay())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     end
   end),
 
@@ -239,17 +239,17 @@ local layoutConfig = {
     elseif count == 2 then
       hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 3 then
-      hs.grid.set(window, grid.fullScreen, internalDisplay())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 4 then
-      hs.grid.set(window, grid.fullScreen, internalDisplay())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 5 then
       hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 6 then
       hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 7 then
-      hs.grid.set(window, grid.fullScreen, internalDisplay())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 8 then
-      hs.grid.set(window, grid.fullScreen, internalDisplay())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     end
   end),
 
@@ -295,15 +295,8 @@ local layoutConfig = {
     end
   end),
 
-  ['com.google.Chrome'] = (function(window, forceScreenCount)
+  ['com.google.Chrome'] = (function(window, forceScreenCount, application)
     local count = forceScreenCount or screenCount
-
-    -- something like this
-    -- local menu_item = window:findMenuItem({"People", "Cam"})
-    -- if not (menu_item) then
-    --   return
-    -- end
-
     if count == 1 then
       hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
     elseif count == 2 then
@@ -436,7 +429,7 @@ activateLayout = (function(forceScreenCount)
       local windows = application:visibleWindows()
       for _, window in pairs(windows) do
         if canManageWindow(window) then
-          callback(window, forceScreenCount)
+          callback(window, forceScreenCount, application)
         end
       end
     end
@@ -529,6 +522,7 @@ switch_app = (function(app)
   hs.application.launchOrFocus(app)
 end)
 
+
 function chrome_switch_to(ppl)
   return function()
       hs.application.launchOrFocus("Google Chrome")
@@ -539,10 +533,24 @@ function chrome_switch_to(ppl)
       else
           str_menu_item = {"People", ppl}
       end
+
       local menu_item = chrome:findMenuItem(str_menu_item)
       if (menu_item) then
           chrome:selectMenuItem(str_menu_item)
       end
+
+      -- local windows = chrome:visibleWindows()
+      -- for _, window in pairs(windows) do
+      --   if canManageWindow(window) then
+      --     if ppl == 'Cam' then
+      --       hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
+      --     elseif ppl == 'Alien' then
+      --       hs.grid.set(window, grid.centerThird, hs.screen.primaryScreen())
+      --     end
+      --   end
+      -- end
+      -- local app = hs.application.get('com.google.Chrome')
+      -- app:selectMenuItem({ 'Window', 'Bring All to Front' })
     end
 end
 
