@@ -157,7 +157,7 @@ local layoutConfig = {
     elseif count == 3 then
       hs.grid.set(window, grid.leftTwoThirds, hs.screen.primaryScreen())
     elseif count == 4 then
-      hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.bottomLeft, hs.screen.primaryScreen())
     elseif count == 5 then
       hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
     elseif count == 6 then
@@ -178,7 +178,7 @@ local layoutConfig = {
     elseif count == 3 then
       hs.grid.set(window, grid.leftTwoThirds, hs.screen.primaryScreen())
     elseif count == 4 then
-      hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.bottomLeft, hs.screen.primaryScreen())
     elseif count == 5 then
       hs.grid.set(window, grid.leftNoToolBar,  hs.screen.primaryScreen())
     elseif count == 6 then
@@ -250,6 +250,27 @@ local layoutConfig = {
       hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 8 then
       hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    end
+  end),
+
+  ['com.postmanlabs.mac'] = (function(window, forceScreenCount)
+    local count = forceScreenCount or screenCount
+    if count == 1 then
+      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+    elseif count == 2 then
+      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+    elseif count == 3 then
+      hs.grid.set(window, grid.centerThird, hs.screen.primaryScreen())
+    elseif count == 4 then
+      hs.grid.set(window, grid.bottomLeft, hs.screen.primaryScreen())
+    elseif count == 5 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    elseif count == 6 then
+      hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
+    elseif count == 7 then
+      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+    elseif count == 8 then
+      hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
     end
   end),
 
