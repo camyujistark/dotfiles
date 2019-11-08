@@ -47,6 +47,8 @@ alias md='open -a "Marked 2.app"'
 #
 # Global aliases
 # (work at any position within the command line)
+docs="$HOME/Documents"
+sites="$docs/Sites"
 alias _a="vim $HOME/.zsh/aliases"
 alias _ass="$docs/Assets"
 alias _brew="vim $HOME/Documents/dotfiles/roles/homebrew/templates/Brewfile"
@@ -70,8 +72,6 @@ alias _zshrc="vim $HOME/.zshrc"
 alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 alias reload="source $HOME/.zshrc"
 alias workflows='$HOME/Library/Application\ Support/Alfred\ 3/Alfred.alfredpreferences/workflows'
-docs="$HOME/Documents"
-sites="$docs/Sites"
 
 #filesize
 alias topfilesize="sudo du -a /var/logs | sort -n -r | head -n 5"
