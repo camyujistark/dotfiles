@@ -22,6 +22,8 @@ local internalDisplay = nil
 local prepareScreencast = nil
 local tearDownEventHandling = nil
 local windowCount = nil
+local sideBar = false
+local mediaPopUp = false
 
 local screenCount = #hs.screen.allScreens()
 
@@ -51,62 +53,6 @@ local grid = {
   centerTdird = '4,4 4x4',
 }
 
-layoutMap = {
-  {1,
-    { '0,0 12x12' } --fullscreen
-  },
-  {2,
-    { '0,0 6x12', '6,0 6x12'}, -- split vertical
-    { '0,0 9x12', '9,0 3x12' }, -- right toolbar
-    { '0,0 9x12', '9,0 3x12' }, -- split horizontal (bottom small)
-  },
-  {3,
-    { '0,0 6x12', '6,0 6x12'}, --- split vertical (with right split horzontal)
-    { '0,0 9x12', '9,0 3x12' }, -- split hoizontal (with bottom split vertical small)
-    { '0,0 9x12', '9,0 3x12' }, -- three vertical split
-  },
-  {4,
-    { '0,0 6x12', '6,0 6x12'}, --- 3[0] with righttoolbar
-    { '0,0 9x12', '9,0 3x12' }, -- split hoizontal (with bottom split vertical and smaller)
-    { '0,0 9x12', '9,0 3x12' }, -- split hoizontal (with bottom three way split vertical small)
-    { '0,0 9x12', '9,0 3x12' }, -- four squares (split horizotal / split vertical)
-  },
-}
-
-local _grid = {
-  full         =  {x=0, y=0, w=12, h=12},
-  leftSide     =  {x=0, y=0, w=6, h=12},
-  rightSide    =  {x=6, y=0, w=6, h=12},
-  topRight     =  {x=6, y=0, w=6, h=8},
-  bottomRight  =  {x=6, y=6, w=6, h=4},
-  bottomLeft   =  {x=0, y=6, w=6, h=4},
-  topFull      =  {x=0, y=0, w=12, h=8},
-  toolbar      =  {x=9, y=0, w=3, h=12},
-}
-
-local generate_grid = (function(grid)
-  -- '0,0 12x12'
- return _grid['y'].. ','.. _grid['x'].. ' '.. _grid['w'].. 'x'.. _grid['h']
-end)
-
-local deduct_toolbar = (function(args)
-  count = #args
-  if count == 1 then
-    args[1]['w'] = args[1]['w'] - 3
-  elseif count == 2 then
-    args[1]['w'] = args[1]['w'] - 2
-    args[2]['w'] = args[2]['w'] - 1
-    args[2]['y'] = args[2]['y'] - 1
-  elseif count == 3 then
-    args[1]['w'] = args[1]['w'] - 2
-    args[2]['w'] = args[2]['w'] - 1
-    args[2]['y'] = args[2]['y'] - 1
-    args[3]['w'] = args[3]['w'] - 1
-    args[3]['y'] = args[3]['y'] - 1
-  end
-  return args
-end)
-
 local appMap = {
   {
     work = {
@@ -134,26 +80,69 @@ local appMap = {
   }
 }
 
+local bringToFront = (function(bundleID)
+  if bundleID then
+    local app = hs.application.get(bundleID)
+    if app then
+      local windows = app:visibleWindows()
+      if windows then
+        for _, window in pairs(windows) do
+          if(window) then
+            window.focus()
+          end
+        end
+      end
+    end
+  end
+end)
+
 local layoutConfig = {
   _before_ = (function()
     -- hide('com.deezer.deezer-desktop')
   end),
 
   _after_ = (function()
-    local app = hs.application.get('com.google.Chrome')
-    app:selectMenuItem({ 'Window', 'Bring All to Front' })
-    local app = hs.application.get('com.googlecode.iterm2')
-    app:selectMenuItem({ 'Window', 'Bring All to Front' })
-    local app = hs.application.get('com.todoist.mac.Todoist')
-    app:selectMenuItem({ 'Window', 'Bring All to Front' })
   end),
 
   ['com.apple.iCal'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
-      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      if sideBar then
+        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      end
     elseif count == 2 then
-      hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    elseif count == 3 then
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    elseif count == 4 then
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    elseif count == 5 then
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    elseif count == 6 then
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    elseif count == 7 then
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    elseif count == 8 then
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    end
+  end),
+
+  ['com.apple.mail'] = (function(window, forceScreenCount)
+    local count = forceScreenCount or screenCount
+    if count == 1 then
+      if sideBar then
+        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      end
+    elseif count == 2 then
+      if sideBar then
+        hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+      end
     elseif count == 3 then
       hs.grid.set(window, grid.leftTwoThirds, hs.screen.primaryScreen())
     elseif count == 4 then
@@ -172,27 +161,33 @@ local layoutConfig = {
   ['com.tinyspeck.slackmacgap'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
-      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      if sideBar then
+        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      end
     elseif count == 2 then
-      hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 3 then
-      hs.grid.set(window, grid.leftTwoThirds, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 4 then
-      hs.grid.set(window, grid.bottomLeft, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 5 then
-      hs.grid.set(window, grid.leftNoToolBar,  hs.screen.primaryScreen())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 6 then
-      hs.grid.set(window, grid.leftNoToolBar,  hs.screen.primaryScreen())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 7 then
-      hs.grid.set(window, grid.fullScreen, internalDisplay())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 8 then
-      hs.grid.set(window, grid.fullScreen, internalDisplay())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     end
   end),
 
   ['com.todoist.mac.Todoist'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
-    if count == 1 then
+    if sideBar then
+        hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
+    elseif count == 1 then
       hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
     elseif count == 2 then
       hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
@@ -214,7 +209,11 @@ local layoutConfig = {
   ['com.deezer.deezer-desktop'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
-      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      if sideBar then
+        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      end
     elseif count == 2 then
       hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 3 then
@@ -235,7 +234,11 @@ local layoutConfig = {
   ['WhatsApp'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
-      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      if sideBar then
+        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      end
     elseif count == 2 then
       hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 3 then
@@ -256,11 +259,15 @@ local layoutConfig = {
   ['com.postmanlabs.mac'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
-      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      if sideBar then
+        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      end
     elseif count == 2 then
-      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 3 then
-      hs.grid.set(window, grid.centerThird, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 4 then
       hs.grid.set(window, grid.bottomLeft, hs.screen.primaryScreen())
     elseif count == 5 then
@@ -277,9 +284,17 @@ local layoutConfig = {
   ['com.figma.Desktop'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
-      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      if sideBar then
+        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      end
     elseif count == 2 then
-      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+      if sideBar then
+        hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+      end
     elseif count == 3 then
       hs.grid.set(window, grid.centerThird, hs.screen.primaryScreen())
     elseif count == 4 then
@@ -298,9 +313,17 @@ local layoutConfig = {
   ['notion.id'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
-      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      if sideBar then
+        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      end
     elseif count == 2 then
-      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+      if sideBar then
+        hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+      end
     elseif count == 3 then
       hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
     elseif count == 4 then
@@ -316,12 +339,24 @@ local layoutConfig = {
     end
   end),
 
-  ['com.google.Chrome'] = (function(window, forceScreenCount, application)
+  ['com.google.Chrome'] = (function(window, forceScreenCount)
+    -- local main = {'com.google.Chrome', 'com.todoist.mac.Todoist', 'com.googlecode.iterm2'}
+    -- for _, bundleID in pairs(main) do
+    --   bringToFront(bundleID)
+    -- end
     local count = forceScreenCount or screenCount
     if count == 1 then
-      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      if sideBar then
+        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      end
     elseif count == 2 then
-      hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+      if sideBar then
+        hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+      end
     elseif count == 3 then
       hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
     elseif count == 4 then
@@ -340,9 +375,17 @@ local layoutConfig = {
   ['com.googlecode.iterm2'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
-      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      if sideBar then
+        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      end
     elseif count == 2 then
-      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+      if sideBar then
+        hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
+      end
     elseif count == 3 then
       hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
     elseif count == 4 then
@@ -435,6 +478,7 @@ local macBookAir13 = '1440x900'
 local macBookPro15_2015 = '1440x900'
 local macBookPro15_2019 = '1680x1050'
 local samsung_S24C450 = '1920x1200'
+local currentCount = nil
 
 internalDisplay = (function()
   return hs.screen.find(macBookPro15_2019)
@@ -450,13 +494,22 @@ activateLayout = (function(forceScreenCount)
       local windows = application:visibleWindows()
       for _, window in pairs(windows) do
         if canManageWindow(window) then
-          callback(window, forceScreenCount, application)
+          callback(window, forceScreenCount)
         end
       end
     end
   end
 
+  currentCount = forceScreenCount
   layoutConfig._after_()
+end)
+
+local turnOnSideBar = (function()
+  if sideBar then
+    sideBar = false
+  else
+    sideBar = true
+  end
 end)
 
 --
@@ -660,6 +713,7 @@ hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') en
 hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocus('Anki') end) 
 
 hs.hotkey.bind(mash, 'm', function() hs.application.launchOrFocus('Marked 2') end)
+hs.hotkey.bind(mash, ']', function() turnOnSideBar() end)
 
 hs.hotkey.bind({'ctrl', 'alt'}, 'up', chain({
   grid.topHalf,
