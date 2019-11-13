@@ -393,6 +393,10 @@ divitodos() {
   fi
 }
 
+showcsv() {
+  column -s, -t < $1 | less -#2 -N -S
+}
+
 source $HOME/.zsh/resource/bulknaming
 source $HOME/.zsh/resource/git
 source $HOME/.zsh/resource/linktree
