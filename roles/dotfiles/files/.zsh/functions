@@ -352,14 +352,37 @@ notify() {
   osascript -e 'display notification "'$TEXT'" with title "Script Completed"' 
 }
 
+todos() {
+	PROJECT='divi'
+	PATH='$HOME/Documents/Notes/Work/$PROJECT'
+  TODOSELECT=$(awk 'function branchname(file) {
+    sub(".*/", "", file)
+    sub("\.md", "", file)
+    return file
+  }
+  /\- \[ \]/{print $0, "-------", branchname(FILENAME)}' $PATH/* | fzf)
+
+  BRANCHNAME=${TODOSELECT##*------- };
+
+  echo "git checkout $BRANCHNAME";
+  tvim "$BRANCHNAME";
+}
+
 tvim() { 
+<<<<<<< Updated upstream
 	PROJECT='divi'
 	PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
+||||||| merged common ancestors
+=======
+	PROJECT='divi'
+	PATH='$HOME/Documents/Notes/Work/$PROJECT'
+>>>>>>> Stashed changes
   if [[ -z "$1" ]] then
     BRANCHNAME=$(git branchname)
   else
     BRANCHNAME=$1
   fi
+<<<<<<< Updated upstream
 
   if [[ -z "$2" ]] then
     # issue where if you open a folder, Cmd T will default to open to a non
@@ -374,8 +397,24 @@ tvim() {
       -c ":wincmd l"\
       $(echo $FILE | head -n1 | awk '{print $1; }') "$PROJECTPATH/$BRANCHNAME.md";
       # -c ":badd $FILE";
+||||||| merged common ancestors
+  # resize window on load, load todo.md buffer and focus on main window
+  vim -O "new" todos.md -c ":vertical resize 80" \
+                        -c ":wincmd l" \
+                        -c "e ~/Documents/Notes/Work/divi/$BRANCHNAME.md";
+                        # -c ":b todos.md" \
+                        # -c ":99999" \
+                        # -c ":sp" \
+                        # -c ":wincmd h";
+=======
+  # resize window on load, load todo.md buffer and focus on main window
+  vim -O "new" todos.md -c ":vertical resize 80" \
+                        -c ":wincmd l" \
+                        -c "e $PATH/$BRANCHNAME.md";
+>>>>>>> Stashed changes
 }
 
+<<<<<<< Updated upstream
 divitodos() {
 	PROJECT='divi'
 	PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
@@ -395,6 +434,30 @@ divitodos() {
 
 showcsv() {
   column -s, -t < $1 | less -#2 -N -S
+||||||| merged common ancestors
+divitodos() {
+  selection=$(awk 'function basename(file) {
+    sub(".*/", "", file)
+    sub("\.md", "", file)
+    return file
+  }
+  /\- \[ \]/{print $0, "-------", basename(FILENAME)}' $HOME/Documents/Notes/Work/divi/* | fzf)
+
+  branchname=${selection##*------- };
+
+  echo "git checkout $branchname";
+  tvim "$branchname";
+}
+
+AMAZON_SCRAPER_PATH="$HOME/Scripts/python/amazon_scraper/amazon_scrape.py"
+
+amazonmeta() {
+  python $AMAZON_SCRAPER_PATH $1
+=======
+amazonmeta() {
+  AMAZON_SCRAPER_PATH="$HOME/Scripts/python/amazon_scraper/amazon_scrape.py"
+  python $AMAZON_SCRAPER_PATH $1
+>>>>>>> Stashed changes
 }
 
 source $HOME/.zsh/resource/bulknaming
