@@ -5,6 +5,7 @@ unset PATH
 PATH=$HOME/bin
 PATH=$PATH:$HOME/.zsh/bin
 PATH=$PATH:$HOME/.cargo/bin
+PATH=$PATH:$GOPATH/bin
 
 if [ -d /usr/local/opt/mysql@5.7 ]; then
   PATH=$PATH:/usr/local/opt/mysql@5.7/bin
