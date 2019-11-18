@@ -53,46 +53,9 @@ local grid = {
   centerTdird = '4,4 4x4',
 }
 
-local appMap = {
-  {
-    work = {
-      'com.google.Chrome'
-    },
-    gtd = {
-      'com.odoist.mac.Todoist'
-    },
-    browsing = {
-      'com.google.Chrome'
-    },
-    writing = {
-      'com.brettterpstra.marked2',
-      'com.googlecode.iterm2',
-      'com.bloombuilt.dayone-mac',
-      'notion.id'
-    },
-    alternative = {
-      'com.tinyspeck.slackmacgap',
-      'com.deezer.deezer-desktop'
-    },
-    toolbar = {
-      'com.todoist.mac.Todoist'
-    },
-  }
-}
-
 local bringToFront = (function(bundleID)
   if bundleID then
-    local app = hs.application.get(bundleID)
-    if app then
-      local windows = app:visibleWindows()
-      if windows then
-        for _, window in pairs(windows) do
-          if(window) then
-            window.focus()
-          end
-        end
-      end
-    end
+    hs.application.launchOrFocus(bundleID)
   end
 end)
 
@@ -340,10 +303,6 @@ local layoutConfig = {
   end),
 
   ['com.google.Chrome'] = (function(window, forceScreenCount)
-    -- local main = {'com.google.Chrome', 'com.todoist.mac.Todoist', 'com.googlecode.iterm2'}
-    -- for _, bundleID in pairs(main) do
-    --   bringToFront(bundleID)
-    -- end
     local count = forceScreenCount or screenCount
     if count == 1 then
       if sideBar then
@@ -700,7 +659,11 @@ hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Numi') end)
 
 hs.hotkey.bind(mash, "a", chrome_switch_to('Cam'))
 hs.hotkey.bind(mash, "o", chrome_switch_to('Alien'))
-hs.hotkey.bind(mash, 'e', function() hs.application.launchOrFocus('iTerm') end)
+hs.hotkey.bind(mash, 'e', function() 
+    -- want to make sure that todoist comes forward too
+    hs.application.launchOrFocus('Todoist')
+    hs.application.launchOrFocus('iTerm')
+end)
 hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocus('Notion') end)
 hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end)
 hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Harvest') end)
