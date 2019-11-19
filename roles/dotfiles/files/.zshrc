@@ -137,8 +137,7 @@ function () {
   else
     local SUFFIX=$(printf '%%F{red}\u276f%.0s%%f' {1..$LVL})
   fi
-  branchname="$(git branch | grep '*' | cut -d ' ' -f2 | awk -F- '{print $1"-"$2}')"
-  export PS1="%F{green}${SSH_TTY:+%n@%m}%f%B${SSH_TTY:+:}%b%F{blue}%B%1~%b%F{yellow}%B%(1j.*.) ($branchname)%(?..!)%b%f %B${SUFFIX}%b "
+  export PS1="%F{green}${SSH_TTY:+%n@%m}%f%B${SSH_TTY:+:}%b%F{blue}%B%1~%b%F{yellow}%B%(1j.*.)%(?..!)%b%f %B${SUFFIX}%b "
   if [[ -n "$TMUXING" ]]; then
     # Outside tmux, ZLE_RPROMPT_INDENT ends up eating the space after PS1, and
     # prompt still gets corrupted even if we add an extra space to compensate.
