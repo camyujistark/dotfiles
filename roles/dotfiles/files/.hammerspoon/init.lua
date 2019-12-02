@@ -69,12 +69,10 @@ local layoutConfig = {
 
   ['com.apple.iCal'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
-    if count == 1 then
-      if sideBar then
-        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
-      end
+    if sideBar then
+        hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
+    elseif count == 1 then
+      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
     elseif count == 2 then
       hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 3 then
