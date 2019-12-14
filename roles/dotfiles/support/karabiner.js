@@ -18,7 +18,7 @@ function fromTo(from, to) {
 }
 
 function bundleIdentifier(identifier) {
-  return '^' + identifier.replace(/\./g, '\\.') + '$';
+  return `^${identifier.replace(/\./g, '\\.')}$`;
 }
 
 function spaceFN(from, to) {
@@ -129,18 +129,18 @@ const APPLE_INTERNAL_ES = {
   ],
 };
 
-const REALFORCE = {
+const LTC_BLUETOOTH = {
   ...DEVICE_DEFAULTS,
   identifiers: {
     ...IDENTIFIER_DEFAULTS,
-    product_id: 273,
-    vendor_id: 2131,
+    product_id: 544,
+    vendor_id: 1452,
   },
   simple_modifications: [
     ...swap('left_command', 'left_option'),
     ...swap('right_command', 'right_option'),
-    ...fromTo('application', 'fn'),
-    ...fromTo('pause', 'power'),
+    ...fromTo('escape', 'grave_accent_and_tilde'),
+    ...fromTo('semi_collon', 'z'),
   ],
 };
 
@@ -189,7 +189,7 @@ function isObject(item) {
 function deepCopy(item) {
   if (Array.isArray(item)) {
     return item.map(deepCopy);
-  } else if (isObject(item)) {
+  } if (isObject(item)) {
     const copy = {};
     Object.entries(item).forEach(([k, v]) => {
       copy[k] = deepCopy(v);
@@ -221,7 +221,7 @@ function visit(item, path, updater) {
   const subpath = path.slice(match[0].length);
   if (root) {
     return visit(item, subpath, updater);
-  } else if (child) {
+  } if (child) {
     const next = visit(item[child], subpath, updater);
     if (next !== undefined) {
       return {
@@ -263,7 +263,7 @@ function applyExemptions(profile) {
   return visit(
     profile,
     '$.complex_modifications.rules[0:].manipulators[0:].conditions',
-    conditions => {
+    (conditions) => {
       if (conditions) {
         if (
           conditions.some(
@@ -273,9 +273,8 @@ function applyExemptions(profile) {
           return conditions;
         }
         return [...deepCopy(conditions), exemptions];
-      } else {
-        return [exemptions];
       }
+      return [exemptions];
     },
   );
 }
@@ -292,14 +291,10 @@ const DEFAULT_PROFILE = applyExemptions({
         description: 'SpaceFN layer',
         manipulators: [
           ...spaceFN('b', 'spacebar'),
-          ...spaceFN('u', 'right_arrow'),
-          ...spaceFN('y', 'down_arrow'),
-          ...spaceFN('h', 'left_arrow'),
-          ...spaceFN('n', 'up_arrow'),
-          ...spaceFN('l', 'right_arrow'),
-          ...spaceFN('k', 'down_arrow'),
+          ...spaceFN('p', 'right_arrow'),
+          ...spaceFN('c', 'down_arrow'),
           ...spaceFN('j', 'left_arrow'),
-          ...spaceFN('i', 'up_arrow'),
+          ...spaceFN('v', 'up_arrow'),
         ],
       },
       {
@@ -364,14 +359,15 @@ const DEFAULT_PROFILE = applyExemptions({
         ],
       },
       {
-        description:
-          'Change Caps Lock to Control when used as modifier, Backspace when used alone',
+        description: 'Change Caps Lock to Control when used as modifier, Esc when used alone',
         manipulators: [
           {
             from: {
               key_code: 'caps_lock',
               modifiers: {
-                optional: ['any'],
+                optional: [
+                  'any',
+                ],
               },
             },
             to: [
@@ -382,12 +378,12 @@ const DEFAULT_PROFILE = applyExemptions({
             ],
             to_if_alone: [
               {
-                key_code: 'delete_or_backspace',
+                key_code: 'escape',
               },
             ],
             to_if_held_down: [
               {
-                key_code: 'delete_or_backspace',
+                key_code: 'escape',
               },
             ],
             type: 'basic',
@@ -395,20 +391,25 @@ const DEFAULT_PROFILE = applyExemptions({
         ],
       },
       {
-        description:
-          'Change Return to Control when used as modifier, Return when used alone',
+        description: 'Change Return to mash when used as modifier, Return when used alone',
         manipulators: [
           {
             from: {
               key_code: 'return_or_enter',
               modifiers: {
-                optional: ['any'],
+                optional: [
+                  'any',
+                ],
               },
             },
             to: [
               {
-                key_code: 'right_control',
-                lazy: true,
+                key_code: 'left_shift',
+                modifiers: [
+                  'left_command',
+                  'left_control',
+                  'left_option',
+                ],
               },
             ],
             to_if_alone: [
@@ -488,7 +489,7 @@ const DEFAULT_PROFILE = applyExemptions({
       },
     ],
   },
-  devices: [REALFORCE, APPLE_INTERNAL_US, APPLE_INTERNAL_ES],
+  devices: [LTC_BLUETOOTH, APPLE_INTERNAL_US, APPLE_INTERNAL_ES],
   name: 'Default',
   selected: true,
 });
@@ -504,7 +505,7 @@ const CONFIG = {
 
 if (require.main === module) {
   // Script is being executed directly.
-  process.stdout.write(JSON.stringify(CONFIG, null, 2) + '\n');
+  process.stdout.write(`${JSON.stringify(CONFIG, null, 2)}\n`);
 } else {
   // File is being `require`-ed as a module.
   module.exports = {
