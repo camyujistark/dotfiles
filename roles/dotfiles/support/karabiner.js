@@ -140,7 +140,7 @@ const LTC_BLUETOOTH = {
     ...swap('left_command', 'left_option'),
     ...swap('right_command', 'right_option'),
     ...fromTo('escape', 'grave_accent_and_tilde'),
-    ...fromTo('semi_collon', 'z'),
+    ...swap('up_arrow', 'slash'),
   ],
 };
 
@@ -333,31 +333,31 @@ const DEFAULT_PROFILE = applyExemptions({
           },
         ],
       },
-      {
-        description:
-          'Disable Karabiner-Elements with Fn+Control+Option+Command+Z',
-        manipulators: [
-          {
-            type: 'basic',
-            from: {
-              key_code: 'z',
-              modifiers: {
-                mandatory: [
-                  'fn',
-                  'left_control',
-                  'left_command',
-                  'left_option',
-                ],
-              },
-            },
-            to: [
-              {
-                shell_command: 'osascript ~/.zsh/bin/karabiner-kill.scpt',
-              },
-            ],
-          },
-        ],
-      },
+      // {
+      //   description:
+      //     'Disable Karabiner-Elements with Fn+Control+Option+Command+Z',
+      //   manipulators: [
+      //     {
+      //       type: 'basic',
+      //       from: {
+      //         key_code: 'n',
+      //         modifiers: {
+      //           mandatory: [
+      //             'fn',
+      //             'left_control',
+      //             'left_command',
+      //             'left_option',
+      //           ],
+      //         },
+      //       },
+      //       to: [
+      //         {
+      //           shell_command: 'osascript ~/.zsh/bin/karabiner-kill.scpt',
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // },
       {
         description: 'Change Caps Lock to Control when used as modifier, Esc when used alone',
         manipulators: [

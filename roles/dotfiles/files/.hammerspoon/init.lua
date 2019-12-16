@@ -667,11 +667,11 @@ hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end
 hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Harvest') end)
 -- hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Day One') end)
 
-hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('Calendar') end)
+hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('Anki') end)
 hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Slack') end)
 hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Deezer') end)
 hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') end)
-hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocus('Anki') end) 
+hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocus('Calendar') end) 
 
 hs.hotkey.bind(mash, 'm', function() hs.application.launchOrFocus('Marked 2') end)
 hs.hotkey.bind(mash, ']', function() turnOnSideBar() end)
