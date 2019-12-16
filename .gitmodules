@@ -180,6 +180,8 @@
 [submodule "roles/dotfiles/files/.vim/pack/bundle/start/yats.vim"]
 	path = roles/dotfiles/files/.vim/pack/bundle/start/yats.vim
 	url = https://github.com/HerringtonDarkholme/yats.vim
-[submodule "roles/dotfiles/files/.vim/pack/LanguageClient-neovim/opt/LanguageClient-neovim"]
-	path = roles/dotfiles/files/.vim/pack/LanguageClient-neovim/opt/LanguageClient-neovim
+[submodule "LanguageClient-neovim"]
+	ignore = dirty
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/LanguageClient-neovim
 	url = https://github.com/autozimu/LanguageClient-neovim.git
+	branch = next
