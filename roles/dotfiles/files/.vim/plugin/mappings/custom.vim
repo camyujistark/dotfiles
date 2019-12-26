@@ -1,19 +1,18 @@
 autocmd FileType typescript setlocal formatprg=eslint\ --parser\ typescript
 
+let g:ale_linter_aliases = {'typescriptreact': 'typescript'}
+
 let g:ale_linters = {
 \   'javascript': ['eslint'],
 \   'typescript': ['tsserver', 'tslint'],
-\   'python': ['flake8'],
 \   'vue': ['eslint']
 \}
 
 let g:ale_fixers = {
 \    'javascript': ['eslint'],
 \    'typescript': ['prettier'],
-\    'python': ['yapf', 'remove_trailing_lines', 'isort', 'ale#fixers#generic_python#BreakUpLongLines'],
 \    'vue': ['eslint'],
 \    'scss': ['prettier'],
-\    'css': ['prettier'],
 \    'html': ['prettier']
 \}
 let g:ale_fix_on_save = 1
