@@ -185,3 +185,6 @@
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/LanguageClient-neovim
 	url = https://github.com/autozimu/LanguageClient-neovim.git
 	branch = next
+[submodule "roles/dotfiles/files/.vim/pack/bundle/start/vim-exchange"]
+	path = roles/dotfiles/files/.vim/pack/bundle/start/vim-exchange
+	url = https://github.com/tommcdo/vim-exchange
