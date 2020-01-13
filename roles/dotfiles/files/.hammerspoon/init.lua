@@ -61,7 +61,7 @@ end)
 
 local layoutConfig = {
   _before_ = (function()
-    -- hide('com.deezer.deezer-desktop')
+    -- hide('com.spotify.client')
   end),
 
   _after_ = (function()
@@ -167,7 +167,7 @@ local layoutConfig = {
     end
   end),
 
-  ['com.deezer.deezer-desktop'] = (function(window, forceScreenCount)
+  ['com.spotify.client'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
       if sideBar then
@@ -669,7 +669,7 @@ hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Harvest') end
 
 hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('Anki') end)
 hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Slack') end)
-hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Deezer') end)
+hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Spotify') end)
 hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') end)
 hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocus('Calendar') end) 
 
