@@ -323,4 +323,12 @@ unset -f bind-git-helper
 # Make key bindings
 bash $HOME/.zsh/bindkey
 
-
+# Bitbucket
+# TODO:
+# - open with chrome profile
+# - check if branch exists, if so then open pr page
+pr() {
+  project=$( git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p')
+  branchname=$( git branch | grep '*' | cut -d ' ' -f2)
+  open 'https://bitbucket.org/portable/'$project'/pull-requests/new?source='$branchname'&t=1'
+}
