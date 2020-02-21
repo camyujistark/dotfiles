@@ -372,7 +372,7 @@ tvim() {
 	PROJECT='divi'
 	PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
   if [[ -z "$1" ]] then
-    BRANCHNAME=$(git branchname)
+    BRANCHNAME=$( git branch | grep '*' | cut -d ' ' -f2)
   else
     BRANCHNAME=$1
   fi

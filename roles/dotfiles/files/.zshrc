@@ -439,3 +439,8 @@ export NAVI_PATH="~/Documents/Cheatsheets/navi/"
 # tabtab source for slss package
 # uninstall by removing these lines or running `tabtab uninstall slss`
 [[ -f /Users/camstark/Documents/Sites/divi-api/node_modules/tabtab/.completions/slss.zsh ]] && . /Users/camstark/Documents/Sites/divi-api/node_modules/tabtab/.completions/slss.zsh
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+if [[ -s $HOME/.rvm/scripts/rvm ]]; then
+  source $HOME/.rvm/scripts/rvm;
+fi
