@@ -119,6 +119,19 @@ local layoutConfig = {
     end
   end),
 
+  ['net.ankiweb.dtop']  = (function(window, forceScreenCount)
+    local count = forceScreenCount or screenCount
+    if count == 1 then
+      if sideBar then
+        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      end
+    elseif count == 2 then
+      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    end
+  end),
+
   ['com.tinyspeck.slackmacgap'] = (function(window, forceScreenCount)
     local count = forceScreenCount or screenCount
     if count == 1 then
