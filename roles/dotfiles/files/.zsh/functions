@@ -392,6 +392,15 @@ tvim() {
       # -c ":badd $FILE";
 }
 
+tinit() {
+	PROJECT='divi'
+	PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
+  BRANCHNAME=$( git branch | grep '*' | cut -d ' ' -f2)
+  if [ $1 ]; then
+    jira view $1 >> "$PROJECTPATH/$BRANCHNAME.md";
+  fi
+}
+
 divitodos() {
 	PROJECT='divi'
 	PROJECTPATH="$HOME/Documents/Notes/$PROJECT"

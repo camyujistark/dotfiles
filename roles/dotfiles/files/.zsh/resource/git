@@ -324,6 +324,11 @@ unset -f bind-git-helper
 bash $HOME/.zsh/bindkey
 
 # Bitbucket
+prs() {
+  project=$( git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p')
+  open 'https://bitbucket.org/portable/'$project'/pull-requests/'
+}
+
 pr() {
   project=$( git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p')
   branchname=$( git branch | grep '*' | cut -d ' ' -f2)
@@ -331,3 +336,4 @@ pr() {
 }
 
 gitpr() { git push -u origin $(git branch | grep '*' | cut -d ' ' -f2) && pr; }
+
