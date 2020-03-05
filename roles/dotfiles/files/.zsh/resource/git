@@ -335,5 +335,12 @@ pr() {
   open 'https://bitbucket.org/portable/'$project'/pull-requests/new?source='$branchname'&t=1'
 }
 
-gitpr() { git push -u origin $(git branch | grep '*' | cut -d ' ' -f2) && pr; }
+gitpr() {
+  branchname=$(git branch | grep '*' | cut -d ' ' -f2)
+  if [$branchname != 'develop']; then
+    echo 'here'
+    # git push -u origin $branchname && pr; 
+  fi
+  echo 'woop'
+}
 
