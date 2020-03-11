@@ -337,10 +337,8 @@ pr() {
 
 gitpr() {
   branchname=$(git branch | grep '*' | cut -d ' ' -f2)
-  if [$branchname != 'develop']; then
-    echo 'here'
-    # git push -u origin $branchname && pr; 
+  if [ $branchname != 'develop' ] && [ $branchname != 'master' ] ; then
+    git push -u origin $branchname && pr; 
   fi
-  echo 'woop'
 }
 
