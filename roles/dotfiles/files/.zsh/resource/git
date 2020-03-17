@@ -335,10 +335,121 @@ pr() {
   open 'https://bitbucket.org/portable/'$project'/pull-requests/new?source='$branchname'&t=1'
 }
 
-gitpr() {
+gitpu() {
   branchname=$(git branch | grep '*' | cut -d ' ' -f2)
   if [ $branchname != 'develop' ] && [ $branchname != 'master' ] ; then
-    git push -u origin $branchname && pr; 
+    git push -u origin $branchname;
   fi
 }
 
+gitpr() {
+  gitpu && pr;
+}
+
+todos() {
+	PROJECT='divi'
+	PATH='$HOME/Documents/Notes/Work/$PROJECT'
+  TODOSELECT=$(awk 'function branchname(file) {
+    sub(".*/", "", file)
+    sub("\.md", "", file)
+    return file
+  }
+  /\- \[ \]/{print $0, "-------", branchname(FILENAME)}' $PATH/* | fzf)
+
+  BRANCHNAME=${TODOSELECT##*------- };
+
+  echo "git checkout $BRANCHNAME";
+  tvim "$BRANCHNAME";
+}
+
+tvim() { 
+	PROJECT='divi'
+	PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
+  if [[ -z "$1" ]] then
+    BRANCHNAME=$( git branch | grep '*' | cut -d ' ' -f2)
+  else
+    BRANCHNAME=$1
+  fi
+
+  if [[ -z "$2" ]] then
+    # issue where if you open a folder, Cmd T will default to open to a non
+    # folder pane. This can be imporved.
+    FILE=$(git diff HEAD --name-only | tr '\r\n' ' ')
+  else
+    FILE=$2
+  fi
+
+  # resize window on load and open notes
+  vim -O -c ":vertical resize 80" \
+      -c ":wincmd l"\
+      $(echo $FILE | head -n1 | awk '{print $1; }') "$PROJECTPATH/$BRANCHNAME.md";
+      # -c ":badd $FILE";
+}
+
+tinit() {
+	PROJECT='divi'
+	PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
+  BRANCHNAME=$( git branch | grep '*' | cut -d ' ' -f2)
+  if [ $1 ]; then
+    jira view $1 >> "$PROJECTPATH/$BRANCHNAME.md";
+  fi
+}
+
+divitodos() {
+	PROJECT='divi'
+	PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
+  TODOSELECT=$(awk 'function branchname(file) {
+    sub(".*/", "", file)
+    sub("\.md", "", file)
+    return file
+  }
+  /\- \[ \]/{print branchname(FILENAME), "---", $0}' $PROJECTPATH/* | fzf)
+
+  if [ $TODOSELECT ]; then
+    BRANCHNAME=${TODOSELECT%% ---*} # Delete after
+    # BRANCHNAME=${TODOSELECT##*------- } # Delete before
+    tvim "$BRANCHNAME"
+  fi
+}
+
+ginit () {
+  PROJECT='divi'
+  JIRA_ID=$1
+  NOTES_PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
+  CURRENT_BRANCH=$( git branch | grep '*' | cut -d ' ' -f2)
+
+  if [ -z $JIRA_ID ]; then
+    echo "need to have the JIRA_ID in your first parameter";
+    return
+  fi
+
+  # Note: at the moment must be on develop but could change in future
+  if [ $CURRENT_BRANCH != 'develop' ]; then
+    echo "switching to develop branch";
+    git checkout develop;
+    git pull;
+  fi
+
+  BRANCHNAME=$(jira project $JIRA_ID)
+
+  # Currently, you need to have a JIRA_ID so you cannot run on develop or
+  # master. But here for safety measures
+  if [ $BRANCHNAME = 'develop' ] || [ $BRANCHNAME = 'master' ]; then
+    echo 'cannot run on $BRANCHNAME';
+    exit 0;
+  fi
+
+  # If branch does exists then open the notes
+  if git show-ref --quiet $BRANCHNAME; then
+    echo "$BRANCHNAME already exists";
+    git checkout $BRANCHNAME;
+    tvim;
+    return;
+  fi
+
+  # create branch and notes
+  echo "checking out and creating $BRANCHNAME";
+  git checkout -b $BRANCHNAME
+  jira view $JIRA_ID >> "$NOTES_PROJECTPATH/$BRANCHNAME.md";
+  tvim
+}

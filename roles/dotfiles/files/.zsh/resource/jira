@@ -9,3 +9,13 @@ jnew() {
 jlist() {
   jira-cli view --search-jql="$1" --oneline
 }
+
+jmine() {
+  while true
+  do
+      clear
+      jira mine
+      sleep 60
+  done
+}
+
