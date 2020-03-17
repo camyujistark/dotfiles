@@ -604,7 +604,7 @@ chromeAlien = (function()
   if not chrome then
     return
   end
-  local str_menu_item = {"People", "Alien"}
+  local str_menu_item = {"People", "Cam (Alien)"}
   local menu_item = chrome:findMenuItem(str_menu_item, true)
   if (menu_item) then
       chrome:selectMenuItem(str_menu_item, true)
@@ -669,7 +669,7 @@ hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Figma') end)
 hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Numi') end)
 
 hs.hotkey.bind(mash, "a", chrome_switch_to('Cam'))
-hs.hotkey.bind(mash, "o", chrome_switch_to('Alien'))
+hs.hotkey.bind(mash, "o", chrome_switch_to('Cam (Alien)'))
 hs.hotkey.bind(mash, 'e', function() 
     -- want to make sure that todoist comes forward too
     hs.application.launchOrFocus('Todoist')
