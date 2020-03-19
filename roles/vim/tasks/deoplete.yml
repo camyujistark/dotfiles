@@ -2,10 +2,10 @@
 # Optional really; just allows us to release updates to deoplete sorter
 # extension dependency (commandt.score).
 - name: vim | install twine via pip3
-  pip: executable=pip3 name=twine
+  pip: executable=pip3 name=twine extra_args=--user
 
 - name: vim | install commandt.score via pip3
-  pip: executable=pip3 name=commandt.score
+  pip: executable=pip3 name=commandt.score extra_args=--user
 
 - name: vim | require .vim symlink to have been established
   stat: path=~/.vim
