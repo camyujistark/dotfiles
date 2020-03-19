@@ -77,7 +77,7 @@ def remote_config
 <<<<<<< HEAD
 ||||||| merged common ancestors
     .select { |line|
-      ENV['REMOTE'] ? line.split(/\W+/).first === ENV['REMOTE'] : true
+      ENV['REMOTE'] ? line.split(/\s+/).first === ENV['REMOTE'] : true
     }
 =======
     .select { |line|
@@ -121,6 +121,7 @@ def usage
   puts <<-END.gsub(/^ {4}/, '')
     Usage:
 <<<<<<< HEAD
+<<<<<<< HEAD
       git hub get <pr>        [fetch a PR to a local branch]
       git hub link [pr]       [show web URL for PR]
       git hub ls              [list open PRs]
@@ -136,8 +137,29 @@ def usage
       git hub open [pr]       [open web URL for PR]
       git hub show [pr]       [show a PR on standard out]
       git hub update          [pull in new commits from current PR]
+||||||| merged common ancestors
+      git hub get <pr>        [fetch a PR to a local branch]
+      git hub link [pr]       [show web URL for PR]
+      git hub ls              [list open PRs]
+      git hub merge [pr]      [merge a PR]
+      git hub open [pr]       [open web URL for PR]
+      git hub show [pr]       [show a PR on standard out]
+      git hub update          [pull in new commits from current PR]
+=======
+      git hub fetch <pr>                [fetch a PR]
+      git hub get <pr>                  [fetch and checkout a PR]
+      git hub go                        [open project in browser]
+      git hub link [pr]                 [show web URL for PR]
+      git hub ls                        [list open PRs]
+      git hub merge [pr]                [merge a PR]
+      git hub open [pr]                 [open web URL for PR]
+      git hub send <user> [branch]      [send a PR to a user + branch]
+      git hub show [pr]                 [show a PR on standard out]
+      git hub update                    [pull in new commits from current PR]
+>>>>>>> upstream/master
 
     Environment variables:
+<<<<<<< HEAD
       REMOTE=...              [override auto-detected remote name]
 =======
       git hub fetch <pr>                [fetch a PR]
@@ -152,6 +174,11 @@ def usage
       git hub update                    [pull in new commits from current PR]
 
     Environment variables:
+      REMOTE=...                        [override auto-detected remote name]
+>>>>>>> upstream/master
+||||||| merged common ancestors
+      REMOTE=...              [override auto-detected remote name]
+=======
       REMOTE=...                        [override auto-detected remote name]
 >>>>>>> upstream/master
   END

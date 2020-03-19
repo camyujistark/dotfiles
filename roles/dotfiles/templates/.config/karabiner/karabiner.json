@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "global": {
     "check_for_updates_on_startup": true,
@@ -989,3 +990,8 @@
   ]
 }
 {{ karabiner_config.stdout if 'stdout' in karabiner_config else '{}' }}
+||||||| merged common ancestors
+{{ karabiner_config.stdout }}
+=======
+{{ karabiner_config.stdout if 'stdout' in karabiner_config else '{}' }}
+>>>>>>> upstream/master
