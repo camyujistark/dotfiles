@@ -39,9 +39,10 @@ function! wincent#autocmds#mkview() abort
     else
       mkview
     endif
-  catch /E190/
-    " Legit reasons for a failure to write a backup include its name or
-    " path length exceeding NAME_MAX or PATH_MAX.
+  catch /\<E186\>/
+    " No previous directory: probably a `git` operation.
+  catch /\<E190\>/
+    " Could be name or path length exceeding NAME_MAX or PATH_MAX.
   endtry
 endfunction
 
@@ -65,6 +66,10 @@ function! wincent#autocmds#blur_window() abort
   if wincent#autocmds#should_colorcolumn()
     let l:settings=s:get_spell_settings()
     ownsyntax off
+    set nolist
+    if has('conceal')
+      set conceallevel=0
+    endif
     call s:set_spell_settings(l:settings)
   endif
 endfunction
@@ -74,6 +79,11 @@ function! wincent#autocmds#focus_window() abort
     if !empty(&ft)
       let l:settings=s:get_spell_settings()
       ownsyntax on
+      set list
+      let l:conceal_exclusions=get(g:, 'indentLine_fileTypeExclude', [])
+      if has('conceal') && index(l:conceal_exclusions, &ft) == -1
+        set conceallevel=1
+      endif
       call s:set_spell_settings(l:settings)
     endif
   endif
@@ -184,8 +194,29 @@ function! wincent#autocmds#encrypt(file) abort
   endfor
 endfunction
 
+" Filetypes that we might want to apply directory-specific overrides to.
+let s:wincent_override_filetypes=[
+      \   'bnd',
+      \   'conf',
+      \   'groovy',
+      \   'html',
+      \   'java',
+      \   'javascript',
+      \   'jproperties',
+      \   'json',
+      \   'jsp',
+      \   'ignore',
+      \   'npmbundler',
+      \   'scss',
+      \   'soy',
+      \   'tsx',
+      \   'typescript',
+      \   'xml'
+      \ ]
+
+
 function! wincent#autocmds#apply_overrides(file, type) abort
-  let l:pattern=join(g:wincent_override_filetypes, '\|')
+  let l:pattern=join(s:wincent_override_filetypes, '\|')
   if match(a:type, '\<\(' . l:pattern . '\)\>') != -1
     let l:detected=wincent#liferay#detect(a:file)
     if l:detected
@@ -206,9 +237,12 @@ function! wincent#autocmds#apply_overrides(file, type) abort
       endif
 
       if l:detected == 2
-        " Additional settings for main liferay-portal repo.
-        setlocal noendofline
-        setlocal nofixendofline
+        " Additional settings for main liferay-portal repo, but not for *.js or
+        " *.scss.
+        if match(a:type, '\<\(javascript\|scss\)\>') == -1
+          setlocal noendofline
+          setlocal nofixendofline
+        endif
       endif
     endif
   endif

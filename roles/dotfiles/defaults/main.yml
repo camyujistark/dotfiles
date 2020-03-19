@@ -2,6 +2,8 @@
 dotfile_files:
   - .ackrc
   - .agignore
+  - .config/alacritty/alacritty.yml
+  - .config/kitty
   - .clipper.json
   - .config/ranger
   - .gh.json
@@ -41,8 +43,9 @@ dotfile_templates:
   - .mutt/hooks/presync.sh
   - .notmuch-config
 
-git_user_email: '{{"cam@cystark.com.au" if lookup("env", "USER") in ["glh", "cystark"] else ""}}'
-git_user_name: '{{"Cameron Stark" if lookup("env", "USER") in ["glh", "cystark"] else ""}}'
+git_user_email: '{{"cam@cystark.com.au" if lookup("env", "USER") in ["glh", "greghurrell"] else ""}}'
+git_user_name: '{{"Cam Stark" if lookup("env", "USER") in ["glh", "greghurrell"] else ""}}'
+github_username: '{{"cystark" if lookup("env", "USER") in ["glh", "greghurrell"] else ""}}'
 
 imap_nickname: ISP
 imap_server: imap.example.com
@@ -55,3 +58,5 @@ smtp_from: user@example.com
 smtp_user: user@example.com
 smtp_keychain_account: user@example.com
 smtp_keychain_name: example.com
+
+use_karabiner: false

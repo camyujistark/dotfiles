@@ -1,7 +1,11 @@
 function s:RemoveBg(group)
-    let l:highlight=filter(pinnacle#dump(a:group), 'v:key != "bg"')
-    execute 'highlight! clear ' . a:group
-    execute 'highlight! ' . a:group . ' ' . pinnacle#highlight(l:highlight)
+  if !wincent#pinnacle#active()
+    return
+  endif
+
+  let l:highlight=filter(pinnacle#dump(a:group), 'v:key != "bg"')
+  execute 'highlight! clear ' . a:group
+  execute 'highlight! ' . a:group . ' ' . pinnacle#highlight(l:highlight)
 endfunction
 
 function s:CheckColorScheme()
@@ -20,17 +24,19 @@ function s:CheckColorScheme()
       echoerr 'Bad background ' . s:config[1] . ' in ' . s:config_file
     endif
 
-    if filereadable(expand('~/.vim/pack/bundle/start/base16-vim/colors/base16-' . s:config[0] . '.vim'))
-      execute 'color base16-' . s:config[0]
+    if filereadable(expand('~/.vim/pack/bundle/opt/base16-vim/colors/base16-' . s:config[0] . '.vim'))
+      execute 'colorscheme base16-' . s:config[0]
     else
       echoerr 'Bad scheme ' . s:config[0] . ' in ' . s:config_file
     endif
   else " default
     set background=dark
-    color base16-default-dark
+    colorscheme base16-default-dark
   endif
 
-  execute 'highlight Comment ' . pinnacle#italicize('Comment')
+  if wincent#pinnacle#active()
+    execute 'highlight Comment ' . pinnacle#italicize('Comment')
+  endif
 
   " Hide (or at least make less obvious) the EndOfBuffer region
   highlight! EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
@@ -40,8 +46,10 @@ function s:CheckColorScheme()
   highlight clear NonText
   highlight link NonText Conceal
 
-  highlight clear CursorLineNr
-  execute 'highlight CursorLineNr ' . pinnacle#extract_highlight('DiffText')
+  if wincent#pinnacle#active()
+    highlight clear CursorLineNr
+    execute 'highlight CursorLineNr ' . pinnacle#extract_highlight('DiffText')
+  endif
 
   highlight clear DiffDelete
   highlight link DiffDelete Conceal
@@ -63,8 +71,10 @@ function s:CheckColorScheme()
   highlight clear DiffChange
   highlight clear DiffText
 
-  let l:highlight=pinnacle#italicize('ModeMsg')
-  execute 'highlight User8 ' . l:highlight
+  if wincent#pinnacle#active()
+    let l:highlight=pinnacle#italicize('ModeMsg')
+    execute 'highlight User8 ' . l:highlight
+  endif
 
   " Allow for overrides:
   " - `statusline.vim` will re-set User1, User2 etc.

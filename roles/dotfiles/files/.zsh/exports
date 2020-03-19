@@ -1,3 +1,7 @@
+# Stop (eg.) `git push github` from triggering:
+# zsh: correct 'github' to '.github' [yes, no, edit, abort]?
+export CORRECT_IGNORE_FILE='.*'
+
 export PAGER=less
 
 if which nvim &> /dev/null; then
@@ -23,7 +27,13 @@ case "$(uname)" in
       if /usr/libexec/java_home &> /dev/null ; then
         export ANT_OPTS="-Xmx4096m -Xms4096m -XX:MaxPermSize=1024m -XX:-UseGCOverheadLimit -Dorg.gradle.workers.max=4"
         export GRADLE_OPTS="-Dorg.gradle.workers.max=4"
-        export JAVA_HOME=$(/usr/libexec/java_home)
+
+        if /usr/libexec/java_home -v1.8.0 &> /dev/null; then
+          export JAVA_HOME=$(/usr/libexec/java_home -v1.8.0)
+        else
+          export JAVA_HOME=$(/usr/libexec/java_home)
+        fi
+
         export JAVA_OPTS="-Xmx4096m -Xms1024m -XX:MaxPermSize=512m"
       fi
     fi
@@ -75,3 +85,5 @@ export GPG_TTY=$(tty)
 export GOPATH=~/code/go
 
 test -e $HOME/.zsh/exports.private && source $HOME/.zsh/exports.private
+
+test -d $HOME/n && export N_PREFIX="$HOME/n"

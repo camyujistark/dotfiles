@@ -32,13 +32,19 @@ function mark() {
 # From: https://github.com/junegunn/fzf/wiki/examples#changing-directory
 function fd() {
   local DIR
-  DIR=$(bfs ${1:-.} -type d 2> /dev/null | fzf +m) && cd "$DIR"
+  DIR=$(bfs -type d 2> /dev/null | sk --no-multi --preview='test -n "{}" && ls {}' -q "$*") && cd "$DIR"
 }
 
 # fh - "find [in] history"
 # From: https://github.com/junegunn/fzf/wiki/examples#command-history
 function fh() {
-  print -z $(fc -l 1 | fzf +s --tac | sed 's/ *[0-9]* *//')
+  print -z $(fc -l 1 | sk --no-multi --tac -q "$*" | sed 's/ *[0-9]*\*\{0,1\} *//')
+}
+
+
+# TODO: decide whether this is a reasonable idea
+function files() {
+  find "$@" | xargs -o $EDITOR
 }
 
 function history() {
@@ -77,7 +83,7 @@ function scratch() {
   echo "  $SCRATCH"
   (cd $SCRATCH; zsh)
   echo "Removing scratch directory"
-  rm -r "$SCRATCH"
+  rm -rf "$SCRATCH"
 }
 
 function ssh() {
@@ -157,13 +163,13 @@ regmv() {
     echo "   Note: Must quote/escape the regex otherwise \"\.\" becomes \".\""
     return 1
   fi
-  local regex="$1"
+  local REGEX="$1"
   shift
   while [ -n "$1" ]
   do
-    local newname=$(echo "$1" | sed "s${regex}g")
-    if [ "${newname}" != "$1" ]; then
-      mv -i -v "$1" "$newname"
+    local NEWNAME=$(echo "$1" | sed "s${REGEX}g")
+    if [ "${NEWNAME}" != "$1" ]; then
+      mv -i -v "$1" "$NEWNAME"
     fi
     shift
   done
@@ -194,56 +200,29 @@ function jump() {
   emulate -L zsh
 
   if [ $# -eq 0 ]; then
-    cd -
-  elif [ $# -gt 1 ]; then
-    echo "jump: single argument required, got $#"
-    return 1
+    fd
   else
-    if [ $(hash -d|cut -d= -f1|grep -c "^$1\$") = 0 ]; then
-      # Not in `hash -d`: assume it's just a dir.
-      cd $1
+    local DIR="${*%%/}"
+
+    if [ $(hash -d|cut -d= -f1|grep -c "^${DIR}\$") = 0 ]; then
+      # Not in `hash -d`: use as initial argument to fd.
+      fd "$*"
     else
-      cd ~$1
+      cd ~"$DIR"
     fi
   fi
 }
 
 function _jump_complete() {
   emulate -L zsh
-  local word completions
-  word="$1"
-  completions="$(hash -d|cut -d= -f1)"
-  reply=( "${(ps:\n:)completions}" )
+  local COMPLETIONS
+  COMPLETIONS="$(hash -d|cut -d= -f1)"
+  reply=( "${(ps:\n:)COMPLETIONS}" )
 }
 
 # Complete filenames and `hash -d` entries.
 compctl -f -K _jump_complete jump
 
-# WriteRoom-style focused workspace.
-function wr() {
-  emulate -L zsh
-
-  local THRESHOLD=200
-  local COLS=$(tput cols)
-  if ! tmux has-session -t WriteRoom 2> /dev/null; then
-    tmux new-session -d -s WriteRoom -c ~/Documents/Corpus -x $(tput cols) -y $(tput lines)
-    # TODO: something less clowny here (want width of created session, not width
-    # of current pane).
-    if [ "$COLS" -gt "$THRESHOLD" ]; then
-      tmux split-window -t WriteRoom -h -p 25
-      tmux split-window -t WriteRoom.1 -b -h -p 25
-      tmux select-pane -t WriteRoom.2
-      tmux send-keys -t WriteRoom.2 "vim -c CommandT" Enter
-    else
-      tmux send-keys -t WriteRoom "vim -c CommandT" Enter
-    fi
-  fi
-  if [ -z "$TMUX" ]; then
-    tmux attach -t WriteRoom
-  else
-    tmux switch-client -t WriteRoom
-  fi
-}
 
 # "[t]ime[w]arp" by setting GIT_AUTHOR_DATE and GIT_COMMITTER_DATE.
 function tw() {

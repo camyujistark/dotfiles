@@ -3,6 +3,9 @@
 " <Leader><Leader> -- Open last buffer.
 nnoremap <Leader><Leader> <C-^>
 
+" <Leader>g -- git grep for something (mnemonic: [g]it [g]rep).
+nnoremap <Leader>g :VcsJump grep<Space>
+
 nnoremap <Leader>o :only<CR>
 
 " <Leader>p -- Show the path of the current file (mnemonic: path; useful when
@@ -35,12 +38,10 @@ nnoremap <silent> <LocalLeader>c :syntax sync fromstart<CR>
 " <LocalLeader>d... -- Diff mode bindings:
 " - <LocalLeader>dd: show diff view (mnemonic: [d]iff)
 " - <LocalLeader>dh: choose hunk from left (mnemonic: [h] = left)
-" - <LocalLeader>dl: show diff view (mnemonic: [l] = right)
+" - <LocalLeader>dl: choose hunk from right (mnemonic: [l] = right)
 nnoremap <silent> <LocalLeader>dd :Gvdiff<CR>
 nnoremap <silent> <LocalLeader>dh :diffget //2<CR>
 nnoremap <silent> <LocalLeader>dl :diffget //3<CR>
-
-nnoremap <silent> <LocalLeader>s :Search<CR>
 
 " <LocalLeader>e -- Edit file, starting in same directory as current file.
 nnoremap <LocalLeader>e :edit <C-R>=expand('%:p:h') . '/'<CR>

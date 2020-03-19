@@ -988,3 +988,4 @@
     }
   ]
 }
+{{ karabiner_config.stdout if 'stdout' in karabiner_config else '{}' }}

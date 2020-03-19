@@ -9,19 +9,21 @@ let maplocalleader="\\"
 let filetype_m='objc'
 let filetype_pl='prolog'
 
-" Automatic, language-dependent indentation, syntax coloring and other
-" functionality.
-filetype indent plugin on
-syntax on
-
 " Stark highlighting is enough to see the current match; don't need the
 " centering, which can be annoying.
 let g:LoupeCenterResults=0
+
+" And it turns out that if we're going to turn off the centering, we don't even
+" need the mappings; see: https://github.com/wincent/loupe/pull/15
+map <Nop><F1> <Plug>(LoupeN)
+nmap <Nop><F2> <Plug>(Loupen)
 
 " Would be useful mappings, but they interfere with my default window movement
 " bindings (<C-j> and <C-k>).
 let g:NERDTreeMapJumpPrevSibling='<Nop>'
 let g:NERDTreeMapJumpNextSibling='<Nop>'
+
+let g:NERDTreeCaseSensitiveSort=1
 
 " Prevent tcomment from making a zillion mappings (we just want the operator).
 let g:tcomment_mapleader1=''
@@ -32,46 +34,57 @@ let g:tcomment_textobject_inlinecomment=''
 " The default (g<) is a bit awkward to type.
 let g:tcomment_mapleader_uncomment_anyway='gu'
 
-let g:LanguageClient_diagnosticsDisplay = {
+" Turn off most of the features of this plug-in; I really just want the folding.
+let g:vim_markdown_override_foldtext=0
+let g:vim_markdown_no_default_key_mappings=1
+let g:vim_markdown_emphasis_multiline=0
+let g:vim_markdown_conceal=0
+let g:vim_markdown_frontmatter=1
+let g:vim_markdown_new_list_item_indent=0
+
+let g:LanguageClient_useFloatingHover=1
+let g:LanguageClient_hoverPreview='Always'
+let g:LanguageClient_diagnosticsDisplay={
       \   1: {'signTexthl': 'LineNr', 'virtualTexthl': 'User8'},
       \   2: {'signTexthl': 'LineNr', 'virtualTexthl': 'User8'},
       \   3: {'signTexthl': 'LineNr', 'virtualTexthl': 'User8'},
       \   4: {'signTexthl': 'LineNr', 'virtualTexthl': 'User8'},
       \ }
 
-let g:LanguageClient_rootMarkers = {
-      \   'javascript': ['tsconfig.json', '.flowconfig', 'package.json'],
-      \   'typescript': ['tsconfig.json', '.flowconfig', 'package.json']
-      \ }
+let g:LanguageClient_serverCommands={}
 
-let g:LanguageClient_serverCommands = {}
-
-if exists('$DEBUG_LSP_LOGFILE')
-  let s:debug_args=['--trace', '--logfile', $DEBUG_LSP_LOGFILE]
-else
-  let s:debug_args=[]
+if exists('$DEBUG_LC_LOGFILE')
+  let g:LanguageClient_loggingFile=$DEBUG_LC_LOGFILE
+  let g:LanguageClient_loggingLevel='DEBUG'
 endif
 
-" From `npm install -g javascript-typescript-langserver`:
-let s:ts_lsp=executable('javascript-typescript-stdio') ?
-      \ extend([exepath('javascript-typescript-stdio')], s:debug_args) :
-      \ []
+if executable('typescript-language-server')
+  " ie. via `npm install -g typescript-language-server`
+  if exists('$DEBUG_LSP_LOGFILE')
+    let s:debug_args=[
+          \   '--log-level=4',
+          \   '--tsserver-log-file',
+          \   $DEBUG_LSP_LOGFILE,
+          \   '--tsserver-log-verbosity=verbose'
+          \ ]
+  else
+    let s:debug_args=[]
+  endif
 
-if exists('$DEBUG_LSP_LOGFILE')
-  let s:debug_args=[
-        \   '--log-level=4',
-        \   '--tsserver-log-file',
-        \   $DEBUG_LSP_LOGFILE,
-        \   '--tsserver-log-verbosity=verbose'
-        \ ]
+
+  let s:ts_lsp=extend([exepath('typescript-language-server'), '--stdio'], s:debug_args)
+elseif executable('javascript-typescript-stdio')
+  " ie. via `npm install -g javascript-typescript-langserver`
+  if exists('$DEBUG_LSP_LOGFILE')
+    let s:debug_args=['--trace', '--logfile', $DEBUG_LSP_LOGFILE]
+  else
+    let s:debug_args=[]
+  endif
+
+  let s:ts_lsp=extend([exepath('javascript-typescript-stdio')], s:debug_args)
 else
-  let s:debug_args=[]
+  let s:ts_lsp=[]
 endif
-
-" From `npm install -g typescript-language-server`:
-" let s:ts_lsp= executable('typescript-language-server') ?
-"         \ extend([exepath('typescript-language-server'), '--stdio'], s:debug_args) :
-"         \ []
 
 " From `npm install -g flow-bin`:
 let s:flow_lsp=executable('flow') ?
@@ -80,9 +93,9 @@ let s:flow_lsp=executable('flow') ?
 
 let s:ts_filetypes=[
       \   'typescript',
-      \   'typescript.jsx',
+      \   'typescript.tsx',
       \   'typescript.jest',
-      \   'typescript.jest.jsx'
+      \   'typescript.jest.tsx'
       \ ]
 
 let s:js_filetypes=[
@@ -92,8 +105,11 @@ let s:js_filetypes=[
       \   'javascript.jest.jsx'
       \ ]
 
+let g:LanguageClient_rootMarkers={}
+
 if s:ts_lsp != []
   for s:ts_filetype in s:ts_filetypes
+    let g:LanguageClient_rootMarkers[s:ts_filetype] = ['tsconfig.json', '.flowconfig', 'package.json']
     let g:LanguageClient_serverCommands[s:ts_filetype]=s:ts_lsp
   endfor
 endif
@@ -107,10 +123,10 @@ elseif s:ts_lsp != []
 endif
 
 if exists('s:js_lsp')
-  let g:LanguageClient_serverCommands['javascript']=s:js_lsp
-  let g:LanguageClient_serverCommands['javascript.jest']=s:js_lsp
-  let g:LanguageClient_serverCommands['javascript.jest.jsx']=s:js_lsp
-  let g:LanguageClient_serverCommands['javascript.jsx']=s:js_lsp
+  for s:js_filetype in s:js_filetypes
+    let g:LanguageClient_rootMarkers[s:js_filetype] = ['tsconfig.json', '.flowconfig', 'package.json']
+    let g:LanguageClient_serverCommands[s:js_filetype]=s:js_lsp
+  endfor
 endif
 
 if executable('ocaml-language-server')
@@ -121,14 +137,31 @@ endif
 
 let g:LanguageClient_diagnosticsList='Location'
 
-" Allow for per-machine overrides in ~/.vim/host/hostname and
+if filereadable('/usr/local/bin/python3')
+  " Avoid search, speeding up start-up.
+  let g:python3_host_prog='/usr/local/bin/python3'
+endif
+
+" Normally <leader>s (mnemonic: "[s]earch");
+" use <leader>f instead (mnemonic: "[f]ind")
+nmap <leader>f <Plug>(FerretAckWord)
+
+" Normally <leader>r (mnemonic: "[r]eplace");
+" use <leader>s (mnemonic: "[s]ubstitute") instead.
+nmap <leader>s <Plug>(FerretAcks)
+
+" Allow for per-machine overrides in ~/.vim/host/$HOSTNAME.vim and
 " ~/.vim/vimrc.local.
-let s:hostfile = $HOME . '/.vim/host/' . substitute(hostname(), "\\..*", '', '')
+let s:hostfile =
+      \ $HOME .
+      \ '/.vim/host/' .
+      \ substitute(hostname(), "\\..*", '', '') .
+      \ '.vim'
 if filereadable(s:hostfile)
   execute 'source ' . s:hostfile
 endif
 
-let s:vimrc_local = $HOME . '/.vim/vimrc.local'
+let s:vimrc_local=$HOME . '/.vim/vimrc.local'
 if filereadable(s:vimrc_local)
   execute 'source ' . s:vimrc_local
 endif
@@ -144,18 +177,66 @@ endif
 
 if &loadplugins
   if has('packages')
-    packloadall
+    packadd! LanguageClient-neovim
+    packadd! base16-vim
+    packadd! command-t
+    packadd! ferret
+    packadd! indentLine
+    packadd! loupe
+    packadd! neco-ghc
+    packadd! pinnacle
+    packadd! replay
+    packadd! scalpel
+    packadd! tcomment_vim
+    packadd! terminus
+    packadd! typescript-vim
+    packadd! ultisnips
+    packadd! vcs-jump
+    packadd! vim-ansible-yaml
+    packadd! vim-clipper
+    packadd! vim-dispatch
+    packadd! vim-docvim
+    packadd! vim-easydir
+    packadd! vim-eunuch
+    packadd! vim-fugitive
+    packadd! vim-git
+    packadd! vim-javascript
+    packadd! vim-json
+    packadd! vim-jsx
+    packadd! vim-lion
+    packadd! vim-markdown
+    packadd! vim-operator-user
+    packadd! vim-projectionist
+    packadd! vim-reason-plus
+    packadd! vim-repeat
+    packadd! vim-signature
+    packadd! vim-slime
+    packadd! vim-soy
+    packadd! vim-speeddating
+    packadd! vim-surround
+    packadd! vim-textobj-comment
+    packadd! vim-textobj-rubyblock
+    packadd! vim-textobj-user
+    packadd! vim-zsh
   else
     source $HOME/.vim/pack/bundle/opt/vim-pathogen/autoload/pathogen.vim
-    call pathogen#infect('pack/bundle/start/{}')
+    call pathogen#infect('pack/bundle/opt/{}')
   endif
 endif
 
-" After this file is sourced, plug-in code will be evaluated.
+" Automatic, language-dependent indentation, syntax coloring and other
+" functionality.
+"
+" Must come *after* the `:packadd!` calls above otherwise the contents of
+" package "ftdetect" directories won't be evaluated.
+filetype indent plugin on
+syntax on
+
+" After this file is sourced, plugin code will be evaluated.
 " See ~/.vim/after for files evaluated after that.
 " See `:scriptnames` for a list of all scripts, in evaluation order.
 " Launch Vim with `vim --startuptime vim.log` for profiling info.
 "
-" To see all leader mappings, including those from plug-ins:
+" To see all leader mappings, including those from plugins:
 "
 "   vim -c 'set t_te=' -c 'set t_ti=' -c 'map <space>' -c q | sort
