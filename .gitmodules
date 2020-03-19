@@ -9,9 +9,6 @@
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/LanguageClient-neovim
 	url = https://github.com/autozimu/LanguageClient-neovim.git
 	branch = next
-[submodule "base16-vim"]
-	path = roles/dotfiles/files/.vim/pack/bundle/opt/base16-vim
-	url = https://github.com/chriskempson/base16-vim.git
 [submodule "command-t"]
 	branch = next
 	ignore = dirty
