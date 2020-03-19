@@ -415,6 +415,7 @@ divitodos() {
 ginit () {
   PROJECT='divi'
   JIRA_ID=$1
+  BRANCH_CHECKOUT=$2
   NOTES_PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
   CURRENT_BRANCH=$( git branch | grep '*' | cut -d ' ' -f2)
 
@@ -423,10 +424,15 @@ ginit () {
     return
   fi
 
-  # Note: at the moment must be on develop but could change in future
-  if [ $CURRENT_BRANCH != 'develop' ]; then
+  if [ -z $BRANCH_CHECKOUT ] && [ $CURRENT_BRANCH != 'develop' ]; then
     echo "switching to develop branch";
     git checkout develop;
+    git pull;
+  fi
+
+  if [ $BRANCH_CHECKOUT ]; then 
+    echo "switching to $BRANCH_CHECKOUT";
+    git checkout $BRANCH_CHECKOUT;
     git pull;
   fi
 
