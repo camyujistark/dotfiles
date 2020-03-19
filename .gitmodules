@@ -193,12 +193,12 @@
 [submodule "typescript-vim"]
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/typescript-vim
 	url = https://github.com/leafgarland/typescript-vim.git
-[submodule "roles/dotfiles/files/.vim/pack/bundle/start/ale"]
-	path = roles/dotfiles/files/.vim/pack/bundle/start/ale
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/ale"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/ale
 	url = https://github.com/w0rp/ale
-[submodule "roles/dotfiles/files/.vim/pack/bundle/start/nvim-typescript"]
-	path = roles/dotfiles/files/.vim/pack/bundle/start/nvim-typescript
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/nvim-typescript"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/nvim-typescript
 	url = https://github.com/mhartington/nvim-typescript
-[submodule "roles/dotfiles/files/.vim/pack/bundle/start/yats.vim"]
-	path = roles/dotfiles/files/.vim/pack/bundle/start/yats.vim
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/yats.vim"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/yats.vim
 	url = https://github.com/HerringtonDarkholme/yats.vim
