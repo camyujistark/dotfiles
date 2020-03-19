@@ -72,21 +72,42 @@ local layoutConfig = {
     if sideBar then
         hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
     elseif count == 1 then
+      if sideBar then
+        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
+      end
+    elseif count == 3 then
+      hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
+    else
+      if sideBar then
+        hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+      end
+    end
+  end),
+
+  ['com.todoist.mac.Todoist'] = (function(window, forceScreenCount)
+    local count = forceScreenCount or screenCount
+    if sideBar then
+        hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
+    elseif count == 1 then
       hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
     elseif count == 2 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
     elseif count == 3 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
     elseif count == 4 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
     elseif count == 5 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
     elseif count == 6 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
     elseif count == 7 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
     elseif count == 8 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
     end
   end),
 
@@ -127,8 +148,14 @@ local layoutConfig = {
       else
         hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
       end
-    elseif count == 2 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+    elseif count == 3 then
+      hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
+    else
+      if sideBar then
+        hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+      end
     end
   end),
 
@@ -140,43 +167,14 @@ local layoutConfig = {
       else
         hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
       end
-    elseif count == 2 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 3 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 4 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 5 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 6 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 7 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 8 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    end
-  end),
-
-  ['com.todoist.mac.Todoist'] = (function(window, forceScreenCount)
-    local count = forceScreenCount or screenCount
-    if sideBar then
-        hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
-    elseif count == 1 then
-      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
-    elseif count == 2 then
-      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
     elseif count == 3 then
       hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
-    elseif count == 4 then
-      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
-    elseif count == 5 then
-      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
-    elseif count == 6 then
-      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
-    elseif count == 7 then
-      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
-    elseif count == 8 then
-      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
+    else
+      if sideBar then
+        hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+      end
     end
   end),
 
@@ -188,20 +186,14 @@ local layoutConfig = {
       else
         hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
       end
-    elseif count == 2 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 3 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 4 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 5 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 6 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 7 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 8 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
+    else
+      if sideBar then
+        hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+      end
     end
   end),
 
@@ -213,20 +205,14 @@ local layoutConfig = {
       else
         hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
       end
-    elseif count == 2 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
     elseif count == 3 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 4 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 5 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 6 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 7 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 8 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
+    else
+      if sideBar then
+        hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
+      else
+        hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
+      end
     end
   end),
 
@@ -270,7 +256,7 @@ local layoutConfig = {
         hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
       end
     elseif count == 3 then
-      hs.grid.set(window, grid.centerThird, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
     elseif count == 4 then
       hs.grid.set(window, grid.bottomLeft, hs.screen.primaryScreen())
     elseif count == 5 then
@@ -357,7 +343,7 @@ local layoutConfig = {
         hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
       end
     elseif count == 3 then
-      hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
+      hs.grid.set(window, grid.centerThird, hs.screen.primaryScreen())
     elseif count == 4 then
       hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
     elseif count == 5 then
@@ -670,11 +656,7 @@ hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Numi') end)
 
 hs.hotkey.bind(mash, "a", chrome_switch_to('Cam'))
 hs.hotkey.bind(mash, "o", chrome_switch_to('Cam (Alien)'))
-hs.hotkey.bind(mash, 'e', function() 
-    -- want to make sure that todoist comes forward too
-    hs.application.launchOrFocus('Todoist')
-    hs.application.launchOrFocus('iTerm')
-end)
+hs.hotkey.bind(mash, 'e', function() hs.application.launchOrFocus('iTerm') end)
 hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocus('Notion') end)
 hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end)
 hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Harvest') end)

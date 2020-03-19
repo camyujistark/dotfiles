@@ -13,8 +13,10 @@ jlist() {
 jmine() {
   while true
   do
+      # load before clear
+      output=$(jira mine)
       clear
-      jira mine
+      echo "$output"
       sleep 60
   done
 }

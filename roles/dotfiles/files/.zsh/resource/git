@@ -449,6 +449,12 @@ ginit () {
   if git show-ref --quiet $BRANCHNAME; then
     echo "$BRANCHNAME already exists";
     git checkout $BRANCHNAME;
+
+    # If you have already deleted the fil then write again
+    if [[ ! -f "$NOTES_PROJECTPATH/$BRANCHNAME.md" ]]; then
+      jira view $JIRA_ID >> "$NOTES_PROJECTPATH/$BRANCHNAME.md";
+    fi
+
     tvim;
     return;
   fi
