@@ -12,6 +12,7 @@ local reloader = require 'reloader'
 -- Forward function declarations.
 local activate = nil
 local activateLayout = nil
+local runOnApplications = nil
 local canManageWindow = nil
 local chain = nil
 local handleScreenEvent = nil
@@ -23,6 +24,8 @@ local prepareScreencast = nil
 local tearDownEventHandling = nil
 local windowCount = nil
 local sideBar = false
+local isWindowsVertical = false
+local currentLayout = nil
 local mediaPopUp = false
 
 local screenCount = #hs.screen.allScreens()
@@ -41,8 +44,15 @@ local grid = {
   bottomTwoThirds = '0,4 12x8',
   leftHalf = '0,0 6x12',
   leftThird = '0,0 4x12',
+  leftQuarter = '0,0 3x12',
+  leftSecondQuarter = '3,0 3x12',
+  leftThirdQuarter = '6,0 3x12',
   leftNoToolBar = '0,0 9x12',
+  leftNoToolBarTop = '0,0 9x6',
+  leftNoToolBarBottom = '0,6 9x6',
   leftTwoThirds = '0,0 8x12',
+  leftTwoThirdsTop = '0,0 8x6',
+  leftTwoThirdsBottom = '0,6 8x6',
   topLeft = '0,0 6x6',
   topRight = '6,0 6x6',
   bottomRight = '6,6 6x6',
@@ -52,339 +62,51 @@ local grid = {
   centerThird = '4,0 4x12',
   centerTdird = '4,4 4x4',
 }
+-- chrome profiles
+local chromeProfiles = {}
+chromeProfiles.home = 'Cam'
+chromeProfiles.alien = 'Cam (Alien)'
 
-local bringToFront = (function(bundleID)
-  if bundleID then
-    hs.application.launchOrFocus(bundleID)
-  end
-end)
+-- programs
+local bundleIDs = {}
+bundleIDs.iterm2 = 'com.googlecode.iterm2'
+bundleIDs.calendar = 'com.apple.iCal'
+bundleIDs.mail = 'com.apple.mail'
+bundleIDs.postman = 'com.postmanlabs.mac'
+bundleIDs.spotify = 'com.spotify.client'
+bundleIDs.slack = 'com.tinyspeck.slackmacgap'
+bundleIDs.anki = 'net.ankiweb.dtop'
+bundleIDs.notion = 'notion.id'
+bundleIDs.whasapp = 'WhatsApp'
+bundleIDs.todoist = 'com.todoist.mac.Todoist'
 
-local layoutConfig = {
-  _before_ = (function()
-    -- hide('com.spotify.client')
-  end),
 
-  _after_ = (function()
-  end),
-
-  ['com.apple.iCal'] = (function(window, forceScreenCount)
-    local count = forceScreenCount or screenCount
-    if sideBar then
-        hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
-    elseif count == 1 then
-      if sideBar then
-        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
-      end
-    elseif count == 3 then
-      hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
-    else
-      if sideBar then
-        hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
-      end
-    end
-  end),
-
-  ['com.todoist.mac.Todoist'] = (function(window, forceScreenCount)
-    local count = forceScreenCount or screenCount
-    if sideBar then
-        hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
-    elseif count == 1 then
-      hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
-    elseif count == 2 then
-      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
-    elseif count == 3 then
-      hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
-    elseif count == 4 then
-      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
-    elseif count == 5 then
-      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
-    elseif count == 6 then
-      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
-    elseif count == 7 then
-      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
-    elseif count == 8 then
-      hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen())
-    end
-  end),
-
-  ['com.apple.mail'] = (function(window, forceScreenCount)
-    local count = forceScreenCount or screenCount
-    if count == 1 then
-      if sideBar then
-        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
-      end
-    elseif count == 2 then
-      if sideBar then
-        hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
-      end
-    elseif count == 3 then
-      hs.grid.set(window, grid.leftTwoThirds, hs.screen.primaryScreen())
-    elseif count == 4 then
-      hs.grid.set(window, grid.bottomLeft, hs.screen.primaryScreen())
-    elseif count == 5 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    elseif count == 6 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    elseif count == 7 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    elseif count == 8 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    end
-  end),
-
-  ['net.ankiweb.dtop']  = (function(window, forceScreenCount)
-    local count = forceScreenCount or screenCount
-    if count == 1 then
-      if sideBar then
-        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
-      end
-    elseif count == 3 then
-      hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
-    else
-      if sideBar then
-        hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
-      end
-    end
-  end),
-
-  ['com.tinyspeck.slackmacgap'] = (function(window, forceScreenCount)
-    local count = forceScreenCount or screenCount
-    if count == 1 then
-      if sideBar then
-        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
-      end
-    elseif count == 3 then
-      hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
-    else
-      if sideBar then
-        hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
-      end
-    end
-  end),
-
-  ['com.spotify.client'] = (function(window, forceScreenCount)
-    local count = forceScreenCount or screenCount
-    if count == 1 then
-      if sideBar then
-        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
-      end
-    elseif count == 3 then
-      hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
-    else
-      if sideBar then
-        hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
-      end
-    end
-  end),
-
-  ['WhatsApp'] = (function(window, forceScreenCount)
-    local count = forceScreenCount or screenCount
-    if count == 1 then
-      if sideBar then
-        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
-      end
-    elseif count == 3 then
-      hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
-    else
-      if sideBar then
-        hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
-      end
-    end
-  end),
-
-  ['com.postmanlabs.mac'] = (function(window, forceScreenCount)
-    local count = forceScreenCount or screenCount
-    if count == 1 then
-      if sideBar then
-        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
-      end
-    elseif count == 2 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 3 then
-      hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen())
-    elseif count == 4 then
-      hs.grid.set(window, grid.bottomLeft, hs.screen.primaryScreen())
-    elseif count == 5 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    elseif count == 6 then
-      hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
-    elseif count == 7 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    elseif count == 8 then
-      hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
-    end
-  end),
-
-  ['com.figma.Desktop'] = (function(window, forceScreenCount)
-    local count = forceScreenCount or screenCount
-    if count == 1 then
-      if sideBar then
-        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
-      end
-    elseif count == 2 then
-      if sideBar then
-        hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
-      end
-    elseif count == 3 then
-      hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
-    elseif count == 4 then
-      hs.grid.set(window, grid.bottomLeft, hs.screen.primaryScreen())
-    elseif count == 5 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    elseif count == 6 then
-      hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
-    elseif count == 7 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    elseif count == 8 then
-      hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
-    end
-  end),
-
-  ['notion.id'] = (function(window, forceScreenCount)
-    local count = forceScreenCount or screenCount
-    if count == 1 then
-      if sideBar then
-        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
-      end
-    elseif count == 2 then
-      if sideBar then
-        hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
-      end
-    elseif count == 3 then
-      hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen())
-    elseif count == 4 then
-      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
-    elseif count == 5 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    elseif count == 6 then
-      hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
-    elseif count == 7 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    elseif count == 8 then
-      hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
-    end
-  end),
-
-  ['com.google.Chrome'] = (function(window, forceScreenCount)
-    local count = forceScreenCount or screenCount
-    if count == 1 then
-      if sideBar then
-        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
-      end
-    elseif count == 2 then
-      if sideBar then
-        hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.leftHalf, hs.screen.primaryScreen())
-      end
-    elseif count == 3 then
-      hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
-    elseif count == 4 then
-      hs.grid.set(window, grid.topLeft, hs.screen.primaryScreen())
-    elseif count == 5 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    elseif count == 6 then
-      hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
-    elseif count == 7 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    elseif count == 8 then
-      hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
-    end
-  end),
-
-  ['com.googlecode.iterm2'] = (function(window, forceScreenCount)
-    local count = forceScreenCount or screenCount
-    if count == 1 then
-      if sideBar then
-        hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen())
-      end
-    elseif count == 2 then
-      if sideBar then
-        hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
-      else
-        hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
-      end
-    elseif count == 3 then
-      hs.grid.set(window, grid.centerThird, hs.screen.primaryScreen())
-    elseif count == 4 then
-      hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen())
-    elseif count == 5 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    elseif count == 6 then
-      hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
-    elseif count == 7 then
-      hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen())
-    elseif count == 8 then
-      hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen())
-    end
-  end),
+local itermBoundBundleIDs = {
+  bundleIDs.iterm2,
+  bundleIDs.calendar,
+  bundleIDs.mail,
+  bundleIDs.postman,
+  bundleIDs.spotify,
+  bundleIDs.slack,
+  bundleIDs.anki,
+  bundleIDs.notion,
+  bundleIDs.whasapp,
 }
 
--- fullmode
--- iterm2
--- switch
-
--- here --
-prepareScreencast = (function()
-  local screen = 'Color LCD'
-  local top = {x=0, y=0, w=1, h=.92}
-  local bottom = {x=.4, y=.82, w=.5, h=.1}
-  local windowLayout = {
-    {'iTerm2', nil, screen, top, nil, nil},
-    {'Google Chrome', nil, screen, top, nil, nil},
-    {'KeyCastr', nil, screen, bottom, nil, nil},
-  }
-
-  hs.application.launchOrFocus('KeyCastr')
-  local chrome = hs.appfinder.appFromName('Google Chrome')
-  local iterm = hs.appfinder.appFromName('iTerm2')
-  for key, app in pairs(hs.application.runningApplications()) do
-    if app == chrome or app == iterm or app:name() == 'KeyCastr' then
-      app:unhide()
-    else
-      app:hide()
-    end
-  end
-  hs.layout.apply(windowLayout)
-end)
+-- would like to have array merge - but could not find the right way to do this
+-- in Lua
+local itermBoundBundleIDsWithTodoist = {
+  bundleIDs.iterm2,
+  bundleIDs.calendar,
+  bundleIDs.mail,
+  bundleIDs.postman,
+  bundleIDs.spotify,
+  bundleIDs.slack,
+  bundleIDs.anki,
+  bundleIDs.notion,
+  bundleIDs.whasapp,
+  bundleIDs.todoist,
+}
 
 --
 -- Utility and helper functions.
@@ -458,6 +180,32 @@ activateLayout = (function(forceScreenCount)
 
   currentCount = forceScreenCount
   layoutConfig._after_()
+end)
+
+runOnApplication = (function(bundleID, callback)
+    local application = hs.application.get(bundleID)
+    if application then
+      local windows = application:visibleWindows()
+      for _, window in pairs(windows) do
+        if canManageWindow(window) then
+          callback(window)
+        end
+      end
+  end
+end)
+
+runOnApplications = (function(bundleIDs, callback)
+  for i, bundleID in pairs(bundleIDs) do
+    local application = hs.application.get(bundleID)
+    if application then
+      local windows = application:visibleWindows()
+      for _, window in pairs(windows) do
+        if canManageWindow(window) then
+          callback(window)
+        end
+      end
+    end
+  end
 end)
 
 local turnOnSideBar = (function()
@@ -552,49 +300,33 @@ switch_app = (function(app)
   hs.application.launchOrFocus(app)
 end)
 
-
-function chrome_switch_to(ppl)
-  return function()
-      hs.application.launchOrFocus("Google Chrome")
-      local chrome = hs.appfinder.appFromName("Google Chrome")
-      local str_menu_item
-      if ppl == "Incognito" then
-          str_menu_item = {"File", "New Incognito Window"}
-      else
-          str_menu_item = {"People", ppl}
-      end
-
-      local menu_item = chrome:findMenuItem(str_menu_item)
-      if (menu_item) then
-          chrome:selectMenuItem(str_menu_item)
-      end
-
-      -- local windows = chrome:visibleWindows()
-      -- for _, window in pairs(windows) do
-      --   if canManageWindow(window) then
-      --     if ppl == 'Cam' then
-      --       hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
-      --     elseif ppl == 'Alien' then
-      --       hs.grid.set(window, grid.centerThird, hs.screen.primaryScreen())
-      --     end
-      --   end
-      -- end
-      -- local app = hs.application.get('com.google.Chrome')
-      -- app:selectMenuItem({ 'Window', 'Bring All to Front' })
-    end
-end
-
-chromeAlien = (function()
-  -- get alien chrome --
-  local chrome = hs.appfinder.appFromName('Google Chrome')
-  if not chrome then
-    return
+chrome_switch_to = (function(ppl)
+  hs.application.launchOrFocus("Google Chrome")
+  local chrome = hs.appfinder.appFromName("Google Chrome")
+  local str_menu_item
+  if ppl == "Incognito" then
+      str_menu_item = {"File", "New Incognito Window"}
+  else
+      str_menu_item = {"People", ppl}
   end
-  local str_menu_item = {"People", "Cam (Alien)"}
-  local menu_item = chrome:findMenuItem(str_menu_item, true)
+
+  local menu_item = chrome:findMenuItem(str_menu_item)
   if (menu_item) then
-      chrome:selectMenuItem(str_menu_item, true)
+      chrome:selectMenuItem(str_menu_item)
   end
+
+  -- local windows = chrome:visibleWindows()
+  -- for _, window in pairs(windows) do
+  --   if canManageWindow(window) then
+  --     if ppl == 'Cam' then
+  --       hs.grid.set(window, grid.leftThird, hs.screen.primaryScreen())
+  --     elseif ppl == 'Alien' then
+  --       hs.grid.set(window, grid.centerThird, hs.screen.primaryScreen())
+  --     end
+  --   end
+  -- end
+  -- local app = hs.application.get('com.google.Chrome')
+  -- app:selectMenuItem({ 'Window', 'Bring All to Front' })
 end)
 
 switchTo = (function(movements, func)
@@ -631,31 +363,12 @@ end)
 -- Mash to be matched to holding down enter
 local mash = {'ctrl', 'alt', 'shift','cmd'}
 
--- hs.hotkey.bind(mash, 'y', function() hs.application.launchOrFocus('Sequel Pro') end)
--- hs.hotkey.bind(mash, 'f', function() hs.application.launchOrFocus('Firefox') end)
-
---- Toggle Chrome and Terminal
--- hs.hotkey.bind(mash, 'a', function()
---   local window = hs.window.frontmostWindow()
---   local application = window:application()
---   local bundleID = application:bundleID()
---
---   -- launch or focus
---   if bundleID == 'com.google.Chrome' then
---     -- iterm --
---     hs.application.launchOrFocus('iTerm')
---   else
---     chromeAlien()
---   end
--- end)
-
--- Remove Bolster and make it two chrome instances
 hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Postman') end)
 hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Figma') end)
 hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Numi') end)
 
-hs.hotkey.bind(mash, "a", chrome_switch_to('Cam'))
-hs.hotkey.bind(mash, "o", chrome_switch_to('Cam (Alien)'))
+hs.hotkey.bind(mash, "a", function() chrome_switch_to(chromeProfiles.home) end)
+hs.hotkey.bind(mash, "o", function() chrome_switch_to(chromeProfiles.alien) end)
 hs.hotkey.bind(mash, 'e', function() hs.application.launchOrFocus('iTerm') end)
 hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocus('Notion') end)
 hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end)
@@ -708,37 +421,201 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'down', chain({
   grid.centeredSmall,
 }))
 
-hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'f1', (function()
-  hs.alert('One-monitor layout')
-  activateLayout(1)
+local isWindowsVertical = false
+
+hs.hotkey.bind(mash, '1', (function() 
+  local id = '1'
+  if sideBar then
+      id = id .. 'A'
+  else
+      id = id .. 'B'
+  end
+
+  if currentLayout ~= id then
+     isWindowsVertical = not isWindowsVertical
+   end
+
+  chrome_switch_to(chromeProfiles.home)
+  local windowChromeProfileHome = hs.window.frontmostWindow()
+  chrome_switch_to(chromeProfiles.alien)
+  local windowChromeProfileAlien = hs.window.frontmostWindow()
+
+  if sideBar then
+    hs.grid.set(windowChromeProfileHome, grid.leftNoToolBar, hs.screen.primaryScreen()) 
+    hs.grid.set(windowChromeProfileAlien, grid.leftNoToolBar, hs.screen.primaryScreen()) 
+    runOnApplications(itermBoundBundleIDs, function(window) hs.grid.set(window, grid.leftNoToolBar, hs.screen.primaryScreen()) end)
+    runOnApplication(bundleIDs.todoist, function(window) hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen()) end)
+  else
+    hs.grid.set(windowChromeProfileHome, grid.fullScreen, hs.screen.primaryScreen()) 
+    hs.grid.set(windowChromeProfileAlien, grid.fullScreen, hs.screen.primaryScreen()) 
+    runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.fullScreen, hs.screen.primaryScreen()) end)
+  end
 end))
 
-hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'f2', (function()
-  hs.alert('Two-monitor layout')
-  activateLayout(2)
+hs.hotkey.bind(mash, '2', (function()
+  local id = '2'
+  if sideBar then
+      id = id .. 'A'
+  else
+      id = id .. 'B'
+  end
+  if currentLayout ~= id then
+     isWindowsVertical = not isWindowsVertical
+  end
+
+  chrome_switch_to(chromeProfiles.home)
+  local windowChromeProfileHome = hs.window.frontmostWindow()
+  chrome_switch_to(chromeProfiles.alien)
+  local windowChromeProfileAlien = hs.window.frontmostWindow()
+
+  if isWindowsVertical then
+    if sideBar then
+      hs.grid.set(windowChromeProfileHome, grid.leftThird, hs.screen.primaryScreen()) 
+      hs.grid.set(windowChromeProfileAlien, grid.leftThird, hs.screen.primaryScreen()) 
+      runOnApplications(itermBoundBundleIDs, function(window) hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen()) end)
+      runOnApplication(bundleIDs.todoist, function(window) hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen()) end)
+    else
+      hs.grid.set(windowChromeProfileHome, grid.leftHalf, hs.screen.primaryScreen()) 
+      hs.grid.set(windowChromeProfileAlien, grid.leftHalf, hs.screen.primaryScreen()) 
+      runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen()) end)
+    end
+    isWindowsVertical = false
+  else
+    if sideBar then
+      hs.grid.set(windowChromeProfileHome, grid.leftNoToolBarTop, hs.screen.primaryScreen()) 
+      hs.grid.set(windowChromeProfileAlien, grid.leftNoToolBarTop, hs.screen.primaryScreen()) 
+      runOnApplications(itermBoundBundleIDs, function(window) hs.grid.set(window, grid.leftNoToolBarBottom, hs.screen.primaryScreen()) end)
+      runOnApplication(bundleIDs.todoist, function(window) hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen()) end)
+    else
+      hs.grid.set(windowChromeProfileHome, grid.topHalf, hs.screen.primaryScreen()) 
+      hs.grid.set(windowChromeProfileAlien, grid.topHalf, hs.screen.primaryScreen()) 
+      runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.bottomHalf, hs.screen.primaryScreen()) end)
+    end
+    isWindowsVertical = true
+  end
+  currentLayout = id
 end))
 
-hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'f3', (function()
-  hs.console.alpha(.75)
-  hs.toggleConsole()
+hs.hotkey.bind(mash, '3', (function() 
+  local id = '3'
+  if sideBar then
+      id = id .. 'A'
+  else
+      id = id .. 'B'
+  end
+
+  if currentLayout ~= id then
+     isWindowsVertical = not isWindowsVertical
+   end
+
+  chrome_switch_to(chromeProfiles.home)
+  local windowChromeProfileHome = hs.window.frontmostWindow()
+  chrome_switch_to(chromeProfiles.alien)
+  local windowChromeProfileAlien = hs.window.frontmostWindow()
+
+  if isWindowsVertical then
+    hs.grid.set(windowChromeProfileHome, grid.leftThird, hs.screen.primaryScreen()) 
+    hs.grid.set(windowChromeProfileAlien, grid.centerThird, hs.screen.primaryScreen()) 
+    runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen()) end)
+    isWindowsVertical = false
+  else
+    hs.grid.set(windowChromeProfileAlien, grid.leftTwoThirdsTop, hs.screen.primaryScreen()) 
+    hs.grid.set(windowChromeProfileHome, grid.leftTwoThirdsBottom, hs.screen.primaryScreen()) 
+    runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen()) end)
+    isWindowsVertical = true
+  end
+  currentLayout = id
 end))
 
-hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'f4', (function()
-  hs.notify.show(
-    'Hammerspoon',
-    'Reloaded in the background',
-    'Press ⌃⌥⌘F3 to reveal the console.'
-  )
-  reloader.reload()
+hs.hotkey.bind(mash, '4', (function() 
+  local id = '4'
+  if sideBar then
+      id = id .. 'A'
+  else
+      id = id .. 'B'
+  end
+
+  if currentLayout ~= id then
+     isWindowsVertical = not isWindowsVertical
+   end
+
+  chrome_switch_to(chromeProfiles.home)
+  local windowChromeProfileHome = hs.window.frontmostWindow()
+  chrome_switch_to(chromeProfiles.alien)
+  local windowChromeProfileAlien = hs.window.frontmostWindow()
+
+  if isWindowsVertical then
+    if sideBar then
+      hs.grid.set(windowChromeProfileHome, grid.leftQuarter, hs.screen.primaryScreen()) 
+      hs.grid.set(windowChromeProfileAlien, grid.leftSecondQuarter, hs.screen.primaryScreen()) 
+      runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.leftThirdQuarter, hs.screen.primaryScreen()) end)
+      runOnApplication(bundleIDs.todoist, function(window) hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen()) end)
+    else
+      hs.grid.set(windowChromeProfileHome, grid.leftQuarter, hs.screen.primaryScreen()) 
+      hs.grid.set(windowChromeProfileAlien, grid.leftSecondQuarter, hs.screen.primaryScreen()) 
+      runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen()) end)
+    end
+    isWindowsVertical = false
+  else
+    if sideBar then
+      hs.grid.set(windowChromeProfileAlien, grid.topLeft, hs.screen.primaryScreen()) 
+      hs.grid.set(windowChromeProfileHome, grid.bottomLeft, hs.screen.primaryScreen()) 
+      runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.leftThirdQuarter, hs.screen.primaryScreen()) end)
+      runOnApplication(bundleIDs.todoist, function(window) hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen()) end)
+    else
+      hs.grid.set(windowChromeProfileHome, grid.topLeft, hs.screen.primaryScreen()) 
+      hs.grid.set(windowChromeProfileAlien, grid.bottomLeft, hs.screen.primaryScreen()) 
+      runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen()) end)
+    end
+    isWindowsVertical = true
+  end
+  currentLayout = id
 end))
 
-hs.hotkey.bind(mash, '1', (function() activateLayout(1) end))
-hs.hotkey.bind(mash, '2', (function() activateLayout(2) end))
-hs.hotkey.bind(mash, '3', (function() activateLayout(3) end))
-hs.hotkey.bind(mash, '4', (function() activateLayout(4) end))
+hs.hotkey.bind(mash, '5', (function() 
+  local id = '5'
+  if sideBar then
+      id = id .. 'A'
+  else
+      id = id .. 'B'
+  end
 
-hs.hotkey.bind(mash, '5', switchTo({ 5, 6 }, activateLayout))
-hs.hotkey.bind(mash, '6', switchTo({ 7, 8 }, activateLayout))
+  if currentLayout ~= id then
+     isWindowsVertical = not isWindowsVertical
+   end
+
+  chrome_switch_to(chromeProfiles.home)
+  local windowChromeProfileHome = hs.window.frontmostWindow()
+  chrome_switch_to(chromeProfiles.alien)
+  local windowChromeProfileAlien = hs.window.frontmostWindow()
+
+  if isWindowsVertical then
+    if sideBar then
+      hs.grid.set(windowChromeProfileHome, grid.leftThird, hs.screen.primaryScreen()) 
+      hs.grid.set(windowChromeProfileAlien, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen()) 
+      runOnApplications(itermBoundBundleIDs, function(window) hs.grid.set(window, grid.rightFiveTwelveQuarterOffset, hs.screen.primaryScreen()) end)
+      runOnApplication(bundleIDs.todoist, function(window) hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen()) end)
+    else
+      hs.grid.set(windowChromeProfileHome, grid.leftHalf, hs.screen.primaryScreen()) 
+      hs.grid.set(windowChromeProfileAlien, grid.rightHalf, hs.screen.primaryScreen()) 
+      runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen()) end)
+    end
+    isWindowsVertical = false
+  else
+    if sideBar then
+      hs.grid.set(windowChromeProfileHome, grid.leftNoToolBarTop, hs.screen.primaryScreen()) 
+      hs.grid.set(windowChromeProfileAlien, grid.leftNoToolBarBottom, hs.screen.primaryScreen()) 
+      runOnApplications(itermBoundBundleIDs, function(window) hs.grid.set(window, grid.leftNoToolBarBottom, hs.screen.primaryScreen()) end)
+      runOnApplication(bundleIDs.todoist, function(window) hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen()) end)
+    else
+      hs.grid.set(windowChromeProfileAlien, grid.topHalf, hs.screen.primaryScreen()) 
+      hs.grid.set(windowChromeProfileHome, grid.bottomHalf, hs.screen.primaryScreen()) 
+      runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.bottomHalf, hs.screen.primaryScreen()) end)
+    end
+    isWindowsVertical = true
+  end
+  currentLayout = id
+end))
 
 -- iterm.init()
 karabiner.init()
