@@ -598,7 +598,7 @@ hs.hotkey.bind(mash, '5', (function()
     else
       hs.grid.set(windowChromeProfileHome, grid.leftHalf, hs.screen.primaryScreen()) 
       hs.grid.set(windowChromeProfileAlien, grid.leftHalf, hs.screen.primaryScreen()) 
-      runOnApplications(itermBoundBundleIDs, function(window) hs.grid.set(window, grid.topRight, hs.screen.primaryScreen()) end)
+      runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.topRight, hs.screen.primaryScreen()) end)
       runOnApplication(bundleIDs.iterm2, function(window) hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen()) end)
     end
     isWindowsVertical = false
@@ -611,7 +611,7 @@ hs.hotkey.bind(mash, '5', (function()
     else
       hs.grid.set(windowChromeProfileHome, grid.leftHalf, hs.screen.primaryScreen()) 
       hs.grid.set(windowChromeProfileAlien, grid.leftHalf, hs.screen.primaryScreen()) 
-      runOnApplications(itermBoundBundleIDs, function(window) hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen()) end)
+      runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen()) end)
       runOnApplication(bundleIDs.iterm2, function(window) hs.grid.set(window, grid.topRight, hs.screen.primaryScreen()) end)
     end
     isWindowsVertical = true
