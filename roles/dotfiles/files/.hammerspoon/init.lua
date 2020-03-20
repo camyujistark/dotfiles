@@ -563,8 +563,8 @@ hs.hotkey.bind(mash, '4', (function()
       runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.leftThirdQuarter, hs.screen.primaryScreen()) end)
       runOnApplication(bundleIDs.todoist, function(window) hs.grid.set(window, grid.rightToolBar, hs.screen.primaryScreen()) end)
     else
-      hs.grid.set(windowChromeProfileHome, grid.topLeft, hs.screen.primaryScreen()) 
-      hs.grid.set(windowChromeProfileAlien, grid.bottomLeft, hs.screen.primaryScreen()) 
+      hs.grid.set(windowChromeProfileHome, grid.bottomLeft, hs.screen.primaryScreen()) 
+      hs.grid.set(windowChromeProfileAlien, grid.topLeft, hs.screen.primaryScreen()) 
       runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen()) end)
     end
     isWindowsVertical = true
