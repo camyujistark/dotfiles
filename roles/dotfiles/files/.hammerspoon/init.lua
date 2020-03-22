@@ -24,9 +24,8 @@ local prepareScreencast = nil
 local tearDownEventHandling = nil
 local windowCount = nil
 local sideBar = false
-local isWindowsVertical = false
+local isWindowsVertical = true
 local currentLayout = nil
-local mediaPopUp = false
 
 local screenCount = #hs.screen.allScreens()
 
@@ -216,6 +215,14 @@ local turnOnSideBar = (function()
   end
 end)
 
+local turnOnHorizontalMode = (function()
+  if isWindowsVertical then
+    isWindowsVertical = false
+  else
+    isWindowsVertical = true
+  end
+end)
+
 --
 -- Event-handling
 --
@@ -383,6 +390,7 @@ hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocus('Calendar') en
 
 hs.hotkey.bind(mash, 'm', function() hs.application.launchOrFocus('Marked 2') end)
 hs.hotkey.bind(mash, ']', function() turnOnSideBar() end)
+hs.hotkey.bind(mash, '[', function() turnOnHorizontalMode() end)
 
 hs.hotkey.bind({'ctrl', 'alt'}, 'up', chain({
   grid.topHalf,
@@ -421,7 +429,6 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'down', chain({
   grid.centeredSmall,
 }))
 
-local isWindowsVertical = false
 
 hs.hotkey.bind(mash, '1', (function() 
   local id = '1'
@@ -430,10 +437,6 @@ hs.hotkey.bind(mash, '1', (function()
   else
       id = id .. 'B'
   end
-
-  if currentLayout ~= id then
-     isWindowsVertical = not isWindowsVertical
-   end
 
   chrome_switch_to(chromeProfiles.home)
   local windowChromeProfileHome = hs.window.frontmostWindow()
@@ -459,9 +462,6 @@ hs.hotkey.bind(mash, '2', (function()
   else
       id = id .. 'B'
   end
-  if currentLayout ~= id then
-     isWindowsVertical = not isWindowsVertical
-  end
 
   chrome_switch_to(chromeProfiles.home)
   local windowChromeProfileHome = hs.window.frontmostWindow()
@@ -479,7 +479,6 @@ hs.hotkey.bind(mash, '2', (function()
       hs.grid.set(windowChromeProfileAlien, grid.leftHalf, hs.screen.primaryScreen()) 
       runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen()) end)
     end
-    isWindowsVertical = false
   else
     if sideBar then
       hs.grid.set(windowChromeProfileHome, grid.leftNoToolBarTop, hs.screen.primaryScreen()) 
@@ -491,7 +490,6 @@ hs.hotkey.bind(mash, '2', (function()
       hs.grid.set(windowChromeProfileAlien, grid.topHalf, hs.screen.primaryScreen()) 
       runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.bottomHalf, hs.screen.primaryScreen()) end)
     end
-    isWindowsVertical = true
   end
   currentLayout = id
 end))
@@ -504,10 +502,6 @@ hs.hotkey.bind(mash, '3', (function()
       id = id .. 'B'
   end
 
-  if currentLayout ~= id then
-     isWindowsVertical = not isWindowsVertical
-   end
-
   chrome_switch_to(chromeProfiles.home)
   local windowChromeProfileHome = hs.window.frontmostWindow()
   chrome_switch_to(chromeProfiles.alien)
@@ -517,12 +511,10 @@ hs.hotkey.bind(mash, '3', (function()
     hs.grid.set(windowChromeProfileHome, grid.leftThird, hs.screen.primaryScreen()) 
     hs.grid.set(windowChromeProfileAlien, grid.centerThird, hs.screen.primaryScreen()) 
     runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen()) end)
-    isWindowsVertical = false
   else
     hs.grid.set(windowChromeProfileAlien, grid.leftTwoThirdsTop, hs.screen.primaryScreen()) 
     hs.grid.set(windowChromeProfileHome, grid.leftTwoThirdsBottom, hs.screen.primaryScreen()) 
     runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.rightThird, hs.screen.primaryScreen()) end)
-    isWindowsVertical = true
   end
   currentLayout = id
 end))
@@ -535,10 +527,6 @@ hs.hotkey.bind(mash, '4', (function()
       id = id .. 'B'
   end
 
-  if currentLayout ~= id then
-     isWindowsVertical = not isWindowsVertical
-   end
-
   chrome_switch_to(chromeProfiles.home)
   local windowChromeProfileHome = hs.window.frontmostWindow()
   chrome_switch_to(chromeProfiles.alien)
@@ -555,7 +543,6 @@ hs.hotkey.bind(mash, '4', (function()
       hs.grid.set(windowChromeProfileAlien, grid.leftSecondQuarter, hs.screen.primaryScreen()) 
       runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen()) end)
     end
-    isWindowsVertical = false
   else
     if sideBar then
       hs.grid.set(windowChromeProfileAlien, grid.topLeft, hs.screen.primaryScreen()) 
@@ -567,7 +554,6 @@ hs.hotkey.bind(mash, '4', (function()
       hs.grid.set(windowChromeProfileAlien, grid.topLeft, hs.screen.primaryScreen()) 
       runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen()) end)
     end
-    isWindowsVertical = true
   end
   currentLayout = id
 end))
@@ -579,10 +565,6 @@ hs.hotkey.bind(mash, '5', (function()
   else
       id = id .. 'B'
   end
-
-  if currentLayout ~= id then
-     isWindowsVertical = not isWindowsVertical
-   end
 
   chrome_switch_to(chromeProfiles.home)
   local windowChromeProfileHome = hs.window.frontmostWindow()
@@ -601,7 +583,6 @@ hs.hotkey.bind(mash, '5', (function()
       runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.topRight, hs.screen.primaryScreen()) end)
       runOnApplication(bundleIDs.iterm2, function(window) hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen()) end)
     end
-    isWindowsVertical = false
   else
     if sideBar then
       hs.grid.set(windowChromeProfileHome, grid.leftNoToolBarTop, hs.screen.primaryScreen()) 
@@ -614,7 +595,6 @@ hs.hotkey.bind(mash, '5', (function()
       runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen()) end)
       runOnApplication(bundleIDs.iterm2, function(window) hs.grid.set(window, grid.topRight, hs.screen.primaryScreen()) end)
     end
-    isWindowsVertical = true
   end
   currentLayout = id
 end))
@@ -627,10 +607,6 @@ hs.hotkey.bind(mash, '6', (function()
       id = id .. 'B'
   end
 
-  if currentLayout ~= id then
-     isWindowsVertical = not isWindowsVertical
-   end
-
   chrome_switch_to(chromeProfiles.home)
   local windowChromeProfileHome = hs.window.frontmostWindow()
   chrome_switch_to(chromeProfiles.alien)
@@ -641,13 +617,11 @@ hs.hotkey.bind(mash, '6', (function()
     hs.grid.set(windowChromeProfileAlien, grid.leftSecondQuarter, hs.screen.primaryScreen()) 
     runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.topRight, hs.screen.primaryScreen()) end)
     runOnApplication(bundleIDs.iterm2, function(window) hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen()) end)
-    isWindowsVertical = false
   else
     hs.grid.set(windowChromeProfileHome, grid.leftQuarter, hs.screen.primaryScreen()) 
     hs.grid.set(windowChromeProfileAlien, grid.leftSecondQuarter, hs.screen.primaryScreen()) 
     runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.bottomRight, hs.screen.primaryScreen()) end)
     runOnApplication(bundleIDs.iterm2, function(window) hs.grid.set(window, grid.topRight, hs.screen.primaryScreen()) end)
-    isWindowsVertical = true
   end
   currentLayout = id
 end))
@@ -659,10 +633,6 @@ hs.hotkey.bind(mash, '7', (function()
   else
       id = id .. 'B'
   end
-
-  if currentLayout ~= id then
-     isWindowsVertical = not isWindowsVertical
-   end
 
   chrome_switch_to(chromeProfiles.home)
   local windowChromeProfileHome = hs.window.frontmostWindow()
@@ -680,7 +650,6 @@ hs.hotkey.bind(mash, '7', (function()
       hs.grid.set(windowChromeProfileAlien, grid.rightHalf, hs.screen.primaryScreen()) 
       runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.rightHalf, hs.screen.primaryScreen()) end)
     end
-    isWindowsVertical = false
   else
     if sideBar then
       hs.grid.set(windowChromeProfileHome, grid.leftNoToolBarTop, hs.screen.primaryScreen()) 
@@ -692,7 +661,6 @@ hs.hotkey.bind(mash, '7', (function()
       hs.grid.set(windowChromeProfileHome, grid.bottomHalf, hs.screen.primaryScreen()) 
       runOnApplications(itermBoundBundleIDsWithTodoist, function(window) hs.grid.set(window, grid.bottomHalf, hs.screen.primaryScreen()) end)
     end
-    isWindowsVertical = true
   end
   currentLayout = id
 end))
