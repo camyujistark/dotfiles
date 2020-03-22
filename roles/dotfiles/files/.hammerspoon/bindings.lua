@@ -252,7 +252,7 @@ local gridLayout = {
         chromeHome = maybeIsChromeSplit('0,0 4x6', '0,0 4x12'),
         chromeAlien = maybeIsChromeSplit('0,6 4x6', '0,0 4x12'),
         itermApps = maybeIsItermSplitGridCoord('4,0 5x6', '4,0 5x12'),
-        otherApps = maybeIsItermSplitGridCoord('4,6 5x6', '4,0 5x12'),
+        otherApps = maybeIsItermSplitGridCoord('4,6 5x6', '0,0 4x12'),
         sideBar = '9,0 3x12',
       },
       {
