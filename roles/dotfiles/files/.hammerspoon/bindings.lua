@@ -249,10 +249,12 @@ local gridLayout = {
   two = (function()
     return maybeIsSideBar(
       maybeIsVertical({
+        -- would like to have a chain function for switching the chrome split to
+        -- horizontal
         chromeHome = maybeIsChromeSplit('0,0 4x6', '0,0 4x12'),
         chromeAlien = maybeIsChromeSplit('0,6 4x6', '0,0 4x12'),
         itermApps = maybeIsItermSplitGridCoord('4,0 5x6', '4,0 5x12'),
-        otherApps = maybeIsItermSplitGridCoord('4,6 5x6', '0,0 4x12'),
+        otherApps = maybeIsItermSplitGridCoord('4,6 5x6', '4,0 5x12'),
         sideBar = '9,0 3x12',
       },
       {
