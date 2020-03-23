@@ -195,7 +195,7 @@
 	url = https://github.com/leafgarland/typescript-vim.git
 [submodule "roles/dotfiles/files/.vim/pack/bundle/opt/ale"]
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/ale
-	url = https://github.com/w0rp/ale
+	url = https://github.com/dense-analysis/ale
 [submodule "roles/dotfiles/files/.vim/pack/bundle/opt/nvim-typescript"]
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/nvim-typescript
 	url = https://github.com/mhartington/nvim-typescript
