@@ -21,3 +21,76 @@ jmine() {
   done
 }
 
+jrun () {
+  PROJECT='divi'
+  JIRA_ID=$1
+  BRANCH_CHECKOUT=$2
+  NOTES_PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
+  CURRENT_BRANCH=$( git branch | grep '*' | cut -d ' ' -f2)
+
+  if [ -z $JIRA_ID ]; then
+    echo "need to have the JIRA_ID in your first parameter";
+    return
+  fi
+
+  if [ -z $BRANCH_CHECKOUT ] && [ $CURRENT_BRANCH != 'develop' ]; then
+    echo "switching to develop branch";
+    git checkout develop;
+    git pull;
+  fi
+
+  if [ $BRANCH_CHECKOUT ]; then 
+    echo "switching to $BRANCH_CHECKOUT";
+    git checkout $BRANCH_CHECKOUT;
+    git pull;
+  fi
+
+  BRANCHNAME=$(jira project $JIRA_ID)
+
+  # Currently, you need to have a JIRA_ID so you cannot run on develop or
+  # master. But here for safety measures
+  if [ $BRANCHNAME = 'develop' ] || [ $BRANCHNAME = 'master' ]; then
+    echo 'cannot run on $BRANCHNAME';
+    exit 0;
+  fi
+
+  # limitation to having the second pane to always have vim running with notes
+  tmux send-keys -t 2 ":w"
+  tmux send-keys -t 2 Enter
+  tmux send-keys -t 2 ":q"
+  tmux send-keys -t 2 Enter
+
+  # If branch does exists then open the notes
+  if git show-ref --quiet $BRANCHNAME; then
+    echo "$BRANCHNAME already exists";
+    git checkout $BRANCHNAME;
+
+    # If you have already deleted the fil then write again
+    if [[ ! -f "$NOTES_PROJECTPATH/$BRANCHNAME.md" ]]; then
+      jira view $JIRA_ID >> "$NOTES_PROJECTPATH/$BRANCHNAME.md";
+    fi
+
+    tmux send-keys -t 2 "vim $NOTES_PROJECTPATH/$BRANCHNAME.md"
+    tmux send-keys -t 2 Enter;
+
+    return;
+  fi
+
+  # create branch and notes
+  echo "checking out and creating $BRANCHNAME";
+  git checkout -b $BRANCHNAME
+  jira view $JIRA_ID >> "$NOTES_PROJECTPATH/$BRANCHNAME.md";
+
+  tmux send-keys -t 2 "vim $NOTES_PROJECTPATH/$BRANCHNAME.md"
+  tmux send-keys -t 2 Enter;
+}
+
+jqa() {
+  QA_PERSON='Wesley Fermin'
+  QA_WORKFLOW='QA ready'
+  if [[ "$1" ]]; then
+    jira transition --noedit "$QA_WORKFLOW" $1 && jira assign $1 "$QA_PERSON"
+  else
+    echo "need to have ISSUE_ID"
+  fi
+}

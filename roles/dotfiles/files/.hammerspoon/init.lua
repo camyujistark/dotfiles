@@ -16,7 +16,6 @@ local activateLayout = nil
 local runOnApplications = nil
 local canManageWindow = nil
 local handleScreenEvent = nil
-local handleWindowEvent = nil
 local hide = nil
 local initEventHandling = nil
 local internalDisplay = nil
@@ -108,19 +107,6 @@ end)
 --
 -- Event-handling
 --
-
-handleWindowEvent = (function(window)
-  if canManageWindow(window) then
-    local application = window:application()
-    local bundleID = application:bundleID()
-    if layoutConfig[bundleID] then
-      layoutConfig[bundleID](window)
-    end
-  end
-end)
-
-local windowFilter=hs.window.filter.new()
-windowFilter:subscribe(hs.window.filter.windowCreated, handleWindowEvent)
 
 handleScreenEvent = (function()
   -- Make sure that something noteworthy (display count) actually

@@ -1,3 +1,5 @@
+local log = require 'log'
+
 local chain = nil
 local runOnApplications = nil
 local canManageWindow = nil
@@ -24,10 +26,13 @@ bundleIDs.anki = 'net.ankiweb.dtop'
 bundleIDs.notion = 'notion.id'
 bundleIDs.whasapp = 'WhatsApp'
 bundleIDs.todoist = 'com.todoist.mac.Todoist'
+bundleIDs.zoom = 'us.zoom.xos'
+bundleIDs.finder = 'com.apple.finder'
 
 local itermsAppBundleIDs = {
   bundleIDs.iterm2,
   bundleIDs.notion,
+  bundleIDs.finder,
 }
 
 local sidebarBundleIDs = {
@@ -43,6 +48,7 @@ local otherAppsBundleIDs = {
   bundleIDs.slack,
   bundleIDs.anki,
   bundleIDs.whasapp,
+  bundleIDs.zoom,
 }
 
 local grid = {
@@ -269,14 +275,14 @@ local gridLayout = {
         chromeAlien = maybeIsChromeSplit('3,0 3x12', '0,0 6x12'),
         itermApps = maybeIsItermSplitGridCoord('6,0 6x6', '6,0 6x12'),
         otherApps = maybeIsItermSplitGridCoord('6,6 6x6', '0,0 6x12'),
-        sideBar = maybeIsItermSplitGridCoord('6,6 6x6', '0,0 6x12'),
+        sideBar = maybeIsItermSplitGridCoord('6,0 6x6', '6,0 6x12'),
       },
       {
         chromeHome = maybeIsChromeSplit('0,0 6x6', '0,0 12x6'),
         chromeAlien = maybeIsChromeSplit('6,0 6x6', '0,0 12x6'),
         itermApps = maybeIsItermSplitGridCoord('6,6 6x6', '0,6 12x6'),
         otherApps = maybeIsItermSplitGridCoord('0,6 6x6', '0,0 12x6'),
-        sideBar = maybeIsItermSplitGridCoord('0,6 6x6', '0,0 12x6'),
+        sideBar = maybeIsItermSplitGridCoord('6,6 6x6', '0,6 12x6'),
       })
     )
   end),
@@ -311,6 +317,19 @@ local gridLayout = {
         sideBar = maybeIsItermSplitGridCoord('0,8 6x4', maybeIsChromeSplit('0,0 6x8','0,0 12x8')),
       })
     )
+  end),
+  slack = (function()
+    return {
+        chromeHome = '0,0 8x12',
+        chromeAlien = '0,0 8x12',
+        itermApps = '0,0 8x12',
+        otherApps = '8,0 4x6',
+        sideBar = '0,0 8x12',
+        targetApps = {
+          bundleIDs = { bundleIDs.slack, bundleIDs.zoom },
+          grid = '8,6 4x6',
+        }
+      }
   end)
 }
 
@@ -330,11 +349,16 @@ local setGridLayoutInit = (function(layout)
   chrome_switch_to(chromeProfiles.alien)
   local windowChromeProfileAlien = hs.window.frontmostWindow()
   -- init grid
+
   hs.grid.set(windowChromeProfileHome, gridSettings.chromeHome, hs.screen.primaryScreen()) 
   hs.grid.set(windowChromeProfileAlien, gridSettings.chromeAlien, hs.screen.primaryScreen()) 
   setGridOnApplications(itermsAppBundleIDs, gridSettings.itermApps)
   setGridOnApplications(otherAppsBundleIDs, gridSettings.otherApps)
   setGridOnApplications(sidebarBundleIDs, gridSettings.sideBar)
+
+  if gridSettings.targetApps then
+    setGridOnApplications(gridSettings.targetApps.bundleIDs, gridSettings.targetApps.grid)
+  end
 end)
 
 --
@@ -349,7 +373,7 @@ return {
   init = (function()
 
     hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Postman') end)
-    hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Figma') end)
+    hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Finder') end)
     hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Numi') end)
 
     hs.hotkey.bind(mash, "a", function() chrome_switch_to(chromeProfiles.home) end)
@@ -359,7 +383,8 @@ return {
     hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end)
     hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Harvest') end)
 
-    hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('Anki') end)
+    -- anki?
+    hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('zoom.us') end)
     hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Slack') end)
     hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Spotify') end)
     hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') end)
@@ -404,27 +429,36 @@ return {
     }))
 
     hs.hotkey.bind(mash, ']', function() 
-      turnOnSideBar() 
-      setGridLayoutInit()
+      if currentLayout ~= 'zoom' then
+        turnOnSideBar() 
+        setGridLayoutInit()
+      end
     end)
 
     hs.hotkey.bind(mash, '[', function() 
-      turnOnVerticalMode() 
-      setGridLayoutInit()
+      if currentLayout ~= 'zoom' then
+        turnOnVerticalMode() 
+        setGridLayoutInit()
+      end
     end)
 
     hs.hotkey.bind(mash, '0', function() 
-      turnOnIsItermSplit() 
-      setGridLayoutInit()
+      if currentLayout ~= 'zoom' then
+        turnOnIsItermSplit() 
+        setGridLayoutInit()
+      end
     end)
 
     hs.hotkey.bind(mash, '9', function() 
-      turnOnIsChromeSplit() 
-      setGridLayoutInit()
+      if currentLayout ~= 'zoom' then
+        turnOnIsChromeSplit() 
+        setGridLayoutInit()
+      end
     end)
 
     hs.hotkey.bind(mash, '1', (function() setGridLayoutInit('one') end))
     hs.hotkey.bind(mash, '2', (function() setGridLayoutInit('two') end))
     hs.hotkey.bind(mash, '3', (function() setGridLayoutInit('three') end))
+    hs.hotkey.bind(mash, '4', (function() setGridLayoutInit('slack') end))
   end)
 }
