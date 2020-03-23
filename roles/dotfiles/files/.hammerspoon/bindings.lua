@@ -36,7 +36,6 @@ local itermsAppBundleIDs = {
 }
 
 local sidebarBundleIDs = {
-  bundleIDs.calendar,
   bundleIDs.todoist,
 }
 
@@ -49,6 +48,7 @@ local otherAppsBundleIDs = {
   bundleIDs.anki,
   bundleIDs.whasapp,
   bundleIDs.zoom,
+  bundleIDs.calendar,
 }
 
 local grid = {
