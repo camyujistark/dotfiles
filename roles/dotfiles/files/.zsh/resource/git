@@ -385,29 +385,3 @@ tvim() {
       $(echo $FILE | head -n1 | awk '{print $1; }') "$PROJECTPATH/$BRANCHNAME.md";
       # -c ":badd $FILE";
 }
-
-tinit() {
-	PROJECT='divi'
-	PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
-  BRANCHNAME=$( git branch | grep '*' | cut -d ' ' -f2)
-  if [ $1 ]; then
-    jira view $1 >> "$PROJECTPATH/$BRANCHNAME.md";
-  fi
-}
-
-divitodos() {
-	PROJECT='divi'
-	PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
-  TODOSELECT=$(awk 'function branchname(file) {
-    sub(".*/", "", file)
-    sub("\.md", "", file)
-    return file
-  }
-  /\- \[ \]/{print branchname(FILENAME), "---", $0}' $PROJECTPATH/* | fzf)
-
-  if [ $TODOSELECT ]; then
-    BRANCHNAME=${TODOSELECT%% ---*} # Delete after
-    # BRANCHNAME=${TODOSELECT##*------- } # Delete before
-    tvim "$BRANCHNAME"
-  fi
-}

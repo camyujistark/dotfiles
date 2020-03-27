@@ -70,9 +70,9 @@ jrun () {
       jira view $JIRA_ID >> "$NOTES_PROJECTPATH/$BRANCHNAME.md";
     fi
 
+    # open notes
     tmux send-keys -t 2 "vim $NOTES_PROJECTPATH/$BRANCHNAME.md"
     tmux send-keys -t 2 Enter;
-
     return;
   fi
 
@@ -81,6 +81,10 @@ jrun () {
   git checkout -b $BRANCHNAME
   jira view $JIRA_ID >> "$NOTES_PROJECTPATH/$BRANCHNAME.md";
 
+  # move to inprogress
+  jira transition "In Progress" $JIRA_ID --noedit;
+
+  # open notes
   tmux send-keys -t 2 "vim $NOTES_PROJECTPATH/$BRANCHNAME.md"
   tmux send-keys -t 2 Enter;
 }
@@ -92,5 +96,28 @@ jqa() {
     jira transition --noedit "$QA_WORKFLOW" $1 && jira assign $1 "$QA_PERSON"
   else
     echo "need to have ISSUE_ID"
+  fi
+}
+
+jnotes() {
+	PROJECT='divi'
+	PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
+  if [[ -z "$1" ]]; then
+    SEARCH='\- \[ \]'
+  else
+    SEARCH="$( echo $1 | sed 's/\([^[:alnum:]]\)/\\\1/g' | tr '[:upper:]' '[:lower:]')"
+  fi
+
+  TODOSELECT=$(awk 'function branchname(file) {
+    sub(".*/", "", file)
+    sub("\.md", "", file)
+    return file
+  }
+  tolower($0) ~ /'$SEARCH'/{print branchname(FILENAME), "---", $0}' $PROJECTPATH/* | fzf)
+
+  if [ $TODOSELECT ]; then
+    BRANCHNAME=${TODOSELECT%% ---*} # Delete after
+    # BRANCHNAME=${TODOSELECT##*------- } # Delete before
+    tvim "$BRANCHNAME"
   fi
 }

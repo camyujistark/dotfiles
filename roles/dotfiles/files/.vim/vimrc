@@ -180,8 +180,6 @@ if &loadplugins
     packadd! LanguageClient-neovim
     packadd! base16-vim
     packadd! command-t
-    packadd! ale
-    packadd! yats.vim
     packadd! ferret
     packadd! indentLine
     packadd! loupe
@@ -220,6 +218,9 @@ if &loadplugins
     packadd! vim-textobj-rubyblock
     packadd! vim-textobj-user
     packadd! vim-zsh
+    packadd! ale
+    packadd! yats.vim
+    packadd! vim-styled-components
   else
     source $HOME/.vim/pack/bundle/opt/vim-pathogen/autoload/pathogen.vim
     call pathogen#infect('pack/bundle/opt/{}')
