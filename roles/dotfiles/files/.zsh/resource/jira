@@ -23,10 +23,17 @@ jmine() {
 
 jrun () {
   PROJECT='divi'
+  PROJECT_FILE_NAME='lsc_odrs-app'
   JIRA_ID=$1
   BRANCH_CHECKOUT=$2
   NOTES_PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
   CURRENT_BRANCH=$( git branch | grep '*' | cut -d ' ' -f2)
+  BASE_FILE_NAME=$(basename `git rev-parse --show-toplevel`)
+
+  if [ $BASE_FILE_NAME != $PROJECT_FILE_NAME ]; then
+    echo "must be in projcet $PROJECT_FILE_NAME for jrun to work";
+    return
+  fi
 
   if [ -z $JIRA_ID ]; then
     echo "need to have the JIRA_ID in your first parameter";
