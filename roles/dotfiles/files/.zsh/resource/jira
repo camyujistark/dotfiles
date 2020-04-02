@@ -11,19 +11,19 @@ jlist() {
 }
 
 jmine() {
-  while true
-  do
+  # while true
+  # do
       # load before clear
       output=$(jira mine)
       clear
       echo "$output"
-      sleep 60
-  done
+      sleep 2000000
+  # done
 }
 
 jrun () {
   PROJECT='divi'
-  PROJECT_FILE_NAME='lsc_odrs-app'
+  PROJECT_FILE_NAME='lsc_odrs_app'
   JIRA_ID=$1
   BRANCH_CHECKOUT=$2
   NOTES_PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
@@ -62,6 +62,8 @@ jrun () {
   fi
 
   # limitation to having the second pane to always have vim running with notes
+  # note this is a hack atm. would like to make this more specific
+  tmux select-window -t :-
   tmux send-keys -t 2 ":w"
   tmux send-keys -t 2 Enter
   tmux send-keys -t 2 ":q"
@@ -77,7 +79,7 @@ jrun () {
       jira view $JIRA_ID >> "$NOTES_PROJECTPATH/$BRANCHNAME.md";
     fi
 
-    # open notes
+    # open noets
     tmux send-keys -t 2 "vim $NOTES_PROJECTPATH/$BRANCHNAME.md"
     tmux send-keys -t 2 Enter;
     return;
@@ -88,8 +90,8 @@ jrun () {
   git checkout -b $BRANCHNAME
   jira view $JIRA_ID >> "$NOTES_PROJECTPATH/$BRANCHNAME.md";
 
-  # move to inprogress
-  jira transition "In Progress" $JIRA_ID --noedit;
+  # transition to In Progress
+  jtrans "In Progress" $JIRA_ID
 
   # open notes
   tmux send-keys -t 2 "vim $NOTES_PROJECTPATH/$BRANCHNAME.md"
@@ -97,10 +99,16 @@ jrun () {
 }
 
 jqa() {
-  QA_PERSON='Wesley Fermin'
+  JIRA_ID=$1
+  QA_PERSON=$2
+  DEFAULT_QA_PERSON='Wesley Fermin'
   QA_WORKFLOW='QA ready'
-  if [[ "$1" ]]; then
-    jira transition --noedit "$QA_WORKFLOW" $1 && jira assign $1 "$QA_PERSON"
+  if [[ $JIRA_ID ]]; then
+    if [[ $QA_PERSON ]]; then
+      jira transition --noedit "$QA_WORKFLOW" $JIRA_ID && jira assign $JIRA_ID "$QA_PERSON"
+    else
+      jira transition --noedit "$QA_WORKFLOW" $JIRA_ID && jira assign $JIRA_ID $DEFAULT_QA_PERSON
+    fi
   else
     echo "need to have ISSUE_ID"
   fi
@@ -127,4 +135,58 @@ jnotes() {
     # BRANCHNAME=${TODOSELECT##*------- } # Delete before
     tvim "$BRANCHNAME"
   fi
+}
+
+jtrans() {
+  moveTo=$1
+  JIRA_ID=$2
+
+  if [ -z $JIRA_ID ]; then
+    echo 'Need arg with jira ticket id'
+    return
+  fi
+  if [ -z $moveTo ]; then
+    echo 'Need a move to location'
+    return
+  fi
+  ticketStatus="$(jira status $JIRA_ID)"
+  if [ ! "$ticketStatus" ]; then
+    echo "ticket $JIRA_ID does not exist"
+    return
+  fi
+
+  # status
+  TODO_STATUS='To Do'
+  INPROGRESS_STATUS='In Progress'
+  REVIEW_STATUS='Code review'
+  QA_STATUS='QA Ready'
+
+  # QA
+  if [ "$moveTo" = "$QA_STATUS" ]; then
+    if [ "$moveTo" = "$REVIEW_STATUS" ]; then
+      jqa $JIRA_ID
+      return;
+    else
+      echo 'ticket must be in Code review to move to QA Ready'
+      return
+    fi
+  fi
+
+  # Code Review
+  if [ $moveTo = "$REVIEW_STATUS" ] && [ $ticketStatus = "$TODO_STATUS" ]; then 
+      jira transition "$INPROGRESS_STATUS" $JIRA_ID --noedit
+  fi
+
+  # Default
+  jira transition "$moveTo" $JIRA_ID --noedit
+}
+
+jtransition() {
+  JIRA_ID=$1
+  if [ -z $JIRA_ID ]; then
+    echo 'Need arg with jira ticket id'
+    return
+  fi
+  moveTo="$(echo 'QA Ready\nCode review\nIn Progress\nTo Do' | fzf)"
+  jtrans $moveTo $JIRA_ID
 }
