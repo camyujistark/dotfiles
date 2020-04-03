@@ -18,7 +18,8 @@ jmine() {
       clear
       echo "$output"
       sleep 2000000
-  # done
+      sleep 2000
+  done
 }
 
 jrun () {
