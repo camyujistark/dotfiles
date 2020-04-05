@@ -208,3 +208,6 @@
 [submodule "roles/dotfiles/files/.zsh/zsh-autosuggestions"]
 	path = roles/dotfiles/files/.zsh/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/vim-devicons"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/vim-devicons
+	url = https://github.com/ryanoasis/vim-devicons
