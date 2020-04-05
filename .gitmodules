@@ -211,3 +211,6 @@
 [submodule "roles/dotfiles/files/.vim/pack/bundle/opt/vim-devicons"]
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/vim-devicons
 	url = https://github.com/ryanoasis/vim-devicons
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/vim-gitgutter"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/vim-gitgutter
+	url = https://github.com/airblade/vim-gitgutter
