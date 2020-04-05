@@ -214,3 +214,6 @@
 [submodule "roles/dotfiles/files/.vim/pack/bundle/opt/vim-gitgutter"]
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/vim-gitgutter
 	url = https://github.com/airblade/vim-gitgutter
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/auto-pairs"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/auto-pairs
+	url = https://github.com/jiangmiao/auto-pairs
