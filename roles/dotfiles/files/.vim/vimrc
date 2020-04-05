@@ -220,6 +220,8 @@ if &loadplugins
     packadd! vim-zsh
     packadd! ale
     packadd! yats.vim
+    packadd! auto-pairs
+    packadd! vim-gitgutter
     packadd! vim-styled-components
   else
     source $HOME/.vim/pack/bundle/opt/vim-pathogen/autoload/pathogen.vim
