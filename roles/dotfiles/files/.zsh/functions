@@ -359,6 +359,23 @@ amazonmeta() {
   python $AMAZON_SCRAPER_PATH $1
 }
 
+openChrome() {
+  FLAGS=''; if [ -z "$3" ] ; then FLAGS="$3"; fi;
+  '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' $1 \
+  "$FLAGS" \
+  --profile-directory="$2" \
+  &>/dev/null &
+}
+
+openChromeDefault() {
+  openChrome "$1" "Default"
+}
+
+openChromeAlien() {
+  openChrome "$1" "Profile 5"
+}
+
+
 source $HOME/.zsh/resource/bulknaming
 source $HOME/.zsh/resource/git
 source $HOME/.zsh/resource/linktree

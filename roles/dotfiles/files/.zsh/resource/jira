@@ -31,33 +31,33 @@ jrun () {
   BASE_FILE_NAME=$(basename `git rev-parse --show-toplevel`)
 
   if [ $BASE_FILE_NAME != $PROJECT_FILE_NAME ]; then
-    echo "must be in projcet $PROJECT_FILE_NAME for jrun to work";
+    echo "JRUN: must be in project $PROJECT_FILE_NAME for jrun to work";
     return
   fi
 
   if [ -z $JIRA_ID ]; then
-    echo "need to have the JIRA_ID in your first parameter";
+    echo "JRUN: need to have the JIRA_ID in your first parameter";
     return
   fi
 
   if [ -z $BRANCH_CHECKOUT ] && [ $CURRENT_BRANCH != 'develop' ]; then
-    echo "switching to develop branch";
+    echo "GIT: switching to develop branch";
     git checkout develop;
     git pull;
   fi
 
   if [ $BRANCH_CHECKOUT ]; then 
-    echo "switching to $BRANCH_CHECKOUT";
+    echo "GIT: switching to $BRANCH_CHECKOUT";
     git checkout $BRANCH_CHECKOUT;
     git pull;
   fi
 
-  BRANCHNAME=$(jira project $JIRA_ID)
+  BRANCHNAME=$(jira branch $JIRA_ID)
 
   # Currently, you need to have a JIRA_ID so you cannot run on develop or
   # master. But here for safety measures
-  if [ $BRANCHNAME = 'develop' ] || [ $BRANCHNAME = 'master' ]; then
-    echo 'cannot run on $BRANCHNAME';
+  if [ "$CURRENT_BRANCHNAME" = 'develop' ] || [ "$CURRENT_BRANCHNAME" = 'master' ]; then
+    echo 'JRUN: cannot run on $CURRENT_BRANCHNAME';
     exit 0;
   fi
 
@@ -70,8 +70,9 @@ jrun () {
   tmux send-keys -t 2 Enter
 
   # If branch does exists then open the notes
-  if git show-ref --quiet $BRANCHNAME; then
-    echo "$BRANCHNAME already exists";
+  # issue here. Might exist local and not on remote
+  if git rev-parse --verify $BRANCHNAME; then
+    echo "GIT: $BRANCHNAME already exists";
     git checkout $BRANCHNAME;
 
     # If you have already deleted the fil then write again
@@ -79,21 +80,34 @@ jrun () {
       jira view $JIRA_ID >> "$NOTES_PROJECTPATH/$BRANCHNAME.md";
     fi
 
-    # open noets
+    # JIRA transition to In Progress
+    jtrans "In Progress" $JIRA_ID
+
+    # HARVEST Start timer harvest with branch
+    # NOTE: would like to update this in future so not all over the place
+    python $HOME/Documents/Scripts/harvest-api/harvestStart.py 'amica' 'gittask' "$(jira summary $JIRA_ID)"
+
+  # NOTES open in first window pane 2
     tmux send-keys -t 2 "vim $NOTES_PROJECTPATH/$BRANCHNAME.md"
     tmux send-keys -t 2 Enter;
     return;
   fi
 
-  # create branch and notes
-  echo "checking out and creating $BRANCHNAME";
+  # GIT creat branch
+  echo "GIT: checking out and creating $BRANCHNAME";
   git checkout -b $BRANCHNAME
+
+  ## NOTES add notes to view
   jira view $JIRA_ID >> "$NOTES_PROJECTPATH/$BRANCHNAME.md";
 
-  # transition to In Progress
+  # JIRA transition to In Progress
   jtrans "In Progress" $JIRA_ID
 
-  # open notes
+  # HARVEST Start timer harvest with branch
+  # NOTE: would like to update this in future so not all over the place
+  python $HOME/Documents/Scripts/harvest-api/harvestStart.py 'amica' 'gittask' "$(jira summary $JIRA_ID)"
+
+  # NOTES open in first window pane 2
   tmux send-keys -t 2 "vim $NOTES_PROJECTPATH/$BRANCHNAME.md"
   tmux send-keys -t 2 Enter;
 }
@@ -110,7 +124,7 @@ jqa() {
       jira transition --noedit "$QA_WORKFLOW" $JIRA_ID && jira assign $JIRA_ID $DEFAULT_QA_PERSON
     fi
   else
-    echo "need to have ISSUE_ID"
+    echo "JIRAQA: need to have ISSUE_ID"
   fi
 }
 
@@ -142,38 +156,45 @@ jtrans() {
   JIRA_ID=$2
 
   if [ -z $JIRA_ID ]; then
-    echo 'Need arg with jira ticket id'
+    echo 'JIRA:Need arg with jira ticket id'
     return
   fi
   if [ -z $moveTo ]; then
-    echo 'Need a move to location'
+    echo 'JIRA: Need a move to location'
     return
   fi
   ticketStatus="$(jira status $JIRA_ID)"
   if [ ! "$ticketStatus" ]; then
-    echo "ticket $JIRA_ID does not exist"
+    echo "JIRA: ticket $JIRA_ID does not exist"
+    return
+  fi
+
+  if [ "$ticketStatus" = "$moveTo" ]; then 
+    echo "JIRA: Already on $moveTo status"
     return
   fi
 
   # status
   TODO_STATUS='To Do'
   INPROGRESS_STATUS='In Progress'
-  REVIEW_STATUS='Code review'
+  MOVE_REVIEW_STATUS='Code review'
+  # Note: Ticket review status is different to move review status
+  TICKET_REVIEW_STATUS='In Review'
   QA_STATUS='QA Ready'
 
   # QA
   if [ "$moveTo" = "$QA_STATUS" ]; then
-    if [ "$moveTo" = "$REVIEW_STATUS" ]; then
+    if [ "$ticketStatus" = "$TICKET_REVIEW_STATUS" ]; then
       jqa $JIRA_ID
       return;
     else
-      echo 'ticket must be in Code review to move to QA Ready'
+      echo 'JIRA: ticket must be in Code review to move to QA Ready'
       return
     fi
   fi
 
   # Code Review
-  if [ $moveTo = "$REVIEW_STATUS" ] && [ $ticketStatus = "$TODO_STATUS" ]; then 
+  if [ $moveTo = "$MOVE_REVIEW_STATUS" ] && [ $ticketStatus = "$TODO_STATUS" ]; then 
       jira transition "$INPROGRESS_STATUS" $JIRA_ID --noedit
   fi
 
@@ -184,7 +205,7 @@ jtrans() {
 jtransition() {
   JIRA_ID=$1
   if [ -z $JIRA_ID ]; then
-    echo 'Need arg with jira ticket id'
+    echo 'JIRA: Need arg with jira ticket id'
     return
   fi
   moveTo="$(echo 'QA Ready\nCode review\nIn Progress\nTo Do' | fzf)"
