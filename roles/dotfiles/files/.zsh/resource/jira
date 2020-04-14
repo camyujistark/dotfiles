@@ -21,6 +21,24 @@ jmine() {
   # done
 }
 
+jharvest() {
+  JIRA_ID=$1
+  if [ -z "$JIRA_ID" ]; then
+    echo "Need JIRA_ID to run"
+    return
+  fi
+  python $HOME/Documents/Scripts/harvest-api/harvestStart.py 'amica' 'gittask' "$(jira summary $JIRA_ID)" > /dev/null 2>&1 &
+}
+
+harvestTask() {
+  DESCRIPTION=$1
+  if [ -z "$DESCRIPTION" ]; then
+    echo "Need DESCRIPTION to run"
+    return
+  fi
+  python $HOME/Documents/Scripts/harvest-api/harvestStart.py 'amica' 'gittask' "$DESCRIPTION" > /dev/null 2>&1 &
+}
+
 jrun () {
   PROJECT='divi'
   PROJECT_FILE_NAME='lsc_odrs_app'
@@ -85,7 +103,7 @@ jrun () {
 
     # HARVEST Start timer harvest with branch
     # NOTE: would like to update this in future so not all over the place
-    python $HOME/Documents/Scripts/harvest-api/harvestStart.py 'amica' 'gittask' "$(jira summary $JIRA_ID)"
+    jharvest $JIRA_ID
 
   # NOTES open in first window pane 2
     tmux send-keys -t 2 "vim $NOTES_PROJECTPATH/$BRANCHNAME.md"
@@ -105,7 +123,7 @@ jrun () {
 
   # HARVEST Start timer harvest with branch
   # NOTE: would like to update this in future so not all over the place
-  python $HOME/Documents/Scripts/harvest-api/harvestStart.py 'amica' 'gittask' "$(jira summary $JIRA_ID)"
+  jharvest $JIRA_ID
 
   # NOTES open in first window pane 2
   tmux send-keys -t 2 "vim $NOTES_PROJECTPATH/$BRANCHNAME.md"
