@@ -137,9 +137,9 @@ jqa() {
   QA_WORKFLOW='QA ready'
   if [[ $JIRA_ID ]]; then
     if [[ $QA_PERSON ]]; then
-      jira transition --noedit "$QA_WORKFLOW" $JIRA_ID && jira assign $JIRA_ID "$QA_PERSON"
+      jira transition --noedit "$QA_WORKFLOW" "$JIRA_ID" && jira assign "$JIRA_ID" "$QA_PERSON"
     else
-      jira transition --noedit "$QA_WORKFLOW" $JIRA_ID && jira assign $JIRA_ID $DEFAULT_QA_PERSON
+      jira transition --noedit "$QA_WORKFLOW" "$JIRA_ID" && jira assign "$JIRA_ID" "$DEFAULT_QA_PERSON"
     fi
   else
     echo "JIRAQA: need to have ISSUE_ID"
