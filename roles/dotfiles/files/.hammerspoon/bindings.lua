@@ -318,16 +318,16 @@ local gridLayout = {
       })
     )
   end),
-  slack = (function()
+  zoom = (function()
     return {
         chromeHome = '0,0 8x12',
         chromeAlien = '0,0 8x12',
         itermApps = '0,0 8x12',
-        otherApps = '8,0 4x6',
+        otherApps = '0,0 8x12',
         sideBar = '0,0 8x12',
         targetApps = {
-          bundleIDs = { bundleIDs.slack, bundleIDs.zoom },
-          grid = '8,6 4x6',
+          bundleIDs = { bundleIDs.zoom },
+          grid = '8,0 4x12',
         }
       }
   end)
@@ -459,6 +459,6 @@ return {
     hs.hotkey.bind(mash, '1', (function() setGridLayoutInit('one') end))
     hs.hotkey.bind(mash, '2', (function() setGridLayoutInit('two') end))
     hs.hotkey.bind(mash, '3', (function() setGridLayoutInit('three') end))
-    hs.hotkey.bind(mash, '4', (function() setGridLayoutInit('slack') end))
+    hs.hotkey.bind(mash, '4', (function() setGridLayoutInit('zoom') end))
   end)
 }

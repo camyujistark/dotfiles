@@ -304,7 +304,15 @@ curl_file_upload() {
   fi
 }
 
-kall() {  osascript -e 'tell application "System Events" to get name of (processes where background only is false)' | sed "s/iTerm2//;s/Google\ Chrome//;s/Todoist//;s/Slack//;s/1pass//;s/Calendar//;s/Hammerspoon//;s/Karabiner-Elements//;s/Notion//;" | tr , "\n" | xargs -I {} osascript -e 'quit app "{}"' \; }
+fkill() {
+  local pid
+  pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}') 
+  if [ "x$pid" != "x" ]; then
+    echo $pid | xargs kill -9
+  fi
+}
+
+# kall() {  osascript -e 'tell application "System Events" to get name of (processes where background only is false)' | sed "s/iTerm2//;s/Google\ Chrome//;s/Todoist//;s/Slack//;s/1pass//;s/Calendar//;s/Hammerspoon//;s/Karabiner-Elements//;s/Notion//;" | tr , "\n" | xargs -I {} osascript -e 'quit app "{}"' \; }
 
 #ack
 vack() {
