@@ -11,14 +11,14 @@ jlist() {
 }
 
 jmine() {
-  # while true
-  # do
+  while true
+  do
       # load before clear
       output=$(jira mine)
       clear
       echo "$output"
-      sleep 2000000
-  # done
+      sleep 60
+  done
 }
 
 jharvest() {
@@ -47,6 +47,7 @@ jrun () {
   NOTES_PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
   CURRENT_BRANCH=$( git branch | grep '*' | cut -d ' ' -f2)
   BASE_FILE_NAME=$(basename `git rev-parse --show-toplevel`)
+  BASE_BRANCH='national-launch'
 
   if [ $BASE_FILE_NAME != $PROJECT_FILE_NAME ]; then
     echo "JRUN: must be in project $PROJECT_FILE_NAME for jrun to work";
@@ -59,8 +60,8 @@ jrun () {
   fi
 
   if [ -z $BRANCH_CHECKOUT ] && [ $CURRENT_BRANCH != 'develop' ]; then
-    echo "GIT: switching to develop branch";
-    git checkout develop;
+    echo "GIT: switching to $BASE_BRANCH branch";
+    git checkout $BASE_BRANCH;
     git pull;
   fi
 
