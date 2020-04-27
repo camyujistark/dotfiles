@@ -14,9 +14,12 @@ jmine() {
   while true
   do
       # load before clear
-      output=$(jira mine)
+      todo=$(jira project_todo)
+      inprogress=$(jira project_inprogress)
+      inreview=$(jira project_inreview)
+      inqa=$(jira project_inqa)
       clear
-      echo "$output"
+      paste <(printf %s "$(fold -w 80 <<< $(echo $todo))") <(printf %s "$(fold -w 80 <<< $(echo $inprogress; echo $inreview; echo $inqa))") | column -s $'\t' -t
       sleep 60
   done
 }
