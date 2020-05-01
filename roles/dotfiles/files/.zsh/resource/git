@@ -342,7 +342,7 @@ gitpu() {
   fi
 }
 
-gitpupr() {
+gitppr() {
   gitpu && gitpr;
 }
 

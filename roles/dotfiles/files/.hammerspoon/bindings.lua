@@ -384,7 +384,7 @@ return {
     hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Harvest') end)
 
     -- anki?
-    hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('zoom.us') end)
+    hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('Mail') end)
     hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Slack') end)
     hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Spotify') end)
     hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') end)

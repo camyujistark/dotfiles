@@ -17,9 +17,10 @@ jmine() {
       todo=$(jira project_todo)
       inprogress=$(jira project_inprogress)
       inreview=$(jira project_inreview)
+      discussion=$(jira project_discussion)
       inqa=$(jira project_inqa)
       clear
-      paste <(printf %s "$(fold -w 80 <<< $(echo $todo))") <(printf %s "$(fold -w 80 <<< $(echo $inprogress; echo $inreview; echo $inqa))") | column -s $'\t' -t
+      paste <(printf %s "$(fold -w 80 <<< $(echo $todo; echo '\n \n \n \n'))") <(printf %s "$(fold -w 80 <<< $(echo $inprogress; echo $discussion; echo $inreview; echo $inqa))") | column -s $'\t' -t
       sleep 60
   done
 }
@@ -230,6 +231,6 @@ jtransition() {
     echo 'JIRA: Need arg with jira ticket id'
     return
   fi
-  moveTo="$(echo 'QA Ready\nCode review\nIn Progress\nTo Do' | fzf)"
+  moveTo="$(echo 'Backlog\nFor Discussion\nQA Ready\nCode review\nIn Progress\nTo Do' | fzf)"
   jtrans $moveTo $JIRA_ID
 }
