@@ -2,6 +2,13 @@
 # Bulk Naming
 #
 
+rename() {
+    for i in $1*
+    do
+        mv "$i" "${i/$1/$2}"
+    done
+}
+
 bulkrename() {
   if [ $# -eq 3 ]; then
     for i in $(find "$PWD" -type f -iname "*$1*") ; do
@@ -13,17 +20,17 @@ bulkrename() {
   fi
 }
 
-copy_files_repalce_name() {
+copy_files_replace_name() {
   FILENAME="$1"
   FILEPATH="$2"
   REPLACE="$3"
 
-  while read -r line
+  while read -r LINE
   do
-      NAME="$line"
-      NEW_PATH="${filepath/$replace/$NAME}"
+      NAME="$LINE"
+      NEW_PATH="${FILEPATH/$REPLACE/$NAME}"
       echo $FILEPATH
-      cp -- "$fILEPATH" "$NEW_PATH";
+      cp -- "$FILEPATH" "$NEW_PATH";
       sed -i -e 's/'$REPLACE'/'$NAME'/g' "$NEW_PATH"
   done < "$FILENAME"
 }
