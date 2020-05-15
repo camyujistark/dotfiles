@@ -59,8 +59,16 @@ jrun () {
   fi
 
   if [ -z $JIRA_ID ]; then
-    echo "JRUN: need to have the JIRA_ID in your first parameter";
-    return
+    # get fzf of latest branches from git reflog
+    JIRA_ID=$(grl | awk -F'-' '{print $2;}')
+    if [ -z $JIRA_ID ]; then
+      echo "JIRA_ID does not exist"
+      return
+    fi
+    if ! [[ $JIRA_ID =~ '^[0-9]+$' ]]; then
+      echo "JIRA_ID is not a number"
+      return
+    fi
   fi
 
   if [ -z $BRANCH_CHECKOUT ] && [ $CURRENT_BRANCH != 'develop' ]; then

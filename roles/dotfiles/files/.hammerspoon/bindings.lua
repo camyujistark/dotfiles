@@ -293,28 +293,28 @@ local gridLayout = {
         chromeAlien = maybeIsChromeSplit('3,0 3x12', '0,0 6x12'),
         itermApps = maybeIsItermSplitGridCoord('6,0 3x6', '6,0 3x12'),
         otherApps = maybeIsItermSplitGridCoord('6,6 3x6', '0,0 6x12'),
-        sideBar = '9,0 3x12',
+        sideBar = '8,0 4x12',
       },
       {
         chromeHome = maybeIsChromeSplit('0,0 4x8', '0,0 9x8'),
         chromeAlien = maybeIsChromeSplit('4,0 5x8', '0,0 9x8'),
         itermApps = maybeIsItermSplitGridCoord('4,8 5x4', '0,8 9x4'),
         otherApps = maybeIsItermSplitGridCoord('0,8 4x4', maybeIsChromeSplit('0,0 4x8', '0,0 9x8')),
-        sideBar = '9,0 3x12',
+        sideBar = '8,0 4x12',
       }),
       maybeIsVertical({
         chromeHome = maybeIsChromeSplit('0,0 4x12', '0,0 8x12'),
         chromeAlien = maybeIsChromeSplit('4,0 4x12', '0,0 8x12'),
         itermApps = maybeIsItermSplitGridCoord('8,0 4x6', '8,0 4x12'),
         otherApps = maybeIsItermSplitGridCoord('8,6 4x6', maybeIsChromeSplit('4,0 4x12','0,0 8x12')),
-        sideBar = maybeIsItermSplitGridCoord('8,6 4x6', maybeIsChromeSplit('4,0 4x12','0,0 8x12')),
+        sideBar = '8,0 4x12',
       },
       {
         chromeHome = maybeIsChromeSplit('0,0 6x8', '0,0 12x8'),
         chromeAlien = maybeIsChromeSplit('6,0 6x8', '0,0 12x8'),
         itermApps = maybeIsItermSplitGridCoord('6,8 6x4', '0,8 12x4'),
         otherApps = maybeIsItermSplitGridCoord('0,8 6x4', maybeIsChromeSplit('0,0 6x8','0,0 12x8')),
-        sideBar = maybeIsItermSplitGridCoord('0,8 6x4', maybeIsChromeSplit('0,0 6x8','0,0 12x8')),
+        sideBar = '8,0 4x12',
       })
     )
   end),

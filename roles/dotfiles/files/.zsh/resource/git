@@ -293,6 +293,27 @@ gh() {
   grep -o "[a-f0-9]\{7,\}"
 }
 
+grl() {
+  is_in_git_repo || return
+  # Ref: https://gist.github.com/jordan-brough/48e2803c0ffa6dc2e0bd
+  NUM=${NUM-30} # default to 30 lines
+  CHECK_EXISTENCE=${CHECK_EXISTENCE-0} # default to *not* checking existence (faster)
+  BRANCHES=(
+    $(git reflog |
+      egrep -io "moving from ([^[:space:]]+)" |
+      awk '{ print $3 }' | # extract 3rd column
+      awk ' !x[$0]++' | # Removes duplicates.  See http://stackoverflow.com/questions/11532157
+      egrep -v '^[a-f0-9]{40}$' | # remove hash results
+      while read line; do # verify existence
+        ([[ $CHECK_EXISTENCE = '0' ]] || git rev-parse --verify "$line" &>/dev/null) && echo "$line"
+      done |
+      head -n "$NUM"
+    )
+  )
+  SELECT=$(echo $BRANCHES | tr " " "\n" | fzf)
+  echo $SELECT
+}
+
 gr() {
   is_in_git_repo || return
   git remote -v | awk '{print $1 "\t" $2}' | uniq |
@@ -384,4 +405,8 @@ tvim() {
       -c ":wincmd l"\
       $(echo $FILE | head -n1 | awk '{print $1; }') "$PROJECTPATH/$BRANCHNAME.md";
       # -c ":badd $FILE";
+}
+
+gitco() {
+  git checkout $(grl);
 }
