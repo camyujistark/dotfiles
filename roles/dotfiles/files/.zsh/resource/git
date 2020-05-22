@@ -245,10 +245,6 @@ if todos 2>&1 > /dev/null; then
 fi
 }
 
-gitco() {
-  git checkout $(git branch | fzf);
-}
-
 # GIT heart FZF
 # -------------
 
