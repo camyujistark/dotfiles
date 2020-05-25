@@ -15,8 +15,8 @@ let g:ale_fixers = {
 \    'scss': ['prettier'],
 \    'html': ['prettier']
 \}
-let g:ale_fix_on_save = 1
 
+let g:ale_fix_on_save = 1
 command! ALEToggleFixer execute "let g:ale_fix_on_save = get(g:, 'ale_fix_on_save', 0) ? 0 : 1"
 
 " Load file with js alias on gf
@@ -37,3 +37,4 @@ function! LoadMainNodeModule(fname)
 endfunction
 
 set includeexpr=LoadMainNodeModule(v:fname)
+

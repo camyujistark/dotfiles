@@ -181,7 +181,6 @@ if &loadplugins
     packadd! base16-vim
     packadd! command-t
     packadd! ferret
-    packadd! indentLine
     packadd! loupe
     packadd! neco-ghc
     packadd! pinnacle
@@ -235,6 +234,7 @@ endif
 " Must come *after* the `:packadd!` calls above otherwise the contents of
 " package "ftdetect" directories won't be evaluated.
 filetype indent plugin on
+let g:jsx_ext_required = 0
 syntax on
 
 " After this file is sourced, plugin code will be evaluated.
