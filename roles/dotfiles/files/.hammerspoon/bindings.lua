@@ -380,7 +380,6 @@ return {
       chrome_switch_to(chromeProfiles.home) 
     end)
     hs.hotkey.bind(mash, "o", function() 
-      hs.application.launchOrFocus('Google Chrome') 
       chrome_switch_to(chromeProfiles.alien) 
     end)
     hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Notion') end)
