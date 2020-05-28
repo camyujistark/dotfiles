@@ -115,14 +115,12 @@ const LTC_BLUETOOTH = {
   ...DEVICE_DEFAULTS,
   identifiers: {
     ...IDENTIFIER_DEFAULTS,
-    product_id: 544,
-    vendor_id: 1452,
+    product_id: 30264,
+    vendor_id: 3141
   },
   simple_modifications: [
     ...swap('left_command', 'left_option'),
     ...swap('right_command', 'right_option'),
-    ...fromTo('escape', 'grave_accent_and_tilde'),
-    ...swap('up_arrow', 'slash'),
   ],
 };
 

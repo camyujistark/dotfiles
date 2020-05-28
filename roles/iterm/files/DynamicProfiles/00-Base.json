@@ -10,7 +10,7 @@
       "Rows" : 25,
       "Use Italic Font" : true,
       "Use Custom Window Title" : false,
-      "Right Option Key Sends" : 0,
+      "Right Option Key Sends" : 1,
       "Character Encoding" : 4,
       "Triggers" : [
 
@@ -301,7 +301,7 @@
       "Command" : "",
       "Terminal Type" : "xterm-256color",
       "Horizontal Spacing" : 1,
-      "Option Key Sends" : 0,
+      "Option Key Sends" : 1,
       "Only The Default BG Color Uses Transparency" : false,
       "Blink Allowed" : false,
       "Minimum Contrast" : 0.0,
