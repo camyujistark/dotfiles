@@ -387,3 +387,20 @@ snip.rv = (snip.basename or 'unnamed') + '_submit'
 	<p><input type="submit" value="Continue →"`!p x(snip)`></p>
 </form>
 endsnippet
+
+snippet propTypes "propTypes" w:
+$1.propTypes = {
+	chlidren: PropTypes.node.isRequired,
+	$2: PropTypes.$3,
+}
+
+$1.defaultProps = {
+	$2: ${4:undefined},
+}
+endsnippet
+
+snippet reactImport "init page" w:
+import React from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+endsnippet
