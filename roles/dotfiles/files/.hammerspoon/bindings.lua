@@ -313,7 +313,7 @@ local gridLayout = {
         chromeHome = maybeIsChromeSplit('0,0 6x8', '0,0 12x8'),
         chromeAlien = maybeIsChromeSplit('6,0 6x8', '0,0 12x8'),
         itermApps = maybeIsItermSplitGridCoord('6,8 6x4', '0,8 12x4'),
-        otherApps = maybeIsItermSplitGridCoord('0,8 6x4', maybeIsChromeSplit('0,0 6x8','0,0 12x8')),
+        otherApps = maybeIsItermSplitGridCoord('0,8 6x4', maybeIsChromeSplit('6,0 6x8', '0,0 12x8')),
         sideBar = '8,0 4x12',
       })
     )
@@ -372,15 +372,15 @@ local mash = {'ctrl', 'alt', 'shift','cmd'}
 return {
   init = (function()
 
-    hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Postman') end)
-    hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Finder') end)
+    hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Calendar') end)
+    hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Mail') end)
     hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Numi') end)
-    hs.hotkey.bind(mash, "a", function() 
-      hs.application.launchOrFocus('Google Chrome') 
-      chrome_switch_to(chromeProfiles.home) 
+    hs.hotkey.bind(mash, "a", function()
+      hs.application.launchOrFocus('Google Chrome')
+      chrome_switch_to(chromeProfiles.home)
     end)
-    hs.hotkey.bind(mash, "o", function() 
-      chrome_switch_to(chromeProfiles.alien) 
+    hs.hotkey.bind(mash, "o", function()
+      chrome_switch_to(chromeProfiles.alien)
     end)
     hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Notion') end)
     hs.hotkey.bind(mash, 'u', function() hs.application.launchOrFocus('iTerm') end)
@@ -388,11 +388,10 @@ return {
     hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Harvest') end)
 
     -- anki?
-    hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('Mail') end)
+    hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('Finder') end)
     hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Slack') end)
     hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Spotify') end)
     hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') end)
-    hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocus('Calendar') end) 
     hs.hotkey.bind(mash, 'm', function() hs.application.launchOrFocus('Marked 2') end)
 
     hs.hotkey.bind({'ctrl', 'alt'}, 'up', chain({
