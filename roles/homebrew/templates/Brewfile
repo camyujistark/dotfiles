@@ -157,6 +157,7 @@ brew "rust"
 brew "s3cmd"
 brew "shared-mime-info"
 brew "shellcheck"
+cask 'sketchbook'
 brew "sk"
 brew "sqlite"
 brew "talloc"

@@ -21,6 +21,7 @@ bundleIDs.calendar = 'com.apple.iCal'
 bundleIDs.mail = 'com.apple.mail'
 bundleIDs.postman = 'com.postmanlabs.mac'
 bundleIDs.spotify = 'com.spotify.client'
+bundleIDs.sketchbook = 'com.autodesk.sketchbookpro7mac'
 bundleIDs.slack = 'com.tinyspeck.slackmacgap'
 bundleIDs.anki = 'net.ankiweb.dtop'
 bundleIDs.notion = 'notion.id'
@@ -49,6 +50,7 @@ local otherAppsBundleIDs = {
   bundleIDs.zoom,
   bundleIDs.calendar,
   bundleIDs.notion,
+  bundleIDs.sketchbook,
 }
 
 local grid = {
