@@ -11,8 +11,8 @@ jlist() {
 }
 
 jmine() {
-  while true
-  do
+  # while true
+  # do
       # load before clear
       todo=$(jira project_todo)
       inprogress=$(jira project_inprogress)
@@ -21,8 +21,9 @@ jmine() {
       inqa=$(jira project_inqa)
       clear
       paste <(printf %s "$(fold -w 80 <<< $(echo $todo; echo ' \n \n \n \n'))") <(printf %s "$(fold -w 80 <<< $(echo $inprogress; echo $discussion; echo $inreview; echo $inqa))") | column -s $'\t' -t
-      sleep 60
-  done
+      # echo 'here'
+      # sleep 60
+  # done
 }
 
 jharvest() {
@@ -52,6 +53,11 @@ jrun () {
   CURRENT_BRANCH=$( git branch | grep '*' | cut -d ' ' -f2)
   BASE_FILE_NAME=$(basename `git rev-parse --show-toplevel`)
   BASE_BRANCH='DIVI-145-consent-orders'
+
+  if [[ $(git status -s) ]]; then
+    echo "You have uncommited changes. please update first";
+    return
+  fi
 
   if [ $BASE_FILE_NAME != $PROJECT_FILE_NAME ]; then
     echo "JRUN: must be in project $PROJECT_FILE_NAME for jrun to work";
