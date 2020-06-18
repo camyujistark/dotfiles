@@ -77,9 +77,12 @@ merge_conflicts() {
   echo "$docs";
 }
 
+gmc() {
+  merge_conflicts | fzf --multi --preview "head -$LINES {}"
+}
+
 fmi() {
-  doc=$(merge_conflicts | fzf --multi --preview "head -$LINES {}" ) &&
-  ${EDITOR} -p $( echo "$doc" | tr '\r\n' ' ');
+  ${EDITOR} -p $( echo "$(gmc)" | tr '\r\n' ' ');
   # git mergetool $( echo "$doc" | tr '\r\n' ' ');
 }
 
