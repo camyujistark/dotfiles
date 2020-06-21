@@ -3,11 +3,12 @@ local log = require 'log'
 local chain = nil
 local runOnApplications = nil
 local canManageWindow = nil
-local currentLayout = false
 local sideBar = false
 local isWindowsVertical = true
 local isItermSplit = false
 local isChromeSplit = false
+local currentLayout = nil
+local currentAppLayout = nil
 
 -- chrome profiles
 local chromeProfiles = {}
@@ -16,42 +17,23 @@ chromeProfiles.alien = 'Cam (Alien)'
 
 -- programs
 local bundleIDs = {}
-bundleIDs.iterm2 = 'com.googlecode.iterm2'
+bundleIDs.anki = 'net.ankiweb.dtop'
 bundleIDs.calendar = 'com.apple.iCal'
+bundleIDs.chrome ='com.google.Chrome'
+bundleIDs.dayone = 'com.bloombuilt.dayone-mac'
+bundleIDs.finder = 'com.apple.finder'
+bundleIDs.iterm2 = 'com.googlecode.iterm2'
 bundleIDs.mail = 'com.apple.mail'
+bundleIDs.notion = 'notion.id'
 bundleIDs.postman = 'com.postmanlabs.mac'
-bundleIDs.spotify = 'com.spotify.client'
 bundleIDs.sketchbook = 'com.autodesk.sketchbookpro7mac'
 bundleIDs.slack = 'com.tinyspeck.slackmacgap'
-bundleIDs.anki = 'net.ankiweb.dtop'
-bundleIDs.notion = 'notion.id'
-bundleIDs.whasapp = 'WhatsApp'
+bundleIDs.spotify = 'com.spotify.client'
 bundleIDs.todoist = 'com.todoist.mac.Todoist'
+bundleIDs.whasapp = 'WhatsApp'
 bundleIDs.zoom = 'us.zoom.xos'
-bundleIDs.finder = 'com.apple.finder'
+bundleIDs.unity = 'com.unity3d.UnityEditor5.x'
 
-local itermsAppBundleIDs = {
-  bundleIDs.iterm2,
-  bundleIDs.finder,
-}
-
-local sidebarBundleIDs = {
-  bundleIDs.todoist,
-}
-
-local otherAppsBundleIDs = {
-  bundleIDs.calendar,
-  bundleIDs.mail,
-  bundleIDs.postman,
-  bundleIDs.spotify,
-  bundleIDs.slack,
-  bundleIDs.anki,
-  bundleIDs.whasapp,
-  bundleIDs.zoom,
-  bundleIDs.calendar,
-  bundleIDs.notion,
-  bundleIDs.sketchbook,
-}
 
 local grid = {
   topHalf = '0,0 12x6',
@@ -73,6 +55,55 @@ local grid = {
   fullScreen = '0,0 12x12',
   centeredBig = '3,3 6x6',
 }
+
+function tablemerge(t1, t2)
+  for k,v in ipairs(t2) do
+    table.insert(t1, v)
+  end 
+
+  return t1
+end
+
+local maybeIsSideBar = (function(a, b)
+  if sideBar then
+    return a 
+  else
+    return b
+  end
+end)
+local maybeIsVertical = (function(a, b)
+  if isWindowsVertical then
+    return a
+  else
+    return b
+  end
+end)
+local maybeIsItermSplitGridCoord = (function(a, b)
+  if isItermSplit then
+    return a
+  else
+    return b
+  end
+end)
+local maybeIsChromeSplit = (function(a, b)
+  if isChromeSplit then
+    return a
+  else
+    return b
+  end
+end)
+
+local getChromeProfileWindows = (function()
+  -- get chrome profiles
+  local chromeProfileWindows = {}
+  -- home
+  chrome_switch_to(chromeProfiles.home)
+  chromeProfileWindows.home = hs.window.frontmostWindow()
+  -- alien
+  chrome_switch_to(chromeProfiles.alien)
+  chromeProfileWindows.alien = hs.window.frontmostWindow()
+  return chromeProfileWindows;
+end)
 
 local lastSeenChain = nil
 local lastSeenWindow = nil
@@ -144,24 +175,279 @@ chrome_switch_to = (function(ppl)
   end
 end)
 
-runOnApplications = (function(bundleIDs, callback)
+getBundleWindows = (function(bundleIDs, callback)
+  bundleWindows = {}
   for i, bundleID in pairs(bundleIDs) do
     local application = hs.application.get(bundleID)
     if application then
       local windows = application:visibleWindows()
       for _, window in pairs(windows) do
         if canManageWindow(window) then
-          callback(window)
+          table.insert(bundleWindows, window)
         end
       end
     end
   end
+  return bundleWindows
 end)
 
-setGridOnApplications = (function(bundleIds, gridCoord)
-    runOnApplications(bundleIds, function(window) hs.grid.set(window, gridCoord, hs.screen.primaryScreen()) end)
+runOnApplications = (function(appWindows, groupGrid, showOnTop)
+  for _, window in pairs(appWindows) do
+      hs.grid.set(window, groupGrid, hs.screen.primaryScreen())
+      if showOnTop then
+        window:focus()
+      end
+  end
 end)
 
+-- Grid Layouts
+
+
+
+--|------|------|------------|-------|
+--|      |      |            |       |
+--|      |      |     B      |       |
+--|      |      |            |       |
+--|  A1  |  A2  |------------|   D   |
+--|      |      |            |       |
+--|      |      |     C      |       |
+--|      |      |            |       |
+--|------|------|------------|-------|
+
+
+local gridLayout = {
+  one = (function()
+    return maybeIsSideBar({
+      A1 = maybeIsChromeSplit('0,0 4x12', '0,0 9x12'),
+      A2 = maybeIsChromeSplit('4,0 5x12', '0,0 9x12'),
+      B = maybeIsItermSplitGridCoord('0,0 4x12', '0,0 9x12'),
+      C = maybeIsItermSplitGridCoord('0,0 4x12', '0,0 9x12'),
+      D = '9,0 3x12',
+    },
+    {
+      A1 = maybeIsChromeSplit('0,0 6x12', '0,0 12x12'),
+      A2 = maybeIsChromeSplit('6,0 6x12', '0,0 12x12'),
+      B = maybeIsItermSplitGridCoord('6,0 6x12', '0,0 12x12'),
+      C = maybeIsItermSplitGridCoord('0,0 6x12', '0,0 12x12'),
+      D = maybeIsItermSplitGridCoord('0,0 6x12', '0,0 12x12'),
+    })
+  end),
+  two = (function()
+    return maybeIsSideBar(
+      maybeIsVertical({
+        A1 = maybeIsChromeSplit('0,0 4x6', '0,0 4x12'),
+        A2 = maybeIsChromeSplit('0,6 4x6', '0,0 4x12'),
+        B = maybeIsItermSplitGridCoord('4,0 5x6', '4,0 5x12'),
+        C = maybeIsItermSplitGridCoord('4,6 5x6', '4,0 5x12'),
+        D = '9,0 3x12',
+      },
+      {
+        A1 = maybeIsChromeSplit('0,0 4x6', '0,0 9x6'),
+        A2 = maybeIsChromeSplit('4,0 5x6', '0,0 9x6'),
+        B = maybeIsItermSplitGridCoord('4,6 5x6', '0,6 9x6'),
+        C = maybeIsItermSplitGridCoord('0,6 4x6', '0,6 9x6'),
+        D = '9,0 3x12',
+      }),
+      maybeIsVertical({
+        A1 = maybeIsChromeSplit('0,0 3x12', '0,0 6x12'),
+        A2 = maybeIsChromeSplit('3,0 3x12', '0,0 6x12'),
+        B = maybeIsItermSplitGridCoord('6,0 6x6', '6,0 6x12'),
+        C = maybeIsItermSplitGridCoord('6,6 6x6', '0,0 6x12'),
+        D = maybeIsItermSplitGridCoord('6,0 6x6', '6,0 6x12'),
+      },
+      {
+        A1 = maybeIsChromeSplit('0,0 6x6', '0,0 12x6'),
+        A2 = maybeIsChromeSplit('6,0 6x6', '0,0 12x6'),
+        B = maybeIsItermSplitGridCoord('6,6 6x6', '0,6 12x6'),
+        C = maybeIsItermSplitGridCoord('0,6 6x6', '0,0 12x6'),
+        D = maybeIsItermSplitGridCoord('6,6 6x6', '0,6 12x6'),
+      })
+    )
+  end),
+  three = (function()
+    return maybeIsSideBar(
+      maybeIsVertical({
+        A1 = maybeIsChromeSplit('0,0 3x12', '0,0 6x12'),
+        A2 = maybeIsChromeSplit('3,0 3x12', '0,0 6x12'),
+        B = maybeIsItermSplitGridCoord('6,0 3x6', '6,0 3x12'),
+        C = maybeIsItermSplitGridCoord('6,6 3x6', '0,0 6x12'),
+        D = '8,0 4x12',
+      },
+      {
+        A1 = maybeIsChromeSplit('0,0 4x8', '0,0 9x8'),
+        A2 = maybeIsChromeSplit('4,0 5x8', '0,0 9x8'),
+        B = maybeIsItermSplitGridCoord('4,8 5x4', '0,8 9x4'),
+        C = maybeIsItermSplitGridCoord('0,8 4x4', maybeIsChromeSplit('0,0 4x8', '0,0 9x8')),
+        D = '8,0 4x12',
+      }),
+      maybeIsVertical({
+        A1 = maybeIsChromeSplit('0,0 4x12', '0,0 8x12'),
+        A2 = maybeIsChromeSplit('4,0 4x12', '0,0 8x12'),
+        B = maybeIsItermSplitGridCoord('8,0 4x6', '8,0 4x12'),
+        C = maybeIsItermSplitGridCoord('8,6 4x6', maybeIsChromeSplit('4,0 4x12','0,0 8x12')),
+        D = '8,0 4x12',
+      },
+      {
+        A1 = maybeIsChromeSplit('0,0 6x8', '0,0 12x8'),
+        A2 = maybeIsChromeSplit('6,0 6x8', '0,0 12x8'),
+        B = maybeIsItermSplitGridCoord('6,8 6x4', '0,8 12x4'),
+        C = maybeIsItermSplitGridCoord('0,8 6x4', maybeIsChromeSplit('6,0 6x8', '0,0 12x8')),
+        D = '8,0 4x12',
+      })
+    )
+  end),
+}
+
+local appLayoutFormation = {
+  'default',
+  'zoom',
+  'unity',
+}
+
+local setAppGroup = (function(layout)
+  local chromeProfileWindow = getChromeProfileWindows()
+  local appLayouts = {
+    default = {
+      A1 = {
+        chromeProfileWindow.home
+      },
+      A2 = {
+        chromeProfileWindow.alien
+      },
+      B = getBundleWindows({
+        bundleIDs.iterm2,
+        bundleIDs.finder,
+        bundleIDs.notion,
+      }),
+      C = getBundleWindows({
+        bundleIDs.calendar,
+        bundleIDs.mail,
+        bundleIDs.postman,
+        bundleIDs.spotify,
+        bundleIDs.slack,
+        bundleIDs.anki,
+        bundleIDs.whasapp,
+        bundleIDs.calendar,
+        bundleIDs.sketchbook,
+        bundleIDs.dayone,
+        bundleIDs.zoom,
+        bundleIDs.unity,
+      }),
+      D = getBundleWindows({
+        bundleIDs.todoist,
+      }),
+    },
+    unity = {
+      A1 = getBundleWindows({
+        bundleIDs.unity
+      }),
+      A2 = {
+        chromeProfileWindow.home
+      },
+      B = getBundleWindows({
+        bundleIDs.iterm2,
+        bundleIDs.finder,
+        bundleIDs.notion,
+        bundleIDs.calendar,
+        bundleIDs.mail,
+        bundleIDs.postman,
+        bundleIDs.spotify,
+        bundleIDs.slack,
+        bundleIDs.anki,
+        bundleIDs.whasapp,
+        bundleIDs.calendar,
+        bundleIDs.sketchbook,
+        bundleIDs.dayone,
+        bundleIDs.zoom,
+      }),
+      C = {
+        chromeProfileWindow.alien
+      },
+      D = getBundleWindows({
+        bundleIDs.todoist,
+      }),
+    },
+    zoom = {
+      A1 = {
+        chromeProfileWindow.home
+      },
+      A2 = tablemerge(
+        { chromeProfileWindow.alien },
+        getBundleWindows({
+          bundleIDs.iterm2,
+          bundleIDs.finder,
+          bundleIDs.notion,
+          bundleIDs.todoist,
+        })
+      ),
+      B = getBundleWindows({ 
+        bundleIDs.zoom 
+      }),
+      C = getBundleWindows({
+        bundleIDs.calendar,
+        bundleIDs.mail,
+        bundleIDs.postman,
+        bundleIDs.spotify,
+        bundleIDs.slack,
+        bundleIDs.anki,
+        bundleIDs.whasapp,
+        bundleIDs.calendar,
+        bundleIDs.sketchbook,
+        bundleIDs.dayone,
+        bundleIDs.unity,
+      }),
+    }
+  }
+  if layout then
+    return appLayouts[layout]
+  end
+  return appLayouts.default
+end)
+
+local setGridLayoutInit = (function(layout)
+
+  local _layout
+  if layout then
+    _layout = layout
+    currentLayout = layout
+  elseif currentLayout then
+    _layout = currentLayout
+  else
+    return
+  end
+
+  local gridSettings = gridLayout[_layout]()
+  local appGroup = setAppGroup(currentAppLayout)
+
+  if appGroup.D then
+    runOnApplications( appGroup.D, gridSettings.D )
+  end
+  if appGroup.C then
+    runOnApplications( appGroup.C, gridSettings.C )
+  end
+  if appGroup.B then
+    runOnApplications( appGroup.B, gridSettings.B )
+  end
+  if appGroup.A2 then
+    runOnApplications( appGroup.A2, gridSettings.A2, true )
+  end
+  if appGroup.A1 then
+    runOnApplications( appGroup.A1, gridSettings.A1, true )
+  end
+end)
+
+-- Set Layout
+local chainFormation = (function()
+  local cycleLength = #appLayoutFormation
+  local sequenceNumber = 1
+  currentAppLayout = appLayoutFormation[sequenceNumber]
+
+  return function()
+    sequenceNumber = sequenceNumber % cycleLength + 1
+    currentAppLayout = appLayoutFormation[sequenceNumber]
+    setGridLayoutInit()
+  end
+end)
 
 -- Toggle Sidebar
 
@@ -171,14 +457,7 @@ local turnOnSideBar = (function()
   else
     sideBar = true
   end
-end)
-
-local maybeIsSideBar = (function(a, b)
-  if sideBar then
-    return a 
-  else
-    return b
-  end
+  setGridLayoutInit()
 end)
 
 -- Toggle Vertial Mode
@@ -189,14 +468,7 @@ local turnOnVerticalMode = (function()
   else
     isWindowsVertical = true
   end
-end)
-
-local maybeIsVertical = (function(a, b)
-  if isWindowsVertical then
-    return a 
-  else
-    return b
-  end
+  setGridLayoutInit()
 end)
 
 -- Toggle Iterm Split
@@ -207,15 +479,9 @@ local turnOnIsItermSplit = (function()
   else
     isItermSplit = true
   end
+  setGridLayoutInit()
 end)
 
-local maybeIsItermSplitGridCoord = (function(a, b)
-  if isItermSplit then
-    return a 
-  else
-    return b
-  end
-end)
 
 -- Toggle Chrome Split
 
@@ -225,143 +491,9 @@ local turnOnIsChromeSplit = (function()
   else
     isChromeSplit = true
   end
+  setGridLayoutInit()
 end)
 
-local maybeIsChromeSplit = (function(a, b)
-  if isChromeSplit then
-    return a 
-  else
-    return b
-  end
-end)
-
--- Grid Layouts
-
-local gridLayout = {
-  one = (function()
-    return maybeIsSideBar({
-      chromeHome = maybeIsChromeSplit('0,0 4x12', '0,0 9x12'),
-      chromeAlien = maybeIsChromeSplit('4,0 5x12', '0,0 9x12'),
-      itermApps = maybeIsItermSplitGridCoord('4,0 5x12', '0,0 9x12'),
-      otherApps = maybeIsItermSplitGridCoord('4,0 5x12', '0,0 9x12'),
-      sideBar = '9,0 3x12',
-    },
-    {
-      chromeHome = maybeIsChromeSplit('0,0 6x12', '0,0 12x12'),
-      chromeAlien = maybeIsChromeSplit('6,0 6x12', '0,0 12x12'),
-      itermApps = maybeIsItermSplitGridCoord('6,0 6x12', '0,0 12x12'),
-      otherApps = maybeIsItermSplitGridCoord('0,0 6x12', '0,0 12x12'),
-      sideBar = maybeIsItermSplitGridCoord('0,0 6x12', '0,0 12x12'),
-    })
-  end),
-  two = (function()
-    return maybeIsSideBar(
-      maybeIsVertical({
-        -- would like to have a chain function for switching the chrome split to
-        -- horizontal
-        chromeHome = maybeIsChromeSplit('0,0 4x6', '0,0 4x12'),
-        chromeAlien = maybeIsChromeSplit('0,6 4x6', '0,0 4x12'),
-        itermApps = maybeIsItermSplitGridCoord('4,0 5x6', '4,0 5x12'),
-        otherApps = maybeIsItermSplitGridCoord('4,6 5x6', '4,0 5x12'),
-        sideBar = '9,0 3x12',
-      },
-      {
-        chromeHome = maybeIsChromeSplit('0,0 4x6', '0,0 9x6'),
-        chromeAlien = maybeIsChromeSplit('4,0 5x6', '0,0 9x6'),
-        itermApps = maybeIsItermSplitGridCoord('4,6 5x6', '0,6 9x6'),
-        otherApps = maybeIsItermSplitGridCoord('0,6 4x6', '0,6 9x6'),
-        sideBar = '9,0 3x12',
-      }),
-      maybeIsVertical({
-        chromeHome = maybeIsChromeSplit('0,0 3x12', '0,0 6x12'),
-        chromeAlien = maybeIsChromeSplit('3,0 3x12', '0,0 6x12'),
-        itermApps = maybeIsItermSplitGridCoord('6,0 6x6', '6,0 6x12'),
-        otherApps = maybeIsItermSplitGridCoord('6,6 6x6', '0,0 6x12'),
-        sideBar = maybeIsItermSplitGridCoord('6,0 6x6', '6,0 6x12'),
-      },
-      {
-        chromeHome = maybeIsChromeSplit('0,0 6x6', '0,0 12x6'),
-        chromeAlien = maybeIsChromeSplit('6,0 6x6', '0,0 12x6'),
-        itermApps = maybeIsItermSplitGridCoord('6,6 6x6', '0,6 12x6'),
-        otherApps = maybeIsItermSplitGridCoord('0,6 6x6', '0,0 12x6'),
-        sideBar = maybeIsItermSplitGridCoord('6,6 6x6', '0,6 12x6'),
-      })
-    )
-  end),
-  three = (function()
-    return maybeIsSideBar(
-      maybeIsVertical({
-        chromeHome = maybeIsChromeSplit('0,0 3x12', '0,0 6x12'),
-        chromeAlien = maybeIsChromeSplit('3,0 3x12', '0,0 6x12'),
-        itermApps = maybeIsItermSplitGridCoord('6,0 3x6', '6,0 3x12'),
-        otherApps = maybeIsItermSplitGridCoord('6,6 3x6', '0,0 6x12'),
-        sideBar = '8,0 4x12',
-      },
-      {
-        chromeHome = maybeIsChromeSplit('0,0 4x8', '0,0 9x8'),
-        chromeAlien = maybeIsChromeSplit('4,0 5x8', '0,0 9x8'),
-        itermApps = maybeIsItermSplitGridCoord('4,8 5x4', '0,8 9x4'),
-        otherApps = maybeIsItermSplitGridCoord('0,8 4x4', maybeIsChromeSplit('0,0 4x8', '0,0 9x8')),
-        sideBar = '8,0 4x12',
-      }),
-      maybeIsVertical({
-        chromeHome = maybeIsChromeSplit('0,0 4x12', '0,0 8x12'),
-        chromeAlien = maybeIsChromeSplit('4,0 4x12', '0,0 8x12'),
-        itermApps = maybeIsItermSplitGridCoord('8,0 4x6', '8,0 4x12'),
-        otherApps = maybeIsItermSplitGridCoord('8,6 4x6', maybeIsChromeSplit('4,0 4x12','0,0 8x12')),
-        sideBar = '8,0 4x12',
-      },
-      {
-        chromeHome = maybeIsChromeSplit('0,0 6x8', '0,0 12x8'),
-        chromeAlien = maybeIsChromeSplit('6,0 6x8', '0,0 12x8'),
-        itermApps = maybeIsItermSplitGridCoord('6,8 6x4', '0,8 12x4'),
-        otherApps = maybeIsItermSplitGridCoord('0,8 6x4', maybeIsChromeSplit('6,0 6x8', '0,0 12x8')),
-        sideBar = '8,0 4x12',
-      })
-    )
-  end),
-  zoom = (function()
-    return {
-        chromeHome = '0,0 8x12',
-        chromeAlien = '0,0 8x12',
-        itermApps = '0,0 8x12',
-        otherApps = '0,0 8x12',
-        sideBar = '0,0 8x12',
-        targetApps = {
-          bundleIDs = { bundleIDs.zoom },
-          grid = '8,0 4x12',
-        }
-      }
-  end)
-}
-
-local setGridLayoutInit = (function(layout)
-  -- cache layout ontno currentLayout
-  if layout then
-    gridSettings = gridLayout[layout]()
-    currentLayout = layout
-  elseif currentLayout then
-    gridSettings = gridLayout[currentLayout]()
-  else
-    return
-  end
-  -- get chrome profiles
-  chrome_switch_to(chromeProfiles.home)
-  local windowChromeProfileHome = hs.window.frontmostWindow()
-  chrome_switch_to(chromeProfiles.alien)
-  local windowChromeProfileAlien = hs.window.frontmostWindow()
-  -- init grid
-
-  hs.grid.set(windowChromeProfileHome, gridSettings.chromeHome, hs.screen.primaryScreen()) 
-  hs.grid.set(windowChromeProfileAlien, gridSettings.chromeAlien, hs.screen.primaryScreen()) 
-  setGridOnApplications(itermsAppBundleIDs, gridSettings.itermApps)
-  setGridOnApplications(otherAppsBundleIDs, gridSettings.otherApps)
-  setGridOnApplications(sidebarBundleIDs, gridSettings.sideBar)
-
-  if gridSettings.targetApps then
-    setGridOnApplications(gridSettings.targetApps.bundleIDs, gridSettings.targetApps.grid)
-  end
-end)
 
 --
 -- Key bindings.
@@ -434,36 +566,24 @@ return {
     }))
 
     hs.hotkey.bind(mash, ']', function() 
-      if currentLayout ~= 'zoom' then
         turnOnSideBar() 
-        setGridLayoutInit()
-      end
     end)
 
     hs.hotkey.bind(mash, '[', function() 
-      if currentLayout ~= 'zoom' then
         turnOnVerticalMode() 
-        setGridLayoutInit()
-      end
     end)
 
     hs.hotkey.bind(mash, '0', function() 
-      if currentLayout ~= 'zoom' then
         turnOnIsItermSplit() 
-        setGridLayoutInit()
-      end
     end)
 
     hs.hotkey.bind(mash, '9', function() 
-      if currentLayout ~= 'zoom' then
         turnOnIsChromeSplit() 
-        setGridLayoutInit()
-      end
     end)
 
     hs.hotkey.bind(mash, '1', (function() setGridLayoutInit('one') end))
     hs.hotkey.bind(mash, '2', (function() setGridLayoutInit('two') end))
     hs.hotkey.bind(mash, '3', (function() setGridLayoutInit('three') end))
-    hs.hotkey.bind(mash, '4', (function() setGridLayoutInit('zoom') end))
+    hs.hotkey.bind(mash, '4', chainFormation())
   end)
 }
