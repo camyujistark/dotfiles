@@ -33,6 +33,7 @@ bundleIDs.todoist = 'com.todoist.mac.Todoist'
 bundleIDs.whasapp = 'WhatsApp'
 bundleIDs.zoom = 'us.zoom.xos'
 bundleIDs.unity = 'com.unity3d.UnityEditor5.x'
+bundleIDs.unityhub = 'com.unity3d.unityhub'
 
 
 local grid = {
@@ -175,18 +176,24 @@ chrome_switch_to = (function(ppl)
   end
 end)
 
-getBundleWindows = (function(bundleIDs, callback)
-  bundleWindows = {}
-  for i, bundleID in pairs(bundleIDs) do
-    local application = hs.application.get(bundleID)
-    if application then
-      local windows = application:visibleWindows()
-      for _, window in pairs(windows) do
-        if canManageWindow(window) then
-          table.insert(bundleWindows, window)
-        end
+getBundleWindow = (function(bundleID)
+  local applicationWindow;
+  local application = hs.application.get(bundleID)
+  if application then
+    local windows = application:visibleWindows()
+    for _, window in pairs(windows) do
+      if canManageWindow(window) then
+        applicationWindow = window
       end
     end
+  end
+  return applicationWindow
+end)
+
+getBundleWindows = (function(bundleIDs)
+  bundleWindows = {}
+  for i, bundleID in pairs(bundleIDs) do
+    table.insert(bundleWindows, getBundleWindow(bundleID));
   end
   return bundleWindows
 end)
@@ -200,6 +207,24 @@ runOnApplications = (function(appWindows, groupGrid, showOnTop)
   end
 end)
 
+closeApplications = (function(bundleIDs)
+  for _, bundleID in pairs(bundleIDs) do
+  local application = hs.application.get(bundleID)
+  if application then
+      application:kill()
+    end
+  end
+end)
+
+openApplicationsByBundleID = (function(bundleIDs)
+  for _, bundleID in pairs(bundleIDs) do
+    local window = getBundleWindow(bundleID)
+    if window then
+    else
+      hs.application.launchOrFocusByBundleID(bundleID)
+    end
+  end
+end)
 -- Grid Layouts
 
 
@@ -301,7 +326,9 @@ local gridLayout = {
 local appLayoutFormation = {
   'default',
   'zoom',
-  'unity',
+  'writing',
+  'sketchbook',
+  'unity'
 }
 
 local setAppGroup = (function(layout)
@@ -320,24 +347,24 @@ local setAppGroup = (function(layout)
         bundleIDs.notion,
       }),
       C = getBundleWindows({
+        bundleIDs.anki,
         bundleIDs.calendar,
+        bundleIDs.dayone,
         bundleIDs.mail,
         bundleIDs.postman,
-        bundleIDs.spotify,
         bundleIDs.slack,
-        bundleIDs.anki,
+        bundleIDs.spotify,
         bundleIDs.whasapp,
-        bundleIDs.calendar,
-        bundleIDs.sketchbook,
-        bundleIDs.dayone,
-        bundleIDs.zoom,
-        bundleIDs.unity,
       }),
       D = getBundleWindows({
         bundleIDs.todoist,
       }),
+      closeBundleIDs = {
+        bundleIDs.zoom,
+      }
     },
     unity = {
+      openBundleIds = { bundleIDs.unity },
       A1 = getBundleWindows({
         bundleIDs.unity
       }),
@@ -345,20 +372,17 @@ local setAppGroup = (function(layout)
         chromeProfileWindow.home
       },
       B = getBundleWindows({
-        bundleIDs.iterm2,
-        bundleIDs.finder,
-        bundleIDs.notion,
-        bundleIDs.calendar,
-        bundleIDs.mail,
-        bundleIDs.postman,
-        bundleIDs.spotify,
-        bundleIDs.slack,
         bundleIDs.anki,
-        bundleIDs.whasapp,
         bundleIDs.calendar,
-        bundleIDs.sketchbook,
+        bundleIDs.finder,
+        bundleIDs.iterm2,
+        bundleIDs.mail,
+        bundleIDs.notion,
+        bundleIDs.slack,
+        bundleIDs.spotify,
+        bundleIDs.whasapp,
         bundleIDs.dayone,
-        bundleIDs.zoom,
+        bundleIDs.sketchbook,
       }),
       C = {
         chromeProfileWindow.alien
@@ -366,8 +390,78 @@ local setAppGroup = (function(layout)
       D = getBundleWindows({
         bundleIDs.todoist,
       }),
+      closeBundleIDs = {
+        bundleIDs.sketchbook,
+        bundleIDs.zoom,
+        bundleIDs.postman,
+      }
+    },
+    writing = {
+      A1 = {
+        chromeProfileWindow.home,
+      },
+      A2 = getBundleWindows({
+        bundleIDs.notion,
+        bundleIDs.iterm2,
+      }),
+      B = tablemerge(
+        { chromeProfileWindow.alien },
+        getBundleWindows({
+          bundleIDs.todoist,
+          bundleIDs.finder,
+          bundleIDs.dayone,
+          bundleIDs.mail,
+          bundleIDs.anki,
+          bundleIDs.calendar,
+        })
+      ),
+      C = getBundleWindows({
+          bundleIDs.slack,
+          bundleIDs.spotify,
+          bundleIDs.whasapp,
+        }),
+      closeBundleIDs = {
+        bundleIDs.postman,
+        bundleIDs.unity,
+        bundleIDs.unityhub,
+        bundleIDs.zoom,
+        bundleIDs.sketchbook,
+      }
+    },
+    sketchbook = {
+      openBundleIds = { bundleIDs.sketchbook },
+      A1 = getBundleWindows({
+        bundleIDs.sketchbook
+      }),
+      A2 = {
+        chromeProfileWindow.home
+      },
+      B = getBundleWindows({
+        bundleIDs.anki,
+        bundleIDs.calendar,
+        bundleIDs.finder,
+        bundleIDs.iterm2,
+        bundleIDs.mail,
+        bundleIDs.notion,
+        bundleIDs.slack,
+        bundleIDs.spotify,
+        bundleIDs.whasapp,
+        bundleIDs.dayone,
+      }),
+      C = {
+        chromeProfileWindow.alien
+      },
+      D = getBundleWindows({
+        bundleIDs.todoist,
+      }),
+      closeBundleIDs = {
+        bundleIDs.unity,
+        bundleIDs.zoom,
+        bundleIDs.postman,
+      }
     },
     zoom = {
+      openBundleIds = { bundleIDs.zoom },
       A1 = {
         chromeProfileWindow.home
       },
@@ -384,18 +478,23 @@ local setAppGroup = (function(layout)
         bundleIDs.zoom 
       }),
       C = getBundleWindows({
+        bundleIDs.anki,
         bundleIDs.calendar,
+        bundleIDs.dayone,
         bundleIDs.mail,
         bundleIDs.postman,
-        bundleIDs.spotify,
         bundleIDs.slack,
-        bundleIDs.anki,
+        bundleIDs.spotify,
         bundleIDs.whasapp,
-        bundleIDs.calendar,
-        bundleIDs.sketchbook,
-        bundleIDs.dayone,
-        bundleIDs.unity,
       }),
+      D = getBundleWindows({
+        bundleIDs.todoist,
+      }),
+      closeBundleIDs = {
+        bundleIDs.unity,
+        bundleIDs.unityhub,
+        bundleIDs.sketchbook,
+      }
     }
   }
   if layout then
@@ -404,7 +503,7 @@ local setAppGroup = (function(layout)
   return appLayouts.default
 end)
 
-local setGridLayoutInit = (function(layout)
+local setGridLayoutInit = (function(layout, appLayout)
 
   local _layout
   if layout then
@@ -416,9 +515,22 @@ local setGridLayoutInit = (function(layout)
     return
   end
 
-  local gridSettings = gridLayout[_layout]()
-  local appGroup = setAppGroup(currentAppLayout)
+  local _appLayout
+  if appLayout then
+    _appLayout = appLayout
+    currentAppLayout = appLayout
+  elseif currentAppLayout then
+    _appLayout = currentAppLayout
+  else
+    return
+  end
 
+  local gridSettings = gridLayout[_layout]()
+  local appGroup = setAppGroup(_appLayout)
+
+  if appGroup.openBundleIds then
+    openApplicationsByBundleID( appGroup.openBundleIds )
+  end
   if appGroup.D then
     runOnApplications( appGroup.D, gridSettings.D )
   end
@@ -433,6 +545,9 @@ local setGridLayoutInit = (function(layout)
   end
   if appGroup.A1 then
     runOnApplications( appGroup.A1, gridSettings.A1, true )
+  end
+  if appGroup.closeBundleIDs then
+    closeApplications( appGroup.closeBundleIDs )
   end
 end)
 
@@ -457,7 +572,6 @@ local turnOnSideBar = (function()
   else
     sideBar = true
   end
-  setGridLayoutInit()
 end)
 
 -- Toggle Vertial Mode
@@ -468,7 +582,6 @@ local turnOnVerticalMode = (function()
   else
     isWindowsVertical = true
   end
-  setGridLayoutInit()
 end)
 
 -- Toggle Iterm Split
@@ -479,7 +592,6 @@ local turnOnIsItermSplit = (function()
   else
     isItermSplit = true
   end
-  setGridLayoutInit()
 end)
 
 
@@ -491,7 +603,6 @@ local turnOnIsChromeSplit = (function()
   else
     isChromeSplit = true
   end
-  setGridLayoutInit()
 end)
 
 
@@ -509,17 +620,22 @@ return {
     hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Calendar') end)
     hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Mail') end)
     hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Numi') end)
-    hs.hotkey.bind(mash, "a", function()
-      hs.application.launchOrFocus('Google Chrome')
+    hs.hotkey.bind(mash, "a", function() 
       chrome_switch_to(chromeProfiles.home)
+      hs.application.launchOrFocus('Google Chrome') 
     end)
-    hs.hotkey.bind(mash, "o", function()
-      chrome_switch_to(chromeProfiles.alien)
-    end)
+    hs.hotkey.bind(mash, "o", function() chrome_switch_to(chromeProfiles.alien) end)
     hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Notion') end)
     hs.hotkey.bind(mash, 'u', function() hs.application.launchOrFocus('iTerm') end)
     hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end)
-    hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Harvest') end)
+  hs.hotkey.bind(mash, '-', function()
+    local unity = getBundleWindow(bundleIDs.unity)
+    if unity then unity:focus() end
+    local sketchbook = getBundleWindow(bundleIDs.sketchbook)
+    if sketchbook then sketchbook:focus() end
+    local zoom = getBundleWindow(bundleIDs.zoom)
+    if zoom then zoom:focus() end
+  end)
 
     -- anki?
     hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('Finder') end)
@@ -567,23 +683,32 @@ return {
 
     hs.hotkey.bind(mash, ']', function() 
         turnOnSideBar() 
+        setGridLayoutInit()
     end)
 
     hs.hotkey.bind(mash, '[', function() 
         turnOnVerticalMode() 
+        setGridLayoutInit()
     end)
-
     hs.hotkey.bind(mash, '0', function() 
         turnOnIsItermSplit() 
+        setGridLayoutInit()
     end)
 
     hs.hotkey.bind(mash, '9', function() 
-        turnOnIsChromeSplit() 
+      turnOnIsChromeSplit() 
+      setGridLayoutInit()
     end)
 
     hs.hotkey.bind(mash, '1', (function() setGridLayoutInit('one') end))
     hs.hotkey.bind(mash, '2', (function() setGridLayoutInit('two') end))
     hs.hotkey.bind(mash, '3', (function() setGridLayoutInit('three') end))
-    hs.hotkey.bind(mash, '4', chainFormation())
+
+    hs.hotkey.bind(mash, '4', (function() setGridLayoutInit(false, 'default') end))
+    hs.hotkey.bind(mash, '5', (function() setGridLayoutInit(false, 'zoom') end))
+    hs.hotkey.bind(mash, '6', (function() setGridLayoutInit(false, 'writing') end))
+    hs.hotkey.bind(mash, '7', (function() setGridLayoutInit(false, 'sketchbook') end))
+    hs.hotkey.bind(mash, '8', (function() setGridLayoutInit(false, 'unity') end))
+    hs.hotkey.bind(mash, 's', chainFormation())
   end)
 }
