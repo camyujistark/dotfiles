@@ -343,11 +343,11 @@ local setAppGroup = (function(layout)
       },
       B = getBundleWindows({
         bundleIDs.iterm2,
-        bundleIDs.finder,
         bundleIDs.notion,
       }),
       C = getBundleWindows({
         bundleIDs.anki,
+        bundleIDs.finder,
         bundleIDs.calendar,
         bundleIDs.dayone,
         bundleIDs.mail,
