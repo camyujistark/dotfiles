@@ -296,28 +296,28 @@ local gridLayout = {
         A2 = maybeIsChromeSplit('3,0 3x12', '0,0 6x12'),
         B = maybeIsItermSplitGridCoord('6,0 3x6', '6,0 3x12'),
         C = maybeIsItermSplitGridCoord('6,6 3x6', '0,0 6x12'),
-        D = '8,0 4x12',
+        D = '9,0 3x12',
       },
       {
         A1 = maybeIsChromeSplit('0,0 4x8', '0,0 9x8'),
         A2 = maybeIsChromeSplit('4,0 5x8', '0,0 9x8'),
         B = maybeIsItermSplitGridCoord('4,8 5x4', '0,8 9x4'),
         C = maybeIsItermSplitGridCoord('0,8 4x4', maybeIsChromeSplit('0,0 4x8', '0,0 9x8')),
-        D = '8,0 4x12',
+        D = '9,0 3x12',
       }),
       maybeIsVertical({
         A1 = maybeIsChromeSplit('0,0 4x12', '0,0 8x12'),
         A2 = maybeIsChromeSplit('4,0 4x12', '0,0 8x12'),
         B = maybeIsItermSplitGridCoord('8,0 4x6', '8,0 4x12'),
         C = maybeIsItermSplitGridCoord('8,6 4x6', maybeIsChromeSplit('4,0 4x12','0,0 8x12')),
-        D = '8,0 4x12',
+        D = maybeIsItermSplitGridCoord('0,8 6x4', maybeIsChromeSplit('6,0 6x8', '0,0 12x8')),
       },
       {
         A1 = maybeIsChromeSplit('0,0 6x8', '0,0 12x8'),
         A2 = maybeIsChromeSplit('6,0 6x8', '0,0 12x8'),
         B = maybeIsItermSplitGridCoord('6,8 6x4', '0,8 12x4'),
         C = maybeIsItermSplitGridCoord('0,8 6x4', maybeIsChromeSplit('6,0 6x8', '0,0 12x8')),
-        D = '8,0 4x12',
+        D = maybeIsItermSplitGridCoord('0,8 6x4', maybeIsChromeSplit('6,0 6x8', '0,0 12x8')),
       })
     )
   end),
@@ -463,19 +463,17 @@ local setAppGroup = (function(layout)
     zoom = {
       openBundleIds = { bundleIDs.zoom },
       A1 = {
-        chromeProfileWindow.home
+        chromeProfileWindow.alien,
+        chromeProfileWindow.home,
       },
-      A2 = tablemerge(
-        { chromeProfileWindow.alien },
-        getBundleWindows({
-          bundleIDs.iterm2,
-          bundleIDs.finder,
-          bundleIDs.notion,
-          bundleIDs.todoist,
-        })
-      ),
-      B = getBundleWindows({ 
-        bundleIDs.zoom 
+      A2 = getBundleWindows({
+        bundleIDs.iterm2,
+        bundleIDs.finder,
+        bundleIDs.notion,
+        bundleIDs.todoist,
+      }),
+      B = getBundleWindows({
+        bundleIDs.zoom
       }),
       C = getBundleWindows({
         bundleIDs.anki,
