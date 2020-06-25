@@ -22,12 +22,6 @@ local internalDisplay = nil
 local prepareScreencast = nil
 local tearDownEventHandling = nil
 local windowCount = nil
-local currentLayout = false
-local sideBar = false
-local isWindowsVertical = true
-local isItermSplit = false
-local isChromeSplit = false
-
 local screenCount = #hs.screen.allScreens()
 
 --
