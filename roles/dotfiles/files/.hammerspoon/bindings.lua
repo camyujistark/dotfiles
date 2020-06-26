@@ -15,6 +15,7 @@ local chromeWindow = {}
 local chromeProfiles = {}
 chromeProfiles.home = 'Cam'
 chromeProfiles.alien = 'Cam (Alien)'
+chromeProfiles.side = 'Cam (Side)'
 
 -- programs
 local bundleIDs = {}
@@ -27,6 +28,7 @@ bundleIDs.iterm2 = 'com.googlecode.iterm2'
 bundleIDs.mail = 'com.apple.mail'
 bundleIDs.notion = 'notion.id'
 bundleIDs.postman = 'com.postmanlabs.mac'
+bundleIDs.marked2 = 'com.brettterpstra.marked2'
 bundleIDs.sketchbook = 'com.autodesk.sketchbookpro7mac'
 bundleIDs.slack = 'com.tinyspeck.slackmacgap'
 bundleIDs.spotify = 'com.spotify.client'
@@ -109,6 +111,12 @@ local getChromeProfileWindows = (function()
     -- alien
     chrome_switch_to(chromeProfiles.alien)
     chromeWindow.alien = hs.window.frontmostWindow()
+  end
+  if chromeWindow.side == nil
+    or hs.window.find(chromeWindow.side:id()) == nil then
+    -- side
+    chrome_switch_to(chromeProfiles.side)
+    chromeWindow.side = hs.window.frontmostWindow()
   end
 end)
 
@@ -252,18 +260,18 @@ end)
 local gridLayout = {
   one = (function()
     return maybeIsSideBar({
-      A1 = maybeIsChromeSplit('0,0/4x12', '0,0/9x12'),
-      A2 = maybeIsChromeSplit('4,0/5x12', '0,0/9x12'),
-      B = maybeIsItermSplitGridCoord('0,0/4x12', '0,0/9x12'),
-      C = maybeIsItermSplitGridCoord('0,0/4x12', '0,0/9x12'),
+      A1 = '0,0/9x12',
+      A2 = '0,0/9x12',
+      B = '0,0/9x12',
+      C = '0,0/9x12',
       D = '9,0/3x12',
     },
     {
-      A1 = maybeIsChromeSplit('0,0/6x12', '0,0/12x12'),
-      A2 = maybeIsChromeSplit('6,0/6x12', '0,0/12x12'),
-      B = maybeIsItermSplitGridCoord('6,0/6x12', '0,0/12x12'),
-      C = maybeIsItermSplitGridCoord('0,0/6x12', '0,0/12x12'),
-      D = maybeIsItermSplitGridCoord('0,0/6x12', '0,0/12x12'),
+      A1 = '0,0/12x12',
+      A2 = '0,0/12x12',
+      B = '0,0/12x12',
+      C = '0,0/12x12',
+      D = '0,0/12x12',
     })
   end),
   two = (function()
@@ -272,28 +280,28 @@ local gridLayout = {
         A1 = maybeIsChromeSplit('0,0/4x6', '0,0/4x12'),
         A2 = maybeIsChromeSplit('0,6/4x6', '0,0/4x12'),
         B = maybeIsItermSplitGridCoord('4,0/5x6', '4,0/5x12'),
-        C = maybeIsItermSplitGridCoord('4,6/5x6', '4,0/5x12'),
+        C = maybeIsItermSplitGridCoord('4,6/5x6', maybeIsChromeSplit('0,6/4x6', '0,0/4x12')),
         D = '9,0/3x12',
       },
       {
         A1 = maybeIsChromeSplit('0,0/4x6', '0,0/9x6'),
         A2 = maybeIsChromeSplit('4,0/5x6', '0,0/9x6'),
         B = maybeIsItermSplitGridCoord('4,6/5x6', '0,6/9x6'),
-        C = maybeIsItermSplitGridCoord('0,6/4x6', '0,6/9x6'),
+        C = maybeIsItermSplitGridCoord('0,6/4x6', maybeIsChromeSplit('4,0/5x6', '0,0/9x6')),
         D = '9,0/3x12',
       }),
       maybeIsVertical({
         A1 = maybeIsChromeSplit('0,0/3x12', '0,0/6x12'),
         A2 = maybeIsChromeSplit('3,0/3x12', '0,0/6x12'),
         B = maybeIsItermSplitGridCoord('6,0/6x6', '6,0/6x12'),
-        C = maybeIsItermSplitGridCoord('6,6/6x6', '0,0/6x12'),
+        C = maybeIsItermSplitGridCoord('6,6/6x6', maybeIsChromeSplit('3,0/3x12', '0,0/6x12')),
         D = maybeIsItermSplitGridCoord('6,0/6x6', '6,0/6x12'),
       },
       {
         A1 = maybeIsChromeSplit('0,0/6x6', '0,0/12x6'),
         A2 = maybeIsChromeSplit('6,0/6x6', '0,0/12x6'),
         B = maybeIsItermSplitGridCoord('6,6/6x6', '0,6/12x6'),
-        C = maybeIsItermSplitGridCoord('0,6/6x6', '0,0/12x6'),
+        C = maybeIsItermSplitGridCoord('0,6/6x6', maybeIsChromeSplit('6,0/6x6', '0,0/12x6')),
         D = maybeIsItermSplitGridCoord('6,6/6x6', '0,6/12x6'),
       })
     )
@@ -304,7 +312,7 @@ local gridLayout = {
         A1 = maybeIsChromeSplit('0,0/3x12', '0,0/6x12'),
         A2 = maybeIsChromeSplit('3,0/3x12', '0,0/6x12'),
         B = maybeIsItermSplitGridCoord('6,0/3x6', '6,0/3x12'),
-        C = maybeIsItermSplitGridCoord('6,6/3x6', '0,0/6x12'),
+        C = maybeIsItermSplitGridCoord('6,6/3x6', maybeIsChromeSplit('3,0/3x12', '0,0/6x12')),
         D = '9,0/3x12',
       },
       {
@@ -319,14 +327,14 @@ local gridLayout = {
         A2 = maybeIsChromeSplit('4,0/4x12', '0,0/8x12'),
         B = maybeIsItermSplitGridCoord('8,0/4x6', '8,0/4x12'),
         C = maybeIsItermSplitGridCoord('8,6/4x6', maybeIsChromeSplit('4,0/4x12','0,0/8x12')),
-        D = maybeIsItermSplitGridCoord('0,8/6x4', maybeIsChromeSplit('6,0/6x8', '0,0/12x8')),
+        D = maybeIsChromeSplit('4,0/4x12', '0,0/8x12'),
       },
       {
         A1 = maybeIsChromeSplit('0,0/6x8', '0,0/12x8'),
         A2 = maybeIsChromeSplit('6,0/6x8', '0,0/12x8'),
         B = maybeIsItermSplitGridCoord('6,8/6x4', '0,8/12x4'),
         C = maybeIsItermSplitGridCoord('0,8/6x4', maybeIsChromeSplit('6,0/6x8', '0,0/12x8')),
-        D = maybeIsItermSplitGridCoord('0,8/6x4', maybeIsChromeSplit('6,0/6x8', '0,0/12x8')),
+        D = maybeIsChromeSplit('6,0/6x8', '0,0/12x8'),
       })
     )
   end),
@@ -343,9 +351,12 @@ local appLayoutFormation = {
 local setAppGroup = (function(layout)
   local appLayouts = {
     default = {
-      A1 = {
-        chromeWindow.home
-      },
+      A1 = tablemerge(
+        { chromeWindow.home },
+        getBundleWindows({
+          bundleIDs.marked2,
+        })
+      ),
       A2 = {
         chromeWindow.alien
       },
@@ -353,17 +364,20 @@ local setAppGroup = (function(layout)
         bundleIDs.iterm2,
         bundleIDs.notion,
       }),
-      C = getBundleWindows({
-        bundleIDs.anki,
-        bundleIDs.finder,
-        bundleIDs.calendar,
-        bundleIDs.dayone,
-        bundleIDs.mail,
-        bundleIDs.postman,
-        bundleIDs.slack,
-        bundleIDs.spotify,
-        bundleIDs.whasapp,
-      }),
+      C = tablemerge(
+        { chromeWindow.side },
+        getBundleWindows({
+          bundleIDs.anki,
+          bundleIDs.finder,
+          bundleIDs.calendar,
+          bundleIDs.dayone,
+          bundleIDs.mail,
+          bundleIDs.postman,
+          bundleIDs.slack,
+          bundleIDs.spotify,
+          bundleIDs.whasapp,
+        })
+      ),
       D = getBundleWindows({
         bundleIDs.todoist,
       }),
@@ -377,61 +391,32 @@ local setAppGroup = (function(layout)
         bundleIDs.unity
       }),
       A2 = {
-        chromeWindow.home
+        chromeWindow.alien,
+        chromeWindow.home,
       },
       B = getBundleWindows({
-        bundleIDs.anki,
-        bundleIDs.calendar,
-        bundleIDs.finder,
         bundleIDs.iterm2,
-        bundleIDs.mail,
+        bundleIDs.finder,
         bundleIDs.notion,
-        bundleIDs.slack,
-        bundleIDs.spotify,
-        bundleIDs.whasapp,
-        bundleIDs.dayone,
-        bundleIDs.sketchbook,
       }),
-      C = {
-        chromeWindow.alien
-      },
+      C = tablemerge(
+        { chromeWindow.side },
+        getBundleWindows({
+          bundleIDs.anki,
+          bundleIDs.finder,
+          bundleIDs.calendar,
+          bundleIDs.dayone,
+          bundleIDs.mail,
+          bundleIDs.postman,
+          bundleIDs.slack,
+          bundleIDs.spotify,
+          bundleIDs.whasapp,
+        })
+      ),
       D = getBundleWindows({
         bundleIDs.todoist,
       }),
       closeBundleIDs = {
-        bundleIDs.sketchbook,
-        bundleIDs.zoom,
-        bundleIDs.postman,
-      }
-    },
-    writing = {
-      A1 = {
-        chromeWindow.home,
-      },
-      A2 = getBundleWindows({
-        bundleIDs.notion,
-        bundleIDs.iterm2,
-      }),
-      B = tablemerge(
-        { chromeWindow.alien },
-        getBundleWindows({
-          bundleIDs.todoist,
-          bundleIDs.finder,
-          bundleIDs.dayone,
-          bundleIDs.mail,
-          bundleIDs.anki,
-          bundleIDs.calendar,
-        })
-      ),
-      C = getBundleWindows({
-          bundleIDs.slack,
-          bundleIDs.spotify,
-          bundleIDs.whasapp,
-        }),
-      closeBundleIDs = {
-        bundleIDs.postman,
-        bundleIDs.unity,
-        bundleIDs.unityhub,
         bundleIDs.zoom,
         bundleIDs.sketchbook,
       }
@@ -442,57 +427,66 @@ local setAppGroup = (function(layout)
         bundleIDs.sketchbook
       }),
       A2 = {
-        chromeWindow.home
+        chromeWindow.alien,
+        chromeWindow.home,
       },
       B = getBundleWindows({
-        bundleIDs.anki,
-        bundleIDs.calendar,
-        bundleIDs.finder,
         bundleIDs.iterm2,
-        bundleIDs.mail,
+        bundleIDs.finder,
         bundleIDs.notion,
-        bundleIDs.slack,
-        bundleIDs.spotify,
-        bundleIDs.whasapp,
-        bundleIDs.dayone,
       }),
-      C = {
-        chromeWindow.alien
-      },
+      C = tablemerge(
+        { chromeWindow.side },
+        getBundleWindows({
+          bundleIDs.anki,
+          bundleIDs.finder,
+          bundleIDs.calendar,
+          bundleIDs.dayone,
+          bundleIDs.mail,
+          bundleIDs.postman,
+          bundleIDs.slack,
+          bundleIDs.spotify,
+          bundleIDs.whasapp,
+        })
+      ),
       D = getBundleWindows({
         bundleIDs.todoist,
       }),
       closeBundleIDs = {
         bundleIDs.unity,
+        bundleIDs.unityhub,
         bundleIDs.zoom,
-        bundleIDs.postman,
+        bundleIDs.sketchbook,
       }
     },
     zoom = {
       openBundleIds = { bundleIDs.zoom },
-      A1 = {
+      A1 = getBundleWindows({
+        bundleIDs.zoom
+      }),
+      A2 = {
         chromeWindow.alien,
         chromeWindow.home,
       },
-      A2 = getBundleWindows({
+      B = getBundleWindows({
         bundleIDs.iterm2,
         bundleIDs.finder,
         bundleIDs.notion,
-        bundleIDs.todoist,
       }),
-      B = getBundleWindows({
-        bundleIDs.zoom
-      }),
-      C = getBundleWindows({
-        bundleIDs.anki,
-        bundleIDs.calendar,
-        bundleIDs.dayone,
-        bundleIDs.mail,
-        bundleIDs.postman,
-        bundleIDs.slack,
-        bundleIDs.spotify,
-        bundleIDs.whasapp,
-      }),
+      C = tablemerge(
+        { chromeWindow.side },
+        getBundleWindows({
+          bundleIDs.anki,
+          bundleIDs.finder,
+          bundleIDs.calendar,
+          bundleIDs.dayone,
+          bundleIDs.mail,
+          bundleIDs.postman,
+          bundleIDs.slack,
+          bundleIDs.spotify,
+          bundleIDs.whasapp,
+        })
+      ),
       D = getBundleWindows({
         bundleIDs.todoist,
       }),
@@ -614,6 +608,20 @@ local turnOnIsChromeSplit = (function()
 end)
 
 
+local turnOnSplitFormation = (function()
+  if sideBar then
+    sideBar = false
+    isWindowsVertical = true
+    isItermSplit = false
+    isChromeSplit = false
+  else
+    sideBar = true
+    isItermSplit = true
+    isWindowsVertical = true
+    isChromeSplit = false
+  end
+end)
+
 --
 -- Key bindings.
 --
@@ -625,14 +633,15 @@ return {
   init = (function()
 
     getChromeProfileWindows()
+
+    -- APP MASH --
+
     hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Calendar') end)
     hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Mail') end)
-    hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Numi') end)
-    hs.hotkey.bind(mash, "a", function() 
-      chrome_switch_to(chromeProfiles.home)
-      hs.application.launchOrFocus('Google Chrome') 
-    end)
+    hs.hotkey.bind(mash, '.', function() hs.application.launchOrFocus('Finder') end)
+    hs.hotkey.bind(mash, "a", function() chrome_switch_to(chromeProfiles.home) end)
     hs.hotkey.bind(mash, "o", function() chrome_switch_to(chromeProfiles.alien) end)
+    hs.hotkey.bind(mash, ";", function() chrome_switch_to(chromeProfiles.side) end)
     hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Notion') end)
     hs.hotkey.bind(mash, 'u', function() hs.application.launchOrFocus('iTerm') end)
     hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end)
@@ -644,13 +653,12 @@ return {
     local zoom = getBundleWindow(bundleIDs.zoom)
     if zoom then zoom:focus() end
   end)
-
-    -- anki?
-    hs.hotkey.bind(mash, ';', function() hs.application.launchOrFocus('Finder') end)
     hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Slack') end)
     hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Spotify') end)
     hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') end)
     hs.hotkey.bind(mash, 'm', function() hs.application.launchOrFocus('Marked 2') end)
+
+    -- FREE MOVE CHAIN --
 
     hs.hotkey.bind({'ctrl', 'alt'}, 'up', chain({
       grid.topHalf,
@@ -689,34 +697,42 @@ return {
       grid.centeredSmall,
     }))
 
-    hs.hotkey.bind(mash, ']', function() 
+    -- FLIPS --
+
+    hs.hotkey.bind(mash, '\\', function() 
+      turnOnSplitFormation() 
+      setGridLayoutInit()
+    end)
+
+    hs.hotkey.bind(mash, '=', function() 
         turnOnSideBar() 
         setGridLayoutInit()
     end)
 
-    hs.hotkey.bind(mash, '[', function() 
-        turnOnVerticalMode() 
-        setGridLayoutInit()
-    end)
-    hs.hotkey.bind(mash, '0', function() 
+    hs.hotkey.bind(mash, '/', function() 
         turnOnIsItermSplit() 
         setGridLayoutInit()
     end)
 
-    hs.hotkey.bind(mash, '9', function() 
+    hs.hotkey.bind(mash, 'l', function() 
       turnOnIsChromeSplit() 
       setGridLayoutInit()
     end)
 
+    hs.hotkey.bind(mash, 'r', function() 
+        turnOnVerticalMode() 
+        setGridLayoutInit()
+    end)
+
+    -- LAYOUTS --
+
     hs.hotkey.bind(mash, '1', (function() setGridLayoutInit('one') end))
     hs.hotkey.bind(mash, '2', (function() setGridLayoutInit('two') end))
     hs.hotkey.bind(mash, '3', (function() setGridLayoutInit('three') end))
-
     hs.hotkey.bind(mash, '4', (function() setGridLayoutInit(false, 'default') end))
     hs.hotkey.bind(mash, '5', (function() setGridLayoutInit(false, 'zoom') end))
-    hs.hotkey.bind(mash, '6', (function() setGridLayoutInit(false, 'writing') end))
-    hs.hotkey.bind(mash, '7', (function() setGridLayoutInit(false, 'sketchbook') end))
-    hs.hotkey.bind(mash, '8', (function() setGridLayoutInit(false, 'unity') end))
+    hs.hotkey.bind(mash, '6', (function() setGridLayoutInit(false, 'sketchbook') end))
+    hs.hotkey.bind(mash, '7', (function() setGridLayoutInit(false, 'unity') end))
     hs.hotkey.bind(mash, 's', chainFormation())
   end)
 }
