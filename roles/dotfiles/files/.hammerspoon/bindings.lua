@@ -540,12 +540,12 @@ local turnOnSplitFormation = (function()
     sideBar = false
     isWindowsVertical = true
     isItermSplit = false
-    isChromeSplit = false
+    -- isChromeSplit = false
   else
     sideBar = true
     isItermSplit = true
     isWindowsVertical = false
-    isChromeSplit = false
+    -- isChromeSplit = false
   end
 end)
 
