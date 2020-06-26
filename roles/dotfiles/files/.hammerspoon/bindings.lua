@@ -8,7 +8,7 @@ local isWindowsVertical = true
 local isItermSplit = false
 local isChromeSplit = false
 local currentLayout = nil
-local currentAppLayout = nil
+local currentAppLayout = 'default'
 local chromeWindow = {}
 
 -- chrome profiles
@@ -29,7 +29,8 @@ bundleIDs.mail = 'com.apple.mail'
 bundleIDs.notion = 'notion.id'
 bundleIDs.postman = 'com.postmanlabs.mac'
 bundleIDs.marked2 = 'com.brettterpstra.marked2'
-bundleIDs.sketchbook = 'com.autodesk.sketchbookpro7mac'
+bundleIDs.sketchbookpro = 'com.autodesk.sketchbookpro7mac'
+bundleIDs.sketchbook = 'com.autodesk.SketchBook'
 bundleIDs.slack = 'com.tinyspeck.slackmacgap'
 bundleIDs.spotify = 'com.spotify.client'
 bundleIDs.todoist = 'com.todoist.mac.Todoist'
@@ -343,9 +344,6 @@ local gridLayout = {
 local appLayoutFormation = {
   'default',
   'zoom',
-  'writing',
-  'sketchbook',
-  'unity'
 }
 
 local setAppGroup = (function(layout)
@@ -355,6 +353,9 @@ local setAppGroup = (function(layout)
         { chromeWindow.home },
         getBundleWindows({
           bundleIDs.marked2,
+          bundleIDs.sketchbookpro,
+          bundleIDs.sketchbook,
+          bundleIDs.unity,
         })
       ),
       A2 = {
@@ -385,80 +386,6 @@ local setAppGroup = (function(layout)
         bundleIDs.zoom,
       }
     },
-    unity = {
-      openBundleIds = { bundleIDs.unity },
-      A1 = getBundleWindows({
-        bundleIDs.unity
-      }),
-      A2 = {
-        chromeWindow.alien,
-        chromeWindow.home,
-      },
-      B = getBundleWindows({
-        bundleIDs.iterm2,
-        bundleIDs.finder,
-        bundleIDs.notion,
-      }),
-      C = tablemerge(
-        { chromeWindow.side },
-        getBundleWindows({
-          bundleIDs.anki,
-          bundleIDs.finder,
-          bundleIDs.calendar,
-          bundleIDs.dayone,
-          bundleIDs.mail,
-          bundleIDs.postman,
-          bundleIDs.slack,
-          bundleIDs.spotify,
-          bundleIDs.whasapp,
-        })
-      ),
-      D = getBundleWindows({
-        bundleIDs.todoist,
-      }),
-      closeBundleIDs = {
-        bundleIDs.zoom,
-        bundleIDs.sketchbook,
-      }
-    },
-    sketchbook = {
-      openBundleIds = { bundleIDs.sketchbook },
-      A1 = getBundleWindows({
-        bundleIDs.sketchbook
-      }),
-      A2 = {
-        chromeWindow.alien,
-        chromeWindow.home,
-      },
-      B = getBundleWindows({
-        bundleIDs.iterm2,
-        bundleIDs.finder,
-        bundleIDs.notion,
-      }),
-      C = tablemerge(
-        { chromeWindow.side },
-        getBundleWindows({
-          bundleIDs.anki,
-          bundleIDs.finder,
-          bundleIDs.calendar,
-          bundleIDs.dayone,
-          bundleIDs.mail,
-          bundleIDs.postman,
-          bundleIDs.slack,
-          bundleIDs.spotify,
-          bundleIDs.whasapp,
-        })
-      ),
-      D = getBundleWindows({
-        bundleIDs.todoist,
-      }),
-      closeBundleIDs = {
-        bundleIDs.unity,
-        bundleIDs.unityhub,
-        bundleIDs.zoom,
-        bundleIDs.sketchbook,
-      }
-    },
     zoom = {
       openBundleIds = { bundleIDs.zoom },
       A1 = getBundleWindows({
@@ -470,7 +397,6 @@ local setAppGroup = (function(layout)
       },
       B = getBundleWindows({
         bundleIDs.iterm2,
-        bundleIDs.finder,
         bundleIDs.notion,
       }),
       C = tablemerge(
@@ -494,6 +420,7 @@ local setAppGroup = (function(layout)
         bundleIDs.unity,
         bundleIDs.unityhub,
         bundleIDs.sketchbook,
+        bundleIDs.sketchbookpro,
       }
     }
   }
@@ -617,7 +544,7 @@ local turnOnSplitFormation = (function()
   else
     sideBar = true
     isItermSplit = true
-    isWindowsVertical = true
+    isWindowsVertical = false
     isChromeSplit = false
   end
 end)
@@ -645,10 +572,10 @@ return {
     hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Notion') end)
     hs.hotkey.bind(mash, 'u', function() hs.application.launchOrFocus('iTerm') end)
     hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end)
-  hs.hotkey.bind(mash, '-', function()
+    hs.hotkey.bind(mash, '-', function()
     local unity = getBundleWindow(bundleIDs.unity)
     if unity then unity:focus() end
-    local sketchbook = getBundleWindow(bundleIDs.sketchbook)
+    local sketchbooks = getBundleWindows({bundleIDs.sketchbook, bundleIDs.sketbookprop})
     if sketchbook then sketchbook:focus() end
     local zoom = getBundleWindow(bundleIDs.zoom)
     if zoom then zoom:focus() end
@@ -699,41 +626,26 @@ return {
 
     -- FLIPS --
 
-    hs.hotkey.bind(mash, '\\', function() 
-      turnOnSplitFormation() 
-      setGridLayoutInit()
+    hs.hotkey.bind(mash, '\\', function()
+      local layout
+      if currentAppLayout == 'default' then
+        layout = 'zoom'
+      else
+        layout = 'default'
+      end
+      setGridLayoutInit(false, layout)
     end)
-
-    hs.hotkey.bind(mash, '=', function() 
-        turnOnSideBar() 
-        setGridLayoutInit()
-    end)
-
-    hs.hotkey.bind(mash, '/', function() 
-        turnOnIsItermSplit() 
-        setGridLayoutInit()
-    end)
-
-    hs.hotkey.bind(mash, 'l', function() 
-      turnOnIsChromeSplit() 
-      setGridLayoutInit()
-    end)
-
-    hs.hotkey.bind(mash, 'r', function() 
-        turnOnVerticalMode() 
-        setGridLayoutInit()
-    end)
+    hs.hotkey.bind(mash, '=', function() turnOnSideBar() setGridLayoutInit() end)
+    hs.hotkey.bind(mash, '/', function() turnOnIsItermSplit() setGridLayoutInit() end)
+    hs.hotkey.bind(mash, 'l', function() turnOnIsChromeSplit() setGridLayoutInit() end)
+    hs.hotkey.bind(mash, 'r', function() turnOnVerticalMode() setGridLayoutInit() end)
 
     -- LAYOUTS --
-
+    hs.hotkey.bind(mash, '9', function() turnOnSplitFormation() setGridLayoutInit() end)
     hs.hotkey.bind(mash, '0', (function() setGridLayoutInit('one') end))
     hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('two') end))
     hs.hotkey.bind(mash, ']', (function() setGridLayoutInit('three') end))
 
-    hs.hotkey.bind(mash, '4', (function() setGridLayoutInit(false, 'default') end))
-    hs.hotkey.bind(mash, '5', (function() setGridLayoutInit(false, 'zoom') end))
-    hs.hotkey.bind(mash, '6', (function() setGridLayoutInit(false, 'sketchbook') end))
-    hs.hotkey.bind(mash, '7', (function() setGridLayoutInit(false, 'unity') end))
-    hs.hotkey.bind(mash, 's', chainFormation())
+    -- hs.hotkey.bind(mash, 's', chainFormation())
   end)
 }
