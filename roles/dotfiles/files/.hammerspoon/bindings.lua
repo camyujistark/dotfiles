@@ -726,9 +726,10 @@ return {
 
     -- LAYOUTS --
 
-    hs.hotkey.bind(mash, '1', (function() setGridLayoutInit('one') end))
-    hs.hotkey.bind(mash, '2', (function() setGridLayoutInit('two') end))
-    hs.hotkey.bind(mash, '3', (function() setGridLayoutInit('three') end))
+    hs.hotkey.bind(mash, '0', (function() setGridLayoutInit('one') end))
+    hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('two') end))
+    hs.hotkey.bind(mash, ']', (function() setGridLayoutInit('three') end))
+
     hs.hotkey.bind(mash, '4', (function() setGridLayoutInit(false, 'default') end))
     hs.hotkey.bind(mash, '5', (function() setGridLayoutInit(false, 'zoom') end))
     hs.hotkey.bind(mash, '6', (function() setGridLayoutInit(false, 'sketchbook') end))
