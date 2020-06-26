@@ -563,6 +563,9 @@ return {
 
     -- APP MASH --
 
+    hs.hotkey.bind(mash, '`', function() hs.application.launchOrFocus('Zoom') end)
+    hs.hotkey.bind(mash, '1', function() hs.application.launchOrFocus('Sketchbook') end)
+    hs.hotkey.bind(mash, '2', function() hs.application.launchOrFocus('Unity') end)
     hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Calendar') end)
     hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Mail') end)
     hs.hotkey.bind(mash, '.', function() hs.application.launchOrFocus('Finder') end)
@@ -572,21 +575,12 @@ return {
     hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Notion') end)
     hs.hotkey.bind(mash, 'u', function() hs.application.launchOrFocus('iTerm') end)
     hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end)
-    hs.hotkey.bind(mash, '-', function()
-    local unity = getBundleWindow(bundleIDs.unity)
-    if unity then unity:focus() end
-    local sketchbooks = getBundleWindows({bundleIDs.sketchbook, bundleIDs.sketbookprop})
-    if sketchbook then sketchbook:focus() end
-    local zoom = getBundleWindow(bundleIDs.zoom)
-    if zoom then zoom:focus() end
-  end)
     hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Slack') end)
     hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Spotify') end)
     hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') end)
     hs.hotkey.bind(mash, 'm', function() hs.application.launchOrFocus('Marked 2') end)
 
     -- FREE MOVE CHAIN --
-
     hs.hotkey.bind({'ctrl', 'alt'}, 'up', chain({
       grid.topHalf,
       grid.topThird,
@@ -625,8 +619,18 @@ return {
     }))
 
     -- FLIPS --
+    hs.hotkey.bind(mash, '\\', function() turnOnSideBar() setGridLayoutInit() end)
+    hs.hotkey.bind(mash, '=', function() turnOnIsItermSplit() setGridLayoutInit() end)
+    hs.hotkey.bind(mash, '/', function() turnOnIsChromeSplit() setGridLayoutInit() end)
+    hs.hotkey.bind(mash, 'l', function() turnOnVerticalMode() setGridLayoutInit() end)
 
-    hs.hotkey.bind(mash, '\\', function()
+    -- LAYOUTS --
+    hs.hotkey.bind(mash, '9', function() turnOnSplitFormation() setGridLayoutInit() end)
+    hs.hotkey.bind(mash, '0', (function() setGridLayoutInit('one') end))
+    hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('two') end))
+    hs.hotkey.bind(mash, ']', (function() setGridLayoutInit('three') end))
+
+    hs.hotkey.bind(mash, '-', function()
       local layout
       if currentAppLayout == 'default' then
         layout = 'zoom'
@@ -635,17 +639,6 @@ return {
       end
       setGridLayoutInit(false, layout)
     end)
-    hs.hotkey.bind(mash, '=', function() turnOnSideBar() setGridLayoutInit() end)
-    hs.hotkey.bind(mash, '/', function() turnOnIsItermSplit() setGridLayoutInit() end)
-    hs.hotkey.bind(mash, 'l', function() turnOnIsChromeSplit() setGridLayoutInit() end)
-    hs.hotkey.bind(mash, 'r', function() turnOnVerticalMode() setGridLayoutInit() end)
-
-    -- LAYOUTS --
-    hs.hotkey.bind(mash, '9', function() turnOnSplitFormation() setGridLayoutInit() end)
-    hs.hotkey.bind(mash, '0', (function() setGridLayoutInit('one') end))
-    hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('two') end))
-    hs.hotkey.bind(mash, ']', (function() setGridLayoutInit('three') end))
-
     -- hs.hotkey.bind(mash, 's', chainFormation())
   end)
 }
