@@ -9,7 +9,9 @@ local isItermSplit = false
 local isChromeSplit = false
 local currentLayout = nil
 local currentAppLayout = 'default'
+local isDebounceChange = false
 local chromeWindow = {}
+
 
 -- chrome profiles
 local chromeProfiles = {}
@@ -534,21 +536,33 @@ local turnOnIsChromeSplit = (function()
   end
 end)
 
+local resetAllFormations = (function()
+    sideBar = false
+    isWindowsVertical = true
+    isItermSplit = false
+    isChromeSplit = false
+end)
 
-local turnOnSplitFormation = (function()
-  if isWindowsVertical then
+local tutorialMode = (function()
     sideBar = true
     isItermSplit = true
     isWindowsVertical = false
     -- isChromeSplit = false
-  else
-    sideBar = false
+end)
+
+local codingFormation = (function()
+    sideBar = true
     isWindowsVertical = true
     isItermSplit = false
     -- isChromeSplit = false
-  end
 end)
 
+local codingFormationAlt = (function()
+    sideBar = true
+    isWindowsVertical = false
+    isItermSplit = false
+    -- isChromeSplit = true
+end)
 --
 -- Key bindings.
 --
@@ -563,9 +577,6 @@ return {
 
     -- APP MASH --
 
-    hs.hotkey.bind(mash, '`', function() hs.application.launchOrFocus('Zoom') end)
-    hs.hotkey.bind(mash, '1', function() hs.application.launchOrFocus('Sketchbook') end)
-    hs.hotkey.bind(mash, '2', function() hs.application.launchOrFocus('Unity') end)
     hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Calendar') end)
     hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Mail') end)
     hs.hotkey.bind(mash, '.', function() hs.application.launchOrFocus('Finder') end)
@@ -579,6 +590,10 @@ return {
     hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Spotify') end)
     hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') end)
     hs.hotkey.bind(mash, 'm', function() hs.application.launchOrFocus('Marked 2') end)
+
+    hs.hotkey.bind(mash, 'z', function() hs.application.launchOrFocus('Zoom') end)
+    hs.hotkey.bind(mash, 'w', function() hs.application.launchOrFocus('Sketchbook') end)
+    hs.hotkey.bind(mash, 'm', function() hs.application.launchOrFocus('Unity') end)
 
     -- FREE MOVE CHAIN --
     hs.hotkey.bind({'ctrl', 'alt'}, 'up', chain({
@@ -618,14 +633,30 @@ return {
       grid.centeredSmall,
     }))
 
+
+    local debounceChange = function (fun)
+      if not isDebounceChange then
+        isDebounceChange = true
+        fun()
+        isDebounceChange = false
+      end
+    end
+
+    -- hs.hotkey.bind(mods, key, pressedfn, releasedfn, repeatfn) ->
+    -- hs.hotkey object --
+    -- Note: Cannot get the repeartfn to work
     -- FLIPS --
-    hs.hotkey.bind(mash, '\\', function() turnOnSideBar() setGridLayoutInit() end)
-    hs.hotkey.bind(mash, '=', function() turnOnIsItermSplit() setGridLayoutInit() end)
-    hs.hotkey.bind(mash, '/', function() turnOnIsChromeSplit() setGridLayoutInit() end)
-    hs.hotkey.bind(mash, 'l', function() turnOnVerticalMode() setGridLayoutInit() end)
+    hs.hotkey.bind(mash, '\\', turnOnSideBar, setGridLayoutInit)
+    hs.hotkey.bind(mash, '=', turnOnIsItermSplit, setGridLayoutInit)
+    hs.hotkey.bind(mash, '/', turnOnIsChromeSplit, setGridLayoutInit)
+    hs.hotkey.bind(mash, 'l', turnOnVerticalMode, setGridLayoutInit)
 
     -- LAYOUTS --
-    hs.hotkey.bind(mash, '9', function() turnOnSplitFormation() setGridLayoutInit() end)
+    hs.hotkey.bind(mash, '`', resetAllFormations, setGridLayoutInit)
+    hs.hotkey.bind(mash, '1', codingFormation, setGridLayoutInit)
+    hs.hotkey.bind(mash, '2', codingFormationAlt, setGridLayoutInit)
+    hs.hotkey.bind(mash, '3', tutorialMode, setGridLayoutInit)
+
     hs.hotkey.bind(mash, '0', (function() setGridLayoutInit('one') end))
     hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('two') end))
     hs.hotkey.bind(mash, ']', (function() setGridLayoutInit('three') end))
