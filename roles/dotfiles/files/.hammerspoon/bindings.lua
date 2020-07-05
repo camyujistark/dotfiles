@@ -263,11 +263,11 @@ end)
 local gridLayout = {
   one = (function()
     return maybeIsSideBar({
-      A1 = '0,0/9x12',
-      A2 = '0,0/9x12',
-      B = '0,0/9x12',
-      C = '0,0/9x12',
-      D = '9,0/3x12',
+      A1 = '0,0/10x12',
+      A2 = '0,0/10x12',
+      B = '0,0/10x12',
+      C = '0,0/10x12',
+      D = '10,0/2x12',
     },
     {
       A1 = '0,0/12x12',
@@ -282,16 +282,16 @@ local gridLayout = {
       maybeIsVertical({
         A1 = maybeIsChromeSplit('0,0/4x6', '0,0/4x12'),
         A2 = maybeIsChromeSplit('0,6/4x6', '0,0/4x12'),
-        B = maybeIsItermSplitGridCoord('4,0/5x6', '4,0/5x12'),
-        C = maybeIsItermSplitGridCoord('4,6/5x6', maybeIsChromeSplit('0,6/4x6', '0,0/4x12')),
-        D = '9,0/3x12',
+        B = maybeIsItermSplitGridCoord('4,0/6x6', '4,0/6x12'),
+        C = maybeIsItermSplitGridCoord('4,6/6x6', maybeIsChromeSplit('0,6/4x6', '0,0/4x12')),
+        D = '10,0/2x12',
       },
       {
-        A1 = maybeIsChromeSplit('0,0/4x6', '0,0/9x6'),
-        A2 = maybeIsChromeSplit('4,0/5x6', '0,0/9x6'),
-        B = maybeIsItermSplitGridCoord('4,6/5x6', '0,6/9x6'),
-        C = maybeIsItermSplitGridCoord('0,6/4x6', maybeIsChromeSplit('4,0/5x6', '0,0/9x6')),
-        D = '9,0/3x12',
+        A1 = maybeIsChromeSplit('0,0/4x6', '0,0/10x6'),
+        A2 = maybeIsChromeSplit('4,0/6x6', '0,0/10x6'),
+        B = maybeIsItermSplitGridCoord('4,6/6x6', '0,6/10x6'),
+        C = maybeIsItermSplitGridCoord('0,6/4x6', maybeIsChromeSplit('4,0/6x6', '0,0/10x6')),
+        D = '10,0/2x12',
       }),
       maybeIsVertical({
         A1 = maybeIsChromeSplit('0,0/3x12', '0,0/6x12'),
@@ -314,16 +314,16 @@ local gridLayout = {
       maybeIsVertical({
         A1 = maybeIsChromeSplit('0,0/3x12', '0,0/6x12'),
         A2 = maybeIsChromeSplit('3,0/3x12', '0,0/6x12'),
-        B = maybeIsItermSplitGridCoord('6,0/3x6', '6,0/3x12'),
-        C = maybeIsItermSplitGridCoord('6,6/3x6', maybeIsChromeSplit('3,0/3x12', '0,0/6x12')),
-        D = '9,0/3x12',
+        B = maybeIsItermSplitGridCoord('6,0/4x6', '6,0/4x12'),
+        C = maybeIsItermSplitGridCoord('6,6/4x6', maybeIsChromeSplit('3,0/4x12', '0,0/6x12')),
+        D = '10,0/2x12',
       },
       {
-        A1 = maybeIsChromeSplit('0,0/4x8', '0,0/9x8'),
-        A2 = maybeIsChromeSplit('4,0/5x8', '0,0/9x8'),
-        B = maybeIsItermSplitGridCoord('4,8/5x4', '0,8/9x4'),
-        C = maybeIsItermSplitGridCoord('0,8/4x4', maybeIsChromeSplit('0,0/4x8', '0,0/9x8')),
-        D = '9,0/3x12',
+        A1 = maybeIsChromeSplit('0,0/4x8', '0,0/10x8'),
+        A2 = maybeIsChromeSplit('4,0/6x8', '0,0/10x8'),
+        B = maybeIsItermSplitGridCoord('4,8/6x4', '0,8/10x4'),
+        C = maybeIsItermSplitGridCoord('0,8/4x4', maybeIsChromeSplit('0,0/4x8', '0,0/10x8')),
+        D = '10,0/2x12',
       }),
       maybeIsVertical({
         A1 = maybeIsChromeSplit('0,0/4x12', '0,0/8x12'),
