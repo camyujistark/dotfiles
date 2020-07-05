@@ -633,14 +633,10 @@ return {
       grid.centeredSmall,
     }))
 
-
-    local debounceChange = function (fun)
-      if not isDebounceChange then
-        isDebounceChange = true
-        fun()
-        isDebounceChange = false
-      end
-    end
+    -- Sound
+    hs.hotkey.bind(mash, 'help', function() hs.execute("SwitchAudioSource -s 'CalDigit Thunderbolt 3 Audio'", true) end)
+    hs.hotkey.bind(mash, 'home', function() hs.execute("SwitchAudioSource -s 'Logitech BT Adapter'", true) end)
+    hs.hotkey.bind(mash, 'pageup', function() hs.execute("SwitchAudioSource -s 'MacBook Pro Speakers'", true) end)
 
     -- hs.hotkey.bind(mods, key, pressedfn, releasedfn, repeatfn) ->
     -- hs.hotkey object --
