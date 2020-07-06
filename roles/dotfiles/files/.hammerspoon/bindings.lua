@@ -393,14 +393,17 @@ local setAppGroup = (function(layout)
       A1 = getBundleWindows({
         bundleIDs.zoom
       }),
-      A2 = {
-        chromeWindow.alien,
-        chromeWindow.home,
-      },
-      B = getBundleWindows({
-        bundleIDs.iterm2,
-        bundleIDs.notion,
-      }),
+      -- no A2
+      B = tablemerge(
+        getBundleWindows({
+          bundleIDs.iterm2,
+          bundleIDs.notion,
+        }),
+        {
+          chromeWindow.alien,
+          chromeWindow.home
+        }
+      ),
       C = tablemerge(
         { chromeWindow.side },
         getBundleWindows({
