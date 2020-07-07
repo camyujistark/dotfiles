@@ -5,7 +5,7 @@ local runOnApplications = nil
 local canManageWindow = nil
 local sideBar = false
 local isWindowsVertical = true
-local isItermSplit = false
+local isSideSplit = false
 local isChromeSplit = false
 local currentLayout = nil
 local currentAppLayout = 'default'
@@ -85,8 +85,8 @@ local maybeIsVertical = (function(a, b)
     return b
   end
 end)
-local maybeIsItermSplitGridCoord = (function(a, b)
-  if isItermSplit then
+local maybeIsSideSplitGridCoord = (function(a, b)
+  if isSideSplit then
     return a
   else
     return b
@@ -280,63 +280,91 @@ local gridLayout = {
   two = (function()
     return maybeIsSideBar(
       maybeIsVertical({
-        A1 = maybeIsChromeSplit('0,0/4x6', '0,0/4x12'),
-        A2 = maybeIsChromeSplit('0,6/4x6', '0,0/4x12'),
-        B = maybeIsItermSplitGridCoord('4,0/6x6', '4,0/6x12'),
-        C = maybeIsItermSplitGridCoord('4,6/6x6', maybeIsChromeSplit('0,6/4x6', '0,0/4x12')),
+        -- too small to have a vertical split
+        A1 = maybeIsSideSplitGridCoord('0,0/4x6','0,0/4x12'),
+        A2 = maybeIsChromeSplit(maybeIsSideSplitGridCoord('0,6/4x6', '0,0/4x12'), maybeIsSideSplitGridCoord('0,0/4x6', '0,0/4x12')),
+        B = '4,0/6x12',
+        C = maybeIsChromeSplit(maybeIsSideSplitGridCoord('0,6/4x6', '0,0/4x12'), maybeIsSideSplitGridCoord('0,6/4x6', '0,0/4x12')),
         D = '10,0/2x12',
       },
       {
         A1 = maybeIsChromeSplit('0,0/4x6', '0,0/10x6'),
         A2 = maybeIsChromeSplit('4,0/6x6', '0,0/10x6'),
-        B = maybeIsItermSplitGridCoord('4,6/6x6', '0,6/10x6'),
-        C = maybeIsItermSplitGridCoord('0,6/4x6', maybeIsChromeSplit('4,0/6x6', '0,0/10x6')),
+        B = maybeIsSideSplitGridCoord('4,6/6x6', '0,6/10x6'),
+        C = maybeIsSideSplitGridCoord('0,6/4x6', maybeIsChromeSplit('4,0/6x6', '0,0/10x6')),
         D = '10,0/2x12',
       }),
       maybeIsVertical({
-        A1 = maybeIsChromeSplit('0,0/3x12', '0,0/6x12'),
-        A2 = maybeIsChromeSplit('3,0/3x12', '0,0/6x12'),
-        B = maybeIsItermSplitGridCoord('6,0/6x6', '6,0/6x12'),
-        C = maybeIsItermSplitGridCoord('6,6/6x6', maybeIsChromeSplit('3,0/3x12', '0,0/6x12')),
-        D = maybeIsItermSplitGridCoord('6,0/6x6', '6,0/6x12'),
+        A1 = maybeIsChromeSplit(
+          '0,0/3x12',
+          maybeIsSideSplitGridCoord('0,0/6x6','0,0/6x12')
+        ),
+        A2 = maybeIsChromeSplit(
+          maybeIsSideSplitGridCoord('3,0/3x6', '3,0/3x12'),
+          maybeIsSideSplitGridCoord('0,0/6x6','0,0/6x12')
+        ),
+        B = '6,0/6x12',
+        C = maybeIsChromeSplit(
+          maybeIsSideSplitGridCoord('3,6/3x6','3,0/3x12'),
+          maybeIsSideSplitGridCoord('0,6/6x6','0,0/6x12')
+        ),
+        D = maybeIsSideSplitGridCoord('6,0/6x6', '6,0/6x12'),
       },
       {
         A1 = maybeIsChromeSplit('0,0/6x6', '0,0/12x6'),
         A2 = maybeIsChromeSplit('6,0/6x6', '0,0/12x6'),
-        B = maybeIsItermSplitGridCoord('6,6/6x6', '0,6/12x6'),
-        C = maybeIsItermSplitGridCoord('0,6/6x6', maybeIsChromeSplit('6,0/6x6', '0,0/12x6')),
-        D = maybeIsItermSplitGridCoord('6,6/6x6', '0,6/12x6'),
+        B = maybeIsSideSplitGridCoord('6,6/6x6', '0,6/12x6'),
+        C = maybeIsSideSplitGridCoord('0,6/6x6', maybeIsChromeSplit('6,0/6x6', '0,0/12x6')),
+        D = maybeIsSideSplitGridCoord('6,6/6x6', '0,6/12x6'),
       })
     )
   end),
   three = (function()
     return maybeIsSideBar(
       maybeIsVertical({
-        A1 = maybeIsChromeSplit('0,0/3x12', '0,0/6x12'),
-        A2 = maybeIsChromeSplit('3,0/3x12', '0,0/6x12'),
-        B = maybeIsItermSplitGridCoord('6,0/4x6', '6,0/4x12'),
-        C = maybeIsItermSplitGridCoord('6,6/4x6', maybeIsChromeSplit('3,0/4x12', '0,0/6x12')),
+        A1 = maybeIsChromeSplit(
+          '0,0/3x12',
+          maybeIsSideSplitGridCoord('0,0/6x6','0,0/6x12')
+        ),
+        A2 = maybeIsChromeSplit(
+          maybeIsSideSplitGridCoord('3,0/3x6', '3,0/3x12'), 
+          maybeIsSideSplitGridCoord('0,0/6x6','0,0/6x12')
+        ),
+        B = '6,0/4x12',
+        C = maybeIsChromeSplit(
+          maybeIsSideSplitGridCoord('3,6/3x6','3,0/3x12'),
+          maybeIsSideSplitGridCoord('0,6/6x6','0,0/6x12')
+        ),
         D = '10,0/2x12',
       },
       {
         A1 = maybeIsChromeSplit('0,0/4x8', '0,0/10x8'),
         A2 = maybeIsChromeSplit('4,0/6x8', '0,0/10x8'),
-        B = maybeIsItermSplitGridCoord('4,8/6x4', '0,8/10x4'),
-        C = maybeIsItermSplitGridCoord('0,8/4x4', maybeIsChromeSplit('0,0/4x8', '0,0/10x8')),
+        B = maybeIsSideSplitGridCoord('4,8/6x4', '0,8/10x4'),
+        C = maybeIsSideSplitGridCoord('0,8/4x4', maybeIsChromeSplit('0,0/4x8', '0,0/10x8')),
         D = '10,0/2x12',
       }),
       maybeIsVertical({
-        A1 = maybeIsChromeSplit('0,0/4x12', '0,0/8x12'),
-        A2 = maybeIsChromeSplit('4,0/4x12', '0,0/8x12'),
-        B = maybeIsItermSplitGridCoord('8,0/4x6', '8,0/4x12'),
-        C = maybeIsItermSplitGridCoord('8,6/4x6', maybeIsChromeSplit('4,0/4x12','0,0/8x12')),
+        A1 = maybeIsChromeSplit(
+          '0,0/4x12',
+          maybeIsSideSplitGridCoord('0,0/8x6','0,0/8x12')
+        ),
+        A2 = maybeIsChromeSplit(
+          maybeIsSideSplitGridCoord('4,0/4x6', '4,0/4x12'), 
+          maybeIsSideSplitGridCoord('0,0/8x6','0,0/8x12')
+        ),
+        B = '8,0/4x12',
+        C = maybeIsChromeSplit(
+          maybeIsSideSplitGridCoord('4,6/4x6','4,0/4x12'),
+          maybeIsSideSplitGridCoord('0,6/8x6','0,0/8x12')
+        ),
         D = maybeIsChromeSplit('4,0/4x12', '0,0/8x12'),
       },
       {
         A1 = maybeIsChromeSplit('0,0/6x8', '0,0/12x8'),
         A2 = maybeIsChromeSplit('6,0/6x8', '0,0/12x8'),
-        B = maybeIsItermSplitGridCoord('6,8/6x4', '0,8/12x4'),
-        C = maybeIsItermSplitGridCoord('0,8/6x4', maybeIsChromeSplit('6,0/6x8', '0,0/12x8')),
+        B = maybeIsSideSplitGridCoord('6,8/6x4', '0,8/12x4'),
+        C = maybeIsSideSplitGridCoord('0,8/6x4', maybeIsChromeSplit('6,0/6x8', '0,0/12x8')),
         D = maybeIsChromeSplit('6,0/6x8', '0,0/12x8'),
       })
     )
@@ -520,11 +548,11 @@ end)
 
 -- Toggle Iterm Split
 --
-local turnOnIsItermSplit = (function()
-  if isItermSplit then
-    isItermSplit = false
+local turnOnIsSideSplit = (function()
+  if isSideSplit then
+    isSideSplit = false
   else
-    isItermSplit = true
+    isSideSplit = true
   end
 end)
 
@@ -542,13 +570,13 @@ end)
 local resetAllFormations = (function()
     sideBar = false
     isWindowsVertical = true
-    isItermSplit = false
+    isSideSplit = false
     isChromeSplit = false
 end)
 
 local tutorialMode = (function()
     sideBar = true
-    isItermSplit = true
+    isSideSplit = true
     isWindowsVertical = false
     -- isChromeSplit = false
 end)
@@ -556,14 +584,14 @@ end)
 local codingFormation = (function()
     sideBar = true
     isWindowsVertical = true
-    isItermSplit = false
+    isSideSplit = false
     -- isChromeSplit = false
 end)
 
 local codingFormationAlt = (function()
     sideBar = true
     isWindowsVertical = false
-    isItermSplit = false
+    isSideSplit = false
     -- isChromeSplit = true
 end)
 --
@@ -646,7 +674,7 @@ return {
     -- Note: Cannot get the repeartfn to work
     -- FLIPS --
     hs.hotkey.bind(mash, '\\', turnOnSideBar, setGridLayoutInit)
-    hs.hotkey.bind(mash, '=', turnOnIsItermSplit, setGridLayoutInit)
+    hs.hotkey.bind(mash, '=', turnOnIsSideSplit, setGridLayoutInit)
     hs.hotkey.bind(mash, '/', turnOnIsChromeSplit, setGridLayoutInit)
     hs.hotkey.bind(mash, 'l', turnOnVerticalMode, setGridLayoutInit)
 
