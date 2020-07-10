@@ -251,7 +251,7 @@ end)
 
 --|------|------|------------|-------|
 --|      |      |            |       |
---|      |      |     B      |       |
+--|      A      |     B      |       |
 --|      |      |            |       |
 --|  A1  |  A2  |------------|   D   |
 --|      |      |            |       |
@@ -263,6 +263,7 @@ end)
 local gridLayout = {
   one = (function()
     return maybeIsSideBar({
+      -- A = '0,0/10x12',
       A1 = '0,0/10x12',
       A2 = '0,0/10x12',
       B = '0,0/10x12',
@@ -270,6 +271,7 @@ local gridLayout = {
       D = '10,0/2x12',
     },
     {
+      -- A = '0,0/12x12',
       A1 = '0,0/12x12',
       A2 = '0,0/12x12',
       B = '0,0/12x12',
@@ -281,6 +283,7 @@ local gridLayout = {
     return maybeIsSideBar(
       maybeIsHorizonal({
         -- too small to have a vertical split
+        -- A = '0,0/4x12',
         A1 = maybeSplitXGridCoord('0,0/4x6','0,0/4x12'),
         A2 = maybeSplitYGridCoord(
           maybeSplitXGridCoord('0,6/4x6', '0,0/4x12'),
@@ -294,6 +297,7 @@ local gridLayout = {
         D = '10,0/2x12',
       },
       {
+        -- A = '0,0/10x6',
         A1 = maybeSplitYGridCoord('0,0/4x6', '0,0/10x6'),
         A2 = maybeSplitYGridCoord('4,0/6x6', '0,0/10x6'),
         B = maybeSplitXGridCoord('4,6/6x6', '0,6/10x6'),
