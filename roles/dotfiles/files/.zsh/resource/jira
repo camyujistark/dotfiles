@@ -1,6 +1,13 @@
+
 # 
 # Jira
 #
+
+declare -A JIRA_IDS
+JIRA_IDS[cam]=5d75d6b4458a170db4b034b8
+JIRA_IDS[andy]=5b14dfa15c1b4f1bc453c303
+JIRA_IDS[andrew]=n5a9348b119532839bda35443
+JIRA_IDS[wesley]=557058:a9938b41-7745-45b5-bac9-85d659accf50
 
 jnew() {
   jira-cli new --type=$1 --priority=Medium --project LE $2 | grep issue | pbcopy;
@@ -47,56 +54,103 @@ harvestTask() {
 jrun () {
   PROJECT='divi'
   PROJECT_FILE_NAME='lsc_odrs_app'
-  JIRA_ID=$1
-  BRANCH_CHECKOUT=$2
   NOTES_PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
+  BASE_BRANCH='develop'
   CURRENT_BRANCH=$( git branch | grep '*' | cut -d ' ' -f2)
   BASE_FILE_NAME=$(basename `git rev-parse --show-toplevel`)
-  BASE_BRANCH='DIVI-145-consent-orders'
+  JIRA_ID=$1
+  BRANCH_CHECKOUT=$2
 
-  if [[ $(git status -s) ]]; then
-    echo "You have uncommited changes. please update first";
-    return
+  if [ $JIRA_ID ]; then
+    git checkout -b $(jira branch $JIRA_ID)
+  else
+    PS3='Please enter your choice: '
+    jrunoptions=("Go to previous branch" "Create New Branch" "Create New Branch Start" "Find branch" "Quit")
+    select opt in "${jrunoptions[@]}"
+    do
+        case $opt in
+            "Go to previous branch")
+                JIRA_ID=$(grl | awk -F'-' '{print $2;}')
+                jinit $JIRA_ID
+                break
+                ;;
+            "Create New Branch")
+                jcreate $BASE_BRANCH
+                return
+                ;;
+            "Create New Branch Start")
+                jcreate $BASE_BRANCH
+                JIRA_ID=$(grep issue /tmp/cstory.yml | awk '{print $2}')
+                jinit $JIRA_ID
+                return
+                ;;
+            "Find branch")
+                JIRA_ID=$(git branch | fzf | awk -F'-' '{print $2;}')
+                jinit $JIRA_ID
+                break
+                ;;
+            "Quit")
+                break
+                ;;
+            *) echo "invalid option $REPLY";;
+        esac
+    done
   fi
+}
 
-  if [ $BASE_FILE_NAME != $PROJECT_FILE_NAME ]; then
-    echo "JRUN: must be in project $PROJECT_FILE_NAME for jrun to work";
-    return
+jassign() {
+  JIRA_ID=$1
+  if [[ $JIRA_ID ]]; then
+    ASSIGNEE="$(echo 'cam\nandy\nandrew\nwesly' | fzf)"
+    jira edit --noedit "$JIRA_ID" -o assigneeid="${JIRA_IDS[$ASSIGNEE]}"
+  else
+    echo "JIRAQA: need to have ISSUE_ID"
   fi
+}
 
+jqa() {
+  JIRA_ID=$1
+  DEFAULT_QA_PERSON='wesley'
+  QA_WORKFLOW='QA ready'
+  if [[ $JIRA_ID ]]; then
+    jira transition --noedit "$QA_WORKFLOW" "$JIRA_ID" && jira edit --noedit "$JIRA_ID" -o assigneeid="${JIRA_IDS[$DEFAULT_QA_PERSON]}"
+  else
+    echo "JIRAQA: need to have ISSUE_ID"
+  fi
+}
+
+jtransition() {
+  JIRA_ID=$1
+  moveTo=$2
   if [ -z $JIRA_ID ]; then
-    # get fzf of latest branches from git reflog
-    JIRA_ID=$(grl | awk -F'-' '{print $2;}')
-    if [ -z $JIRA_ID ]; then
-      echo "JIRA_ID does not exist"
-      return
-    fi
-    if ! [[ $JIRA_ID =~ '^[0-9]+$' ]]; then
-      echo "JIRA_ID is not a number"
-      return
-    fi
+    echo 'JIRA: Need arg with jira ticket id'
+    return
   fi
-
-  if [ -z $BRANCH_CHECKOUT ] && [ $CURRENT_BRANCH != 'develop' ]; then
-    echo "GIT: switching to $BASE_BRANCH branch";
-    git checkout $BASE_BRANCH;
-    git pull;
+  if [ -z $moveTo ]; then
+    moveTo="$(echo 'Done\nBacklog\nFor Discussion\nQA Ready\nCode review\nIn Progress\nTo Do' | fzf)"
   fi
-
-  if [ $BRANCH_CHECKOUT ]; then 
-    echo "GIT: switching to $BRANCH_CHECKOUT";
-    git checkout $BRANCH_CHECKOUT;
-    git pull;
+  ticketStatus="$(jira status $JIRA_ID)"
+  if [ "$ticketStatus" = "$moveTo" ]; then 
+    echo "JIRA: Already on $moveTo status"
+    return
   fi
+  jira transition "$moveTo" $JIRA_ID --noedit
+}
 
+jcreate () {
+  BASEBRANCH="develop"
+  if [ $1 ]; then
+    BASEBRANCH=$1
+  fi
+  TYPE="$(echo 'Task\nBug' | fzf)"
+  ASSIGNEE="$(echo 'cam\nandy\nandrew\nwesly' | fzf)"
+  git checkout $BASEBRANCH && git pull
+  jira create -p DIVI -i "$TYPE" -o assigneeid="${JIRA_IDS[$ASSIGNEE]}" --saveFile /tmp/cstory.yml
+}
+
+jopennotes() {
+  JIRA_ID=$1
   BRANCHNAME=$(jira branch $JIRA_ID)
-
-  # Currently, you need to have a JIRA_ID so you cannot run on develop or
-  # master. But here for safety measures
-  if [ "$CURRENT_BRANCHNAME" = 'develop' ] || [ "$CURRENT_BRANCHNAME" = 'master' ]; then
-    echo 'JRUN: cannot run on $CURRENT_BRANCHNAME';
-    exit 0;
-  fi
 
   # limitation to having the second pane to always have vim running with notes
   # note this is a hack atm. would like to make this more specific
@@ -111,58 +165,16 @@ jrun () {
   if git rev-parse --verify $BRANCHNAME; then
     echo "GIT: $BRANCHNAME already exists";
     git checkout $BRANCHNAME;
-
-    # If you have already deleted the fil then write again
-    if [[ ! -f "$NOTES_PROJECTPATH/$BRANCHNAME.md" ]]; then
-      jira view $JIRA_ID >> "$NOTES_PROJECTPATH/$BRANCHNAME.md";
-    fi
-
-    # JIRA transition to In Progress
-    jtrans "In Progress" $JIRA_ID
-
-    # HARVEST Start timer harvest with branch
-    # NOTE: would like to update this in future so not all over the place
-    jharvest $JIRA_ID
-
-  # NOTES open in first window pane 2
-    tmux send-keys -t 2 "vim $NOTES_PROJECTPATH/$BRANCHNAME.md"
-    tmux send-keys -t 2 Enter;
-    return;
   fi
 
-  # GIT creat branch
-  echo "GIT: checking out and creating $BRANCHNAME";
-  git checkout -b $BRANCHNAME
-
   ## NOTES add notes to view
-  jira view $JIRA_ID >> "$NOTES_PROJECTPATH/$BRANCHNAME.md";
-
-  # JIRA transition to In Progress
-  jtrans "In Progress" $JIRA_ID
-
-  # HARVEST Start timer harvest with branch
-  # NOTE: would like to update this in future so not all over the place
-  jharvest $JIRA_ID
+  if [[ ! -f "$NOTES_PROJECTPATH/$BRANCHNAME.md" ]]; then
+    jira view $JIRA_ID >> "$NOTES_PROJECTPATH/$BRANCHNAME.md";
+  fi
 
   # NOTES open in first window pane 2
   tmux send-keys -t 2 "vim $NOTES_PROJECTPATH/$BRANCHNAME.md"
   tmux send-keys -t 2 Enter;
-}
-
-jqa() {
-  JIRA_ID=$1
-  QA_PERSON=$2
-  DEFAULT_QA_PERSON='Wesley Fermin'
-  QA_WORKFLOW='QA ready'
-  if [[ $JIRA_ID ]]; then
-    if [[ $QA_PERSON ]]; then
-      jira transition --noedit "$QA_WORKFLOW" "$JIRA_ID" && jira assign "$JIRA_ID" "$QA_PERSON"
-    else
-      jira transition --noedit "$QA_WORKFLOW" "$JIRA_ID" && jira assign "$JIRA_ID" "$DEFAULT_QA_PERSON"
-    fi
-  else
-    echo "JIRAQA: need to have ISSUE_ID"
-  fi
 }
 
 jnotes() {
@@ -188,63 +200,15 @@ jnotes() {
   fi
 }
 
-jtrans() {
-  moveTo=$1
-  JIRA_ID=$2
-
-  if [ -z $JIRA_ID ]; then
-    echo 'JIRA:Need arg with jira ticket id'
-    return
-  fi
-  if [ -z $moveTo ]; then
-    echo 'JIRA: Need a move to location'
-    return
-  fi
-  ticketStatus="$(jira status $JIRA_ID)"
-  if [ ! "$ticketStatus" ]; then
-    echo "JIRA: ticket $JIRA_ID does not exist"
-    return
-  fi
-
-  if [ "$ticketStatus" = "$moveTo" ]; then 
-    echo "JIRA: Already on $moveTo status"
-    return
-  fi
-
-  # status
-  TODO_STATUS='To Do'
-  INPROGRESS_STATUS='In Progress'
-  MOVE_REVIEW_STATUS='Code review'
-  # Note: Ticket review status is different to move review status
-  TICKET_REVIEW_STATUS='In Review'
-  QA_STATUS='QA Ready'
-
-  # QA
-  if [ "$moveTo" = "$QA_STATUS" ]; then
-    if [ "$ticketStatus" = "$TICKET_REVIEW_STATUS" ]; then
-      jqa $JIRA_ID
-      return;
-    else
-      echo 'JIRA: ticket must be in Code review to move to QA Ready'
-      return
-    fi
-  fi
-
-  # Code Review
-  if [ $moveTo = "$MOVE_REVIEW_STATUS" ] && [ $ticketStatus = "$TODO_STATUS" ]; then 
-      jira transition "$INPROGRESS_STATUS" $JIRA_ID --noedit
-  fi
-
-  # Default
-  jira transition "$moveTo" $JIRA_ID --noedit
-}
-
-jtransition() {
+jinit() {
   JIRA_ID=$1
-  if [ -z $JIRA_ID ]; then
-    echo 'JIRA: Need arg with jira ticket id'
-    return
+  BRANCHNAME=$(jira branch $JIRA_ID)
+  jharvest $JIRA_ID
+  jira transition "In Progress" $JIRA_ID --noedit
+  # jopennotes $JIRA_ID
+  if git rev-parse --verify $BRANCHNAME; then
+    git checkout $BRANCHNAME
+  else
+    git checkout -b $BRANCHNAME
   fi
-  moveTo="$(echo 'Done\nBacklog\nFor Discussion\nQA Ready\nCode review\nIn Progress\nTo Do' | fzf)"
-  jtrans $moveTo $JIRA_ID
 }
