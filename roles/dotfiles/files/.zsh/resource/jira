@@ -6,7 +6,7 @@
 declare -A JIRA_IDS
 JIRA_IDS[cam]=5d75d6b4458a170db4b034b8
 JIRA_IDS[andy]=5b14dfa15c1b4f1bc453c303
-JIRA_IDS[andrew]=n5a9348b119532839bda35443
+JIRA_IDS[andrew]=5a9348b119532839bda35443
 JIRA_IDS[wesley]=557058:a9938b41-7745-45b5-bac9-85d659accf50
 
 jnew() {
@@ -36,7 +36,7 @@ jmine() {
 jharvest() {
   JIRA_ID=$1
   if [ -z "$JIRA_ID" ]; then
-    echo "Need JIRA_ID to run"
+    python $HOME/Documents/Scripts/harvest-api/harvestToggleLatest.py
     return
   fi
   python $HOME/Documents/Scripts/harvest-api/harvestStart.py 'amica' 'gittask' "$(jira summary $JIRA_ID)" > /dev/null 2>&1 &
@@ -62,7 +62,8 @@ jrun () {
   BRANCH_CHECKOUT=$2
 
   if [ $JIRA_ID ]; then
-    git checkout -b $(jira branch $JIRA_ID)
+    jcheckout $JIRA_ID
+    jinit $JIRA_ID
   else
     PS3='Please enter your choice: '
     jrunoptions=("Go to previous branch" "Create New Branch" "Create New Branch Start" "Find branch" "Quit")
@@ -200,15 +201,20 @@ jnotes() {
   fi
 }
 
-jinit() {
+jcheckout() {
   JIRA_ID=$1
   BRANCHNAME=$(jira branch $JIRA_ID)
-  jharvest $JIRA_ID
-  jira transition "In Progress" $JIRA_ID --noedit
-  # jopennotes $JIRA_ID
   if git rev-parse --verify $BRANCHNAME; then
     git checkout $BRANCHNAME
   else
     git checkout -b $BRANCHNAME
   fi
+}
+
+jinit() {
+  JIRA_ID=$1
+  jharvest $JIRA_ID
+  jira transition "In Progress" $JIRA_ID --noedit
+  jcheckout $JIRA_ID
+  jopennotes $JIRA_ID
 }
