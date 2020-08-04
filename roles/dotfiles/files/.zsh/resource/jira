@@ -9,6 +9,13 @@ JIRA_IDS[andy]=5b14dfa15c1b4f1bc453c303
 JIRA_IDS[andrew]=5a9348b119532839bda35443
 JIRA_IDS[wesley]=557058:a9938b41-7745-45b5-bac9-85d659accf50
 
+TODO_STATUS='To Do'
+INPROGRESS_STATUS='In Progress'
+MOVE_REVIEW_STATUS='Code review'
+# Note: Ticket review status is different to move review status
+TICKET_REVIEW_STATUS='In Review'
+QA_STATUS='QA Ready'
+
 jnew() {
   jira-cli new --type=$1 --priority=Medium --project LE $2 | grep issue | pbcopy;
 }
@@ -59,9 +66,14 @@ jrun () {
   CURRENT_BRANCH=$( git branch | grep '*' | cut -d ' ' -f2)
   BASE_FILE_NAME=$(basename `git rev-parse --show-toplevel`)
   JIRA_ID=$1
-  BRANCH_CHECKOUT=$2
+
+  if [ $2 ]; then
+    BASE_BRANCH=$2
+  fi
 
   if [ $JIRA_ID ]; then
+    git checkout $BASE_BRANCH
+    git pull
     jcheckout $JIRA_ID
     jinit $JIRA_ID
   else
@@ -113,6 +125,16 @@ jqa() {
   JIRA_ID=$1
   DEFAULT_QA_PERSON='wesley'
   QA_WORKFLOW='QA ready'
+
+  ticketStatus="$(jira status $JIRA_ID)"
+  if [ $ticketStatus = "$TODO_STATUS" ]; then 
+    jira transition "$INPROGRESS_STATUS" $JIRA_ID --noedit
+  fi
+
+  if [ $ticketStatus = "$INPROGRESS_STATUS" ]; then 
+    jira transition "$MOVE_REVIEW_STATUS" $JIRA_ID --noedit
+  fi
+
   if [[ $JIRA_ID ]]; then
     jira transition --noedit "$QA_WORKFLOW" "$JIRA_ID" && jira edit --noedit "$JIRA_ID" -o assigneeid="${JIRA_IDS[$DEFAULT_QA_PERSON]}"
   else
@@ -139,7 +161,7 @@ jtransition() {
 }
 
 jcreate () {
-  BASEBRANCH="develop"
+  BASEBRANCH="master"
   if [ $1 ]; then
     BASEBRANCH=$1
   fi
