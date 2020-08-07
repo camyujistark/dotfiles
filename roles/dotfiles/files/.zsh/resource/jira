@@ -126,6 +126,10 @@ jqa() {
   DEFAULT_QA_PERSON='wesley'
   QA_WORKFLOW='QA ready'
 
+  if [ -z $JIRA_ID ]; then 
+    JIRA_ID=$(git branch | grep '*' | cut -d ' ' -f2 | awk -F'-' '{print $2}')
+  fi
+
   ticketStatus="$(jira status $JIRA_ID)"
   if [ $ticketStatus = "$TODO_STATUS" ]; then 
     jira transition "$INPROGRESS_STATUS" $JIRA_ID --noedit
@@ -239,4 +243,8 @@ jinit() {
   jira transition "In Progress" $JIRA_ID --noedit
   jcheckout $JIRA_ID
   jopennotes $JIRA_ID
+}
+
+jopen() {
+  open https://portableaustralia.atlassian.net/browse/$( git branch | grep '*' | cut -d ' ' -f2 | awk -F'-' '{print $1_-$2}')
 }

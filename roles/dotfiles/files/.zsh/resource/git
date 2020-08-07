@@ -409,3 +409,4 @@ tvim() {
 gitco() {
   git checkout $(grl);
 }
+
