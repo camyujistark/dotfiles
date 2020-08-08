@@ -481,3 +481,6 @@ export NAVI_PATH="~/Documents/Cheatsheets/navi/"
 if [[ -s $HOME/.rvm/scripts/rvm ]]; then
   source $HOME/.rvm/scripts/rvm;
 fi
+
+# Added by serverless binary installer
+export PATH="$HOME/.serverless/bin:$PATH"

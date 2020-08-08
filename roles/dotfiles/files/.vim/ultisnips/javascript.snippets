@@ -345,18 +345,18 @@ snippet const "const" w
 const $1 = $2
 endsnippet
 
-snippet const() "const ()" w
+snippet constr "const ()" w
+const ${1} = (${2}) => ${3}
+endsnippet
+
+snippet constf "const {}" w
 const $1 = ($2) => {
 	return $3
 }
 endsnippet
 
-snippet const{}p "const props" w
-const { $1 } = this.props
-endsnippet
-
 snippet const{} "const {}" w
-const {$2} = $1
+const {$1} = $2
 endsnippet
 
 snippet span# "<span> with ID & className" w
