@@ -12,6 +12,9 @@ local currentAppLayout = 'default'
 local isDebounceChange = false
 local chromeWindow = {}
 
+internalDisplay = (function()
+  return hs.screen.find(macBookPro15_2019)
+end)
 
 -- chrome profiles
 local chromeProfiles = {}
@@ -215,11 +218,15 @@ getBundleWindows = (function(bundleIDs)
   return bundleWindows
 end)
 
-runOnApplications = (function(appWindows, groupGrid, showOnTop)
+runOnApplications = (function(appWindows, groupGrid, screen)
   for _, window in pairs(appWindows) do
       local windowGrid = hs.grid.get(window)
+      local windowScreen = hs.screen.primaryScreen()
+      if screen then
+        windowScreen = screen
+      end
       if(windowGrid.string ~= groupGrid) then
-        hs.grid.set(window, groupGrid, hs.screen.primaryScreen())
+        hs.grid.set(window, groupGrid, windowScreen)
       end
       if showOnTop then
         window:focus()
@@ -504,7 +511,11 @@ local setGridLayoutInit = (function(layout, appLayout)
     runOnApplications( appGroup.D, gridSettings.D )
   end
   if appGroup.C then
-    runOnApplications( appGroup.C, gridSettings.C )
+    if internalDisplay() then
+      runOnApplications( appGroup.C, gridSettings.C, internalDisplay() )
+    else
+      runOnApplications( appGroup.C, gridSettings.C )
+    end
   end
   if appGroup.B then
     runOnApplications( appGroup.B, gridSettings.B )
