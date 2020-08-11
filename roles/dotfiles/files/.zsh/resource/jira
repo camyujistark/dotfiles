@@ -3,18 +3,20 @@
 # Jira
 #
 
-declare -A JIRA_IDS
-JIRA_IDS[cam]=5d75d6b4458a170db4b034b8
-JIRA_IDS[andy]=5b14dfa15c1b4f1bc453c303
-JIRA_IDS[andrew]=5a9348b119532839bda35443
-JIRA_IDS[wesley]=557058:a9938b41-7745-45b5-bac9-85d659accf50
+getConfigValue() {
+  cat ~/.jira.d/config.yml | shyaml get-value $1
+}
 
-TODO_STATUS='To Do'
-INPROGRESS_STATUS='In Progress'
-MOVE_REVIEW_STATUS='Code review'
-# Note: Ticket review status is different to move review status
-TICKET_REVIEW_STATUS='In Review'
-QA_STATUS='QA Ready'
+getConfigValues() {
+  cat ~/.jira.d/config.yml | shyaml get-values $1
+}
+
+getConfigKeys() {
+  cat ~/.jira.d/config.yml | shyaml keys $1
+}
+
+JIRA_USERNAMES=$(getConfigKeys users)
+JIRA_WORKFLOW=$(getConfigValues workflow)
 
 jnew() {
   jira-cli new --type=$1 --priority=Medium --project LE $2 | grep issue | pbcopy;
@@ -114,33 +116,9 @@ jrun () {
 jassign() {
   JIRA_ID=$1
   if [[ $JIRA_ID ]]; then
-    ASSIGNEE="$(echo 'cam\nandy\nandrew\nwesly' | fzf)"
-    jira edit --noedit "$JIRA_ID" -o assigneeid="${JIRA_IDS[$ASSIGNEE]}"
-  else
-    echo "JIRAQA: need to have ISSUE_ID"
-  fi
-}
-
-jqa() {
-  JIRA_ID=$1
-  DEFAULT_QA_PERSON='wesley'
-  QA_WORKFLOW='QA ready'
-
-  if [ -z $JIRA_ID ]; then 
-    JIRA_ID=$(git branch | grep '*' | cut -d ' ' -f2 | awk -F'-' '{print $2}')
-  fi
-
-  ticketStatus="$(jira status $JIRA_ID)"
-  if [ $ticketStatus = "$TODO_STATUS" ]; then 
-    jira transition "$INPROGRESS_STATUS" $JIRA_ID --noedit
-  fi
-
-  if [ $ticketStatus = "$INPROGRESS_STATUS" ]; then 
-    jira transition "$MOVE_REVIEW_STATUS" $JIRA_ID --noedit
-  fi
-
-  if [[ $JIRA_ID ]]; then
-    jira transition --noedit "$QA_WORKFLOW" "$JIRA_ID" && jira edit --noedit "$JIRA_ID" -o assigneeid="${JIRA_IDS[$DEFAULT_QA_PERSON]}"
+    ASSIGNEE="users.$(echo $JIRA_USERNAMES | fzf)"
+    ASSIGNEE_ID=$(getConfigValue $ASSIGNEE)
+    jira edit --noedit "$JIRA_ID" -o assigneeid="$ASSIGNEE_ID"
   else
     echo "JIRAQA: need to have ISSUE_ID"
   fi
@@ -154,7 +132,7 @@ jtransition() {
     return
   fi
   if [ -z $moveTo ]; then
-    moveTo="$(echo 'Done\nBacklog\nFor Discussion\nQA Ready\nCode review\nIn Progress\nTo Do' | fzf)"
+    moveTo="$(echo $JIRA_WORKFLOW | fzf)"
   fi
   ticketStatus="$(jira status $JIRA_ID)"
   if [ "$ticketStatus" = "$moveTo" ]; then 
@@ -170,9 +148,10 @@ jcreate () {
     BASEBRANCH=$1
   fi
   TYPE="$(echo 'Task\nBug' | fzf)"
-  ASSIGNEE="$(echo 'cam\nandy\nandrew\nwesly' | fzf)"
+  ASSIGNEE="users.$(echo $JIRA_USERNAMES | fzf)"
+  ASSIGNEE_ID=$(getConfigValue $ASSIGNEE)
   git checkout $BASEBRANCH && git pull
-  jira create -p DIVI -i "$TYPE" -o assigneeid="${JIRA_IDS[$ASSIGNEE]}" --saveFile /tmp/cstory.yml
+  jira create -i "$TYPE" -o assigneeid="$ASSIGNEE_ID" --saveFile /tmp/cstory.yml
 }
 
 jopennotes() {
