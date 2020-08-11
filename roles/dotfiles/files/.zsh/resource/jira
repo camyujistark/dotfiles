@@ -48,7 +48,7 @@ jharvest() {
     python $HOME/Documents/Scripts/harvest-api/harvestToggleLatest.py
     return
   fi
-  python $HOME/Documents/Scripts/harvest-api/harvestStart.py 'amica' 'gittask' "$(jira summary $JIRA_ID)" > /dev/null 2>&1 &
+  python $HOME/Documents/Scripts/harvest-api/harvestStart.py amica_development "$(jira summary $JIRA_ID)" > /dev/null 2>&1 &
 }
 
 harvestTask() {
