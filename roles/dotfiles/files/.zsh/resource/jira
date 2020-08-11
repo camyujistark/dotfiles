@@ -17,6 +17,7 @@ getConfigKeys() {
 
 JIRA_USERNAMES=$(getConfigKeys users)
 JIRA_WORKFLOW=$(getConfigValues workflow)
+DEFAULT_DEVELOPMENT_TASK=$(getConfigValue 'harvest.default_development_task')
 
 jnew() {
   jira-cli new --type=$1 --priority=Medium --project LE $2 | grep issue | pbcopy;
@@ -48,7 +49,7 @@ jharvest() {
     python $HOME/Documents/Scripts/harvest-api/harvestToggleLatest.py
     return
   fi
-  python $HOME/Documents/Scripts/harvest-api/harvestStart.py amica_development "$(jira summary $JIRA_ID)" > /dev/null 2>&1 &
+  python $HOME/Documents/Scripts/harvest-api/harvestStart.py $DEFAULT_DEVELOPMENT_TASK "$(jira summary $JIRA_ID)" > /dev/null 2>&1 &
 }
 
 harvestTask() {
@@ -57,7 +58,7 @@ harvestTask() {
     echo "Need DESCRIPTION to run"
     return
   fi
-  python $HOME/Documents/Scripts/harvest-api/harvestStart.py 'amica' 'gittask' "$DESCRIPTION" > /dev/null 2>&1 &
+  python $HOME/Documents/Scripts/harvest-api/harvestStart.py $DEFAULT_DEVELOPMENT_TASK  "$DESCRIPTION" > /dev/null 2>&1 &
 }
 
 jrun () {
