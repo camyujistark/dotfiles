@@ -2,6 +2,8 @@
 # Command aliases
 #
 
+SCRIPT_PATH="$HOME/Documents/Scripts"
+
 alias ....='cd ../..'
 alias vim=nvim
 alias :e=vim
@@ -69,7 +71,7 @@ alias _n="vim "
 alias _s="$sites"
 alias _lsc="$sites/lsc_odrs_app"
 alias _sa="$sites/site\ assets/"
-alias _sc="$HOME/Documents/Scripts"
+alias _sc=$SCRIPT_PATH
 alias _t="$docs/Tuts"
 alias _v="$HOME/.vim/plugin/mappings"
 alias _vb="$HOME/.vim/pack/bundle/opt"
@@ -132,7 +134,7 @@ alias p='git patch'
 alias oo='git oneline -10'
 
 #Chrome Refresh
-alias cr="~/Scripts/chromerefresh.sh"
+alias cr="$SCRIPT_PATH/chromerefresh.sh"
 
 #Cheatsheets
 alias Cheatsheets="cd ~/Documents/Cheatsheets"
