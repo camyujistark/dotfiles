@@ -492,26 +492,26 @@ local largeGridLayout = {
       }),
       maybeIsHorizonal({
         A1 = maybeSplitYGridCoord(
-          '0,0/5x12',
+          '0,0/4x12',
           maybeSplitXGridCoord('0,0/8x6','0,0/8x12')
         ),
         A2 = maybeSplitYGridCoord(
-          maybeSplitXGridCoord('5,0/5x6', '5,0/5x12'), 
+          maybeSplitXGridCoord('4,0/4x6', '4,0/4x12'), 
           maybeSplitXGridCoord('0,0/8x6','0,0/8x12')
         ),
-        B = '8,0/5x12',
+        B = '8,0/4x12',
         C = maybeSplitYGridCoord(
-          maybeSplitXGridCoord('5,6/5x6','5,0/5x12'),
+          maybeSplitXGridCoord('4,6/4x6','4,0/4x12'),
           maybeSplitXGridCoord('0,6/8x6','0,0/8x12')
         ),
-        D = '8,0/5x12',
+        D = '8,0/4x12',
       },
       {
-        A1 = maybeSplitYGridCoord('0,0/5x8', '0,0/12x8'),
-        A2 = maybeSplitYGridCoord('6,0/5x8', '0,0/12x8'),
-        B = maybeSplitXGridCoord('6,8/6x5', '0,8/12x5'),
-        C = maybeSplitXGridCoord('0,8/6x5', maybeSplitYGridCoord('6,0/5x8', '0,0/12x8')),
-        D = maybeSplitYGridCoord('6,0/5x8', '0,0/12x8'),
+        A1 = maybeSplitYGridCoord('0,0/6x8', '0,0/12x8'),
+        A2 = maybeSplitYGridCoord('6,0/6x8', '0,0/12x8'),
+        B = maybeSplitXGridCoord('6,8/6x4', '0,8/12x4'),
+        C = maybeSplitXGridCoord('0,8/6x4', maybeSplitYGridCoord('6,0/6x8', '0,0/12x8')),
+        D = maybeSplitYGridCoord('6,0/6x8', '0,0/12x8'),
       })
     )
   end),
