@@ -275,126 +275,126 @@ end)
 --|------|------|------------|-------|
 
 
-local laptopGridLayout = {
-  one = (function()
-    return maybeIsSideBar({
-      -- A = '0,0/10x12',
-      A1 = '0,0/8x12',
-      A2 = '0,0/8x12',
-      B = '0,0/8x12',
-      C = '0,0/8x12',
-      D = '8,0/4x12',
-    },
-    {
-      -- A = '0,0/12x12',
-      A1 = '0,0/12x12',
-      A2 = '0,0/12x12',
-      B = '0,0/12x12',
-      C = '0,0/12x12',
-      D = '0,0/12x12',
-    })
-  end),
-  two = (function()
-    return maybeIsSideBar(
-      maybeIsHorizonal({
-        -- too small to have a vertical split
-        -- A = '0,0/4x12',
-        A1 = maybeSplitXGridCoord('0,0/5x6','0,0/5x12'),
-        A2 = maybeSplitYGridCoord(
-          maybeSplitXGridCoord('0,6/5x6', '0,0/5x12'),
-          maybeSplitXGridCoord('0,0/5x6', '0,0/5x12')
-        ),
-        B = '5,0/5x12',
-        C = maybeSplitYGridCoord(
-          maybeSplitXGridCoord('0,6/5x6', '0,0/5x12'),
-          maybeSplitXGridCoord('0,6/5x6', '0,0/5x12')
-        ),
-        D = '10,0/2x12',
-      },
-      {
-        -- A = '0,0/10x6',
-        A1 = maybeSplitYGridCoord('0,0/4x6', '0,0/10x6'),
-        A2 = maybeSplitYGridCoord('4,0/6x6', '0,0/10x6'),
-        B = maybeSplitXGridCoord('4,6/6x6', '0,6/10x6'),
-        C = maybeSplitXGridCoord('0,6/4x6', maybeSplitYGridCoord('4,0/6x6', '0,0/10x6')),
-        D = '10,0/2x12',
-      }),
-      maybeIsHorizonal({
-        A1 = maybeSplitYGridCoord(
-          '0,0/3x12',
-          maybeSplitXGridCoord('0,0/6x6','0,0/6x12')
-        ),
-        A2 = maybeSplitYGridCoord(
-          maybeSplitXGridCoord('3,0/3x6', '3,0/3x12'),
-          maybeSplitXGridCoord('0,0/6x6','0,0/6x12')
-        ),
-        B = '6,0/6x12',
-        C = maybeSplitYGridCoord(
-          maybeSplitXGridCoord('3,6/3x6','3,0/3x12'),
-          maybeSplitXGridCoord('0,6/6x6','0,0/6x12')
-        ),
-        D = '6,0/6x12',
-      },
-      {
-        A1 = maybeSplitYGridCoord('0,0/6x6', '0,0/12x6'),
-        A2 = maybeSplitYGridCoord('6,0/6x6', '0,0/12x6'),
-        B = maybeSplitXGridCoord('6,6/6x6', '0,6/12x6'),
-        C = maybeSplitXGridCoord('0,6/6x6', maybeSplitYGridCoord('6,0/6x6', '0,0/12x6')),
-        D = maybeSplitXGridCoord('6,6/6x6', '0,6/12x6'),
-      })
-    )
-  end),
-  three = (function()
-    return maybeIsSideBar(
-      maybeIsHorizonal({
-        A1 = maybeSplitYGridCoord(
-          '0,0/3x12',
-          maybeSplitXGridCoord('0,0/6x6','0,0/6x12')
-        ),
-        A2 = maybeSplitYGridCoord(
-          maybeSplitXGridCoord('3,0/3x6', '3,0/3x12'), 
-          maybeSplitXGridCoord('0,0/6x6','0,0/6x12')
-        ),
-        B = '6,0/4x12',
-        C = maybeSplitYGridCoord(
-          maybeSplitXGridCoord('3,6/3x6','3,0/3x12'),
-          maybeSplitXGridCoord('0,6/6x6','0,0/6x12')
-        ),
-        D = '10,0/2x12',
-      },
-      {
-        A1 = maybeSplitYGridCoord('0,0/4x8', '0,0/10x8'),
-        A2 = maybeSplitYGridCoord('4,0/6x8', '0,0/10x8'),
-        B = maybeSplitXGridCoord('4,8/6x4', '0,8/10x4'),
-        C = maybeSplitXGridCoord('0,8/4x4', maybeSplitYGridCoord('0,0/4x8', '0,0/10x8')),
-        D = '10,0/2x12',
-      }),
-      maybeIsHorizonal({
-        A1 = maybeSplitYGridCoord(
-          '0,0/4x12',
-          maybeSplitXGridCoord('0,0/8x6','0,0/8x12')
-        ),
-        A2 = maybeSplitYGridCoord(
-          maybeSplitXGridCoord('4,0/4x6', '4,0/4x12'), 
-          maybeSplitXGridCoord('0,0/8x6','0,0/8x12')
-        ),
-        B = '8,0/4x12',
-        C = maybeSplitYGridCoord(
-          maybeSplitXGridCoord('4,6/4x6','4,0/4x12'),
-          maybeSplitXGridCoord('0,6/8x6','0,0/8x12')
-        ),
-        D = '8,0/4x12',
-      },
-      {
-        A1 = maybeSplitYGridCoord('0,0/6x8', '0,0/12x8'),
-        A2 = maybeSplitYGridCoord('6,0/6x8', '0,0/12x8'),
-        B = maybeSplitXGridCoord('6,8/6x4', '0,8/12x4'),
-        C = maybeSplitXGridCoord('0,8/6x4', maybeSplitYGridCoord('6,0/6x8', '0,0/12x8')),
-        D = maybeSplitYGridCoord('6,0/6x8', '0,0/12x8'),
-      })
-    )
-  end),
-}
+-- local laptopGridLayout = {
+--   one = (function()
+--     return maybeIsSideBar({
+--       -- A = '0,0/10x12',
+--       A1 = '0,0/8x12',
+--       A2 = '0,0/8x12',
+--       B = '0,0/8x12',
+--       C = '0,0/8x12',
+--       D = '8,0/4x12',
+--     },
+--     {
+--       -- A = '0,0/12x12',
+--       A1 = '0,0/12x12',
+--       A2 = '0,0/12x12',
+--       B = '0,0/12x12',
+--       C = '0,0/12x12',
+--       D = '0,0/12x12',
+--     })
+--   end),
+--   two = (function()
+--     return maybeIsSideBar(
+--       maybeIsHorizonal({
+--         -- too small to have a vertical split
+--         -- A = '0,0/4x12',
+--         A1 = maybeSplitXGridCoord('0,0/5x6','0,0/5x12'),
+--         A2 = maybeSplitYGridCoord(
+--           maybeSplitXGridCoord('0,6/5x6', '0,0/5x12'),
+--           maybeSplitXGridCoord('0,0/5x6', '0,0/5x12')
+--         ),
+--         B = '5,0/5x12',
+--         C = maybeSplitYGridCoord(
+--           maybeSplitXGridCoord('0,6/5x6', '0,0/5x12'),
+--           maybeSplitXGridCoord('0,6/5x6', '0,0/5x12')
+--         ),
+--         D = '10,0/2x12',
+--       },
+--       {
+--         -- A = '0,0/10x6',
+--         A1 = maybeSplitYGridCoord('0,0/4x6', '0,0/10x6'),
+--         A2 = maybeSplitYGridCoord('4,0/6x6', '0,0/10x6'),
+--         B = maybeSplitXGridCoord('4,6/6x6', '0,6/10x6'),
+--         C = maybeSplitXGridCoord('0,6/4x6', maybeSplitYGridCoord('4,0/6x6', '0,0/10x6')),
+--         D = '10,0/2x12',
+--       }),
+--       maybeIsHorizonal({
+--         A1 = maybeSplitYGridCoord(
+--           '0,0/3x12',
+--           maybeSplitXGridCoord('0,0/6x6','0,0/6x12')
+--         ),
+--         A2 = maybeSplitYGridCoord(
+--           maybeSplitXGridCoord('3,0/3x6', '3,0/3x12'),
+--           maybeSplitXGridCoord('0,0/6x6','0,0/6x12')
+--         ),
+--         B = '6,0/6x12',
+--         C = maybeSplitYGridCoord(
+--           maybeSplitXGridCoord('3,6/3x6','3,0/3x12'),
+--           maybeSplitXGridCoord('0,6/6x6','0,0/6x12')
+--         ),
+--         D = '6,0/6x12',
+--       },
+--       {
+--         A1 = maybeSplitYGridCoord('0,0/6x6', '0,0/12x6'),
+--         A2 = maybeSplitYGridCoord('6,0/6x6', '0,0/12x6'),
+--         B = maybeSplitXGridCoord('6,6/6x6', '0,6/12x6'),
+--         C = maybeSplitXGridCoord('0,6/6x6', maybeSplitYGridCoord('6,0/6x6', '0,0/12x6')),
+--         D = maybeSplitXGridCoord('6,6/6x6', '0,6/12x6'),
+--       })
+--     )
+--   end),
+--   three = (function()
+--     return maybeIsSideBar(
+--       maybeIsHorizonal({
+--         A1 = maybeSplitYGridCoord(
+--           '0,0/3x12',
+--           maybeSplitXGridCoord('0,0/6x6','0,0/6x12')
+--         ),
+--         A2 = maybeSplitYGridCoord(
+--           maybeSplitXGridCoord('3,0/3x6', '3,0/3x12'), 
+--           maybeSplitXGridCoord('0,0/6x6','0,0/6x12')
+--         ),
+--         B = '6,0/4x12',
+--         C = maybeSplitYGridCoord(
+--           maybeSplitXGridCoord('3,6/3x6','3,0/3x12'),
+--           maybeSplitXGridCoord('0,6/6x6','0,0/6x12')
+--         ),
+--         D = '10,0/2x12',
+--       },
+--       {
+--         A1 = maybeSplitYGridCoord('0,0/4x8', '0,0/10x8'),
+--         A2 = maybeSplitYGridCoord('4,0/6x8', '0,0/10x8'),
+--         B = maybeSplitXGridCoord('4,8/6x4', '0,8/10x4'),
+--         C = maybeSplitXGridCoord('0,8/4x4', maybeSplitYGridCoord('0,0/4x8', '0,0/10x8')),
+--         D = '10,0/2x12',
+--       }),
+--       maybeIsHorizonal({
+--         A1 = maybeSplitYGridCoord(
+--           '0,0/4x12',
+--           maybeSplitXGridCoord('0,0/8x6','0,0/8x12')
+--         ),
+--         A2 = maybeSplitYGridCoord(
+--           maybeSplitXGridCoord('4,0/4x6', '4,0/4x12'), 
+--           maybeSplitXGridCoord('0,0/8x6','0,0/8x12')
+--         ),
+--         B = '8,0/4x12',
+--         C = maybeSplitYGridCoord(
+--           maybeSplitXGridCoord('4,6/4x6','4,0/4x12'),
+--           maybeSplitXGridCoord('0,6/8x6','0,0/8x12')
+--         ),
+--         D = '8,0/4x12',
+--       },
+--       {
+--         A1 = maybeSplitYGridCoord('0,0/6x8', '0,0/12x8'),
+--         A2 = maybeSplitYGridCoord('6,0/6x8', '0,0/12x8'),
+--         B = maybeSplitXGridCoord('6,8/6x4', '0,8/12x4'),
+--         C = maybeSplitXGridCoord('0,8/6x4', maybeSplitYGridCoord('6,0/6x8', '0,0/12x8')),
+--         D = maybeSplitYGridCoord('6,0/6x8', '0,0/12x8'),
+--       })
+--     )
+--   end),
+-- }
 
 local largeGridLayout = {
   one = (function()
@@ -434,10 +434,10 @@ local largeGridLayout = {
       },
       {
         -- A = '0,0/10x6',
-        A1 = maybeSplitYGridCoord('0,0/4x6', '0,0/10x6'),
-        A2 = maybeSplitYGridCoord('4,0/6x6', '0,0/10x6'),
-        B = maybeSplitXGridCoord('4,6/6x6', '0,6/10x6'),
-        C = maybeSplitXGridCoord('0,6/4x6', maybeSplitYGridCoord('4,0/6x6', '0,0/10x6')),
+        A1 = maybeSplitYGridCoord('0,0/5x6', '0,0/10x6'),
+        A2 = maybeSplitYGridCoord('5,0/5x6', '0,0/10x6'),
+        B = maybeSplitXGridCoord('5,6/5x6', '0,6/10x6'),
+        C = maybeSplitXGridCoord('0,6/5x6', maybeSplitYGridCoord('5,0/6x6', '0,0/10x6')),
         D = '10,0/2x12',
       }),
       maybeIsHorizonal({
@@ -470,48 +470,48 @@ local largeGridLayout = {
       maybeIsHorizonal({
         A1 = maybeSplitYGridCoord(
           '0,0/3x12',
-          maybeSplitXGridCoord('0,0/6x6','0,0/6x12')
+          maybeSplitXGridCoord('0,0/5x6','0,0/5x12')
         ),
         A2 = maybeSplitYGridCoord(
           maybeSplitXGridCoord('3,0/3x6', '3,0/3x12'), 
-          maybeSplitXGridCoord('0,0/6x6','0,0/6x12')
+          maybeSplitXGridCoord('0,0/5x6','0,0/5x12')
         ),
-        B = '6,0/4x12',
+        B = '5,0/5x12',
         C = maybeSplitYGridCoord(
           maybeSplitXGridCoord('3,6/3x6','3,0/3x12'),
-          maybeSplitXGridCoord('0,6/6x6','0,0/6x12')
+          maybeSplitXGridCoord('0,6/5x6','0,0/5x12')
         ),
         D = '10,0/2x12',
       },
       {
-        A1 = maybeSplitYGridCoord('0,0/4x8', '0,0/10x8'),
-        A2 = maybeSplitYGridCoord('4,0/6x8', '0,0/10x8'),
-        B = maybeSplitXGridCoord('4,8/6x4', '0,8/10x4'),
-        C = maybeSplitXGridCoord('0,8/4x4', maybeSplitYGridCoord('0,0/4x8', '0,0/10x8')),
+        A1 = maybeSplitYGridCoord('0,0/5x8', '0,0/10x8'),
+        A2 = maybeSplitYGridCoord('5,0/5x8', '0,0/10x8'),
+        B = maybeSplitXGridCoord('5,8/5x5', '0,8/10x5'),
+        C = maybeSplitXGridCoord('0,8/5x5', maybeSplitYGridCoord('0,0/5x8', '0,0/10x8')),
         D = '10,0/2x12',
       }),
       maybeIsHorizonal({
         A1 = maybeSplitYGridCoord(
-          '0,0/4x12',
+          '0,0/5x12',
           maybeSplitXGridCoord('0,0/8x6','0,0/8x12')
         ),
         A2 = maybeSplitYGridCoord(
-          maybeSplitXGridCoord('4,0/4x6', '4,0/4x12'), 
+          maybeSplitXGridCoord('5,0/5x6', '5,0/5x12'), 
           maybeSplitXGridCoord('0,0/8x6','0,0/8x12')
         ),
-        B = '8,0/4x12',
+        B = '8,0/5x12',
         C = maybeSplitYGridCoord(
-          maybeSplitXGridCoord('4,6/4x6','4,0/4x12'),
+          maybeSplitXGridCoord('5,6/5x6','5,0/5x12'),
           maybeSplitXGridCoord('0,6/8x6','0,0/8x12')
         ),
-        D = '8,0/4x12',
+        D = '8,0/5x12',
       },
       {
-        A1 = maybeSplitYGridCoord('0,0/6x8', '0,0/12x8'),
-        A2 = maybeSplitYGridCoord('6,0/6x8', '0,0/12x8'),
-        B = maybeSplitXGridCoord('6,8/6x4', '0,8/12x4'),
-        C = maybeSplitXGridCoord('0,8/6x4', maybeSplitYGridCoord('6,0/6x8', '0,0/12x8')),
-        D = maybeSplitYGridCoord('6,0/6x8', '0,0/12x8'),
+        A1 = maybeSplitYGridCoord('0,0/5x8', '0,0/12x8'),
+        A2 = maybeSplitYGridCoord('6,0/5x8', '0,0/12x8'),
+        B = maybeSplitXGridCoord('6,8/6x5', '0,8/12x5'),
+        C = maybeSplitXGridCoord('0,8/6x5', maybeSplitYGridCoord('6,0/5x8', '0,0/12x8')),
+        D = maybeSplitYGridCoord('6,0/5x8', '0,0/12x8'),
       })
     )
   end),
@@ -568,28 +568,28 @@ local setAppGroup = (function(layout)
         bundleIDs.zoom
       }),
       -- no A2
-      B = getBundleWindows({
-          bundleIDs.iterm2,
-          bundleIDs.notion,
-      }),
-      C = tablemerge(
+      B = tablemerge(
         {
           chromeWindow.side,
           chromeWindow.alien,
           chromeWindow.home
         },
         getBundleWindows({
-          bundleIDs.anki,
-          bundleIDs.finder,
-          bundleIDs.calendar,
-          bundleIDs.dayone,
-          bundleIDs.mail,
-          bundleIDs.postman,
-          bundleIDs.slack,
-          bundleIDs.spotify,
-          bundleIDs.whasapp,
+          bundleIDs.iterm2,
+          bundleIDs.notion,
         })
       ),
+      C = getBundleWindows({
+        bundleIDs.anki,
+        bundleIDs.finder,
+        bundleIDs.calendar,
+        bundleIDs.dayone,
+        bundleIDs.mail,
+        bundleIDs.postman,
+        bundleIDs.slack,
+        bundleIDs.spotify,
+        bundleIDs.whasapp,
+      }),
       D = getBundleWindows({
         bundleIDs.todoist,
       }),
@@ -633,7 +633,7 @@ local setGridLayoutInit = (function(layout, appLayout)
   local gridSettings = nil
 
   if internalDisplay() then
-     gridSettings = laptopGridLayout[_layout]()
+     -- gridSettings = laptopGridLayout[_layout]()
   else
      gridSettings = largeGridLayout[_layout]()
   end
