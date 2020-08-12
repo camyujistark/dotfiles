@@ -153,6 +153,7 @@ jcreate () {
   ASSIGNEE_ID=$(getConfigValue $ASSIGNEE)
   git checkout $BASEBRANCH && git pull
   jira create -i "$TYPE" -o assigneeid="$ASSIGNEE_ID" --saveFile /tmp/cstory.yml
+
   jopen $JIRA_ID
 }
 
@@ -265,5 +266,12 @@ jinit() {
 }
 
 jopen() {
-  $SCRIPT_PATH/openProfileInChrome/openInChromeSide.sh https://portableaustralia.atlassian.net/browse/$( git branch | grep '*' | cut -d ' ' -f2 | awk -F'-' '{print $1_-$2}')
+  JIRA_ID=$1
+  JIRA_ID_TAB_EXISTS=$(chrome-cli list tabs | grep "$JIRA_ID")
+  # Note need to enable chrome-cli in order for this to work
+  if [ -z $JIRA_ID_TAB_EXISTS ] ; then
+      $SCRIPT_PATH/openProfileInChrome/openInChromeSide.sh https://portableaustralia.atlassian.net/browse/$( git branch | grep '*' | cut -d ' ' -f2 | awk -F'-' '{print $1_-$2}')
+  else
+    echo "Tob already open"
+  fi
 }
