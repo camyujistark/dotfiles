@@ -153,11 +153,60 @@ jcreate () {
   ASSIGNEE_ID=$(getConfigValue $ASSIGNEE)
   git checkout $BASEBRANCH && git pull
   jira create -i "$TYPE" -o assigneeid="$ASSIGNEE_ID" --saveFile /tmp/cstory.yml
+  jopen $JIRA_ID
 }
 
 jopennotes() {
+  # Todo: Open tvim if you set it in param. Was not as easy as I thought
   JIRA_ID=$1
+
   BRANCHNAME=$(jira branch $JIRA_ID)
+  CURRENT_BRANCH=$(git branch --show-current)
+  if [ $CURRENT_BRANCH != $BRANCHNAME ]; then
+    git checkout $BRANCHNAME
+  fi
+
+  # TODO: There is too much conflict whene using the branchname as md. In future
+  # would like to change this to JIRA_ID. I can see that this could have issues
+  # with the branch association to jira task in future. This might need to be
+  # resolved by getting the bitbucket ids associated in there too. food for
+  # thought
+
+  BRANCH_MD_PATH="$NOTES_PROJECTPATH/$BRANCHNAME.md"
+
+  # Update Meta data
+  # Note: Limitation is that we predict that its 12 lines of metddata. Would
+  # like to make this a little better in future
+  if [ -f "$BRANCH_MD_PATH" ]; then
+    # Check first line
+    HEAD_LINE=$(head -n 1 $BRANCH_MD_PATH)
+    if [ "$HEAD_LINE" = "---" ]; then
+      ##Temp file
+      BRANCH_MD_TEMP_PATH="$BRANCH_MD_PATH.temp"
+      touch $BRANCH_MD_TEMP_PATH
+
+      ## TODO: if has lines
+      ## Remove mardown meta 12 lines
+      sed -i.bak '1,12d' "$BRANCH_MD_PATH"
+
+      ## Make temp version
+      cat "$BRANCH_MD_PATH" > "$BRANCH_MD_TEMP_PATH"
+
+      ## Add new markdown meta
+      jira view $JIRA_ID > "$BRANCH_MD_PATH"
+      cat "$BRANCH_MD_TEMP_PATH" >> "$BRANCH_MD_PATH"
+      ## clean up
+      rm "$BRANCH_MD_TEMP_PATH"
+    fi
+  else
+    touch $BRANCH_MD_PATH
+    jira view $JIRA_ID > "$BRANCH_MD_PATH"
+    echo "\n## Notes\n- " >> "$BRANCH_MD_PATH"
+  fi
+}
+
+jopennotes_tmux() {
+  JIRA_ID=$1
 
   # limitation to having the second pane to always have vim running with notes
   # note this is a hack atm. would like to make this more specific
@@ -167,21 +216,10 @@ jopennotes() {
   tmux send-keys -t 2 ":q"
   tmux send-keys -t 2 Enter
 
-  # If branch does exists then open the notes
-  # issue here. Might exist local and not on remote
-  if git rev-parse --verify $BRANCHNAME; then
-    echo "GIT: $BRANCHNAME already exists";
-    git checkout $BRANCHNAME;
-  fi
+  jopennotes $JIRA_ID
 
-  ## NOTES add notes to view
-  if [[ ! -f "$NOTES_PROJECTPATH/$BRANCHNAME.md" ]]; then
-    jira view $JIRA_ID >> "$NOTES_PROJECTPATH/$BRANCHNAME.md";
-  fi
-
-  # NOTES open in first window pane 2
-  tmux send-keys -t 2 "vim $NOTES_PROJECTPATH/$BRANCHNAME.md"
-  tmux send-keys -t 2 Enter;
+  tmux send-keys -t 2 "tvim"
+  tmux send-keys -t 2 Enter
 }
 
 jnotes() {
@@ -222,9 +260,10 @@ jinit() {
   jharvest $JIRA_ID
   jira transition "In Progress" $JIRA_ID --noedit
   jcheckout $JIRA_ID
-  jopennotes $JIRA_ID
+  jopennotes_tmux $JIRA_ID
+  jopen $JIRA_ID
 }
 
 jopen() {
-  open https://portableaustralia.atlassian.net/browse/$( git branch | grep '*' | cut -d ' ' -f2 | awk -F'-' '{print $1_-$2}')
+  $SCRIPT_PATH/openProfileInChrome/openInChromeSide.sh https://portableaustralia.atlassian.net/browse/$( git branch | grep '*' | cut -d ' ' -f2 | awk -F'-' '{print $1_-$2}')
 }
