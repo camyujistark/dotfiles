@@ -437,7 +437,7 @@ local largeGridLayout = {
         A1 = maybeSplitYGridCoord('0,0/5x6', '0,0/10x6'),
         A2 = maybeSplitYGridCoord('5,0/5x6', '0,0/10x6'),
         B = maybeSplitXGridCoord('5,6/5x6', '0,6/10x6'),
-        C = maybeSplitXGridCoord('0,6/5x6', maybeSplitYGridCoord('5,0/6x6', '0,0/10x6')),
+        C = maybeSplitXGridCoord('0,6/5x6', maybeSplitYGridCoord('5,0/5x6', '0,0/10x6')),
         D = '10,0/2x12',
       }),
       maybeIsHorizonal({
@@ -727,7 +727,7 @@ end)
 local codingFormation = (function()
     sideBar = true
     isWindowsVertical = true
-    isSplitX = false
+    isSplitX = true
     -- isSplitY = false
 end)
 
