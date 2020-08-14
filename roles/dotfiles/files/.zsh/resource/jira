@@ -43,13 +43,16 @@ jmine() {
   # done
 }
 
-jharvest() {
+jhstart() {
   JIRA_ID=$1
   if [ -z "$JIRA_ID" ]; then
-    python $HOME/Documents/Scripts/harvest-api/harvestToggleLatest.py
-    return
+    JIRA_ID=$(grl | awk -F'-' '{print $2;}')
   fi
   python $HOME/Documents/Scripts/harvest-api/harvestStart.py $DEFAULT_DEVELOPMENT_TASK "$(jira summary $JIRA_ID)" > /dev/null 2>&1 &
+}
+
+jhstop() {
+  python $HOME/Documents/Scripts/harvest-api/harvestStopAll.py
 }
 
 harvestTask() {
@@ -129,8 +132,7 @@ jtransition() {
   JIRA_ID=$1
   moveTo=$2
   if [ -z $JIRA_ID ]; then
-    echo 'JIRA: Need arg with jira ticket id'
-    return
+    JIRA_ID=$(grl | awk -F'-' '{print $2;}')
   fi
   if [ -z $moveTo ]; then
     moveTo="$(echo $JIRA_WORKFLOW | fzf)"
@@ -258,7 +260,7 @@ jcheckout() {
 
 jinit() {
   JIRA_ID=$1
-  jharvest $JIRA_ID
+  jhstart $JIRA_ID
   jira transition "In Progress" $JIRA_ID --noedit
   jcheckout $JIRA_ID
   jopennotes_tmux $JIRA_ID
@@ -267,6 +269,9 @@ jinit() {
 
 jopen() {
   JIRA_ID=$1
+  if [ -z $JIRA_ID ]; then
+    JIRA_ID=$(grl | awk -F'-' '{print $2;}')
+  fi
   JIRA_ID_TAB_EXISTS=$(chrome-cli list tabs | grep "$JIRA_ID")
   # Note need to enable chrome-cli in order for this to work
   if [ -z $JIRA_ID_TAB_EXISTS ] ; then
