@@ -352,7 +352,7 @@ gitprs() {
 gitpr() {
   project=$( git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p')
   branchname=$( git branch | grep '*' | cut -d ' ' -f2)
-  open 'https://bitbucket.org/portable/'$project'/pull-requests/new?source='$branchname'&t=1'
+  openChromeSide 'https://bitbucket.org/portable/'$project'/pull-requests/new?source='$branchname'&t=1'
 }
 
 gitpu() {
