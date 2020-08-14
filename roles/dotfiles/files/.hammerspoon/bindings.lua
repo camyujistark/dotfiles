@@ -711,32 +711,29 @@ local turnOnSplitYGridCoord = (function()
 end)
 
 local resetAllFormations = (function()
-    sideBar = false
-    isWindowsVertical = true
     isSplitX = false
     isSplitY = false
+    isWindowsVertical = true
 end)
 
 local tutorialMode = (function()
-    sideBar = true
     isSplitX = true
+    isSplitY = true
+    isWindowsVertical = true
+end)
+
+local fourSquareMode = (function()
+    isSplitX = true
+    isSplitY = true
     isWindowsVertical = false
-    -- isSplitY = false
 end)
 
 local codingFormation = (function()
-    sideBar = true
-    isWindowsVertical = true
     isSplitX = true
-    -- isSplitY = false
+    isSplitY = false
+    isWindowsVertical = true
 end)
 
-local codingFormationAlt = (function()
-    sideBar = true
-    isWindowsVertical = true
-    isSplitX = false
-    -- isSplitY = true
-end)
 --
 -- Key bindings.
 --
@@ -822,9 +819,10 @@ return {
     hs.hotkey.bind(mash, 'l', turnOnVerticalMode, setGridLayoutInit)
 
     -- LAYOUTS --
-    hs.hotkey.bind(mash, '`', resetAllFormations, setGridLayoutInit)
-    hs.hotkey.bind(mash, '1', codingFormation, setGridLayoutInit)
-    hs.hotkey.bind(mash, '2', tutorialMode, setGridLayoutInit)
+    hs.hotkey.bind(mash, '1', resetAllFormations, setGridLayoutInit)
+    hs.hotkey.bind(mash, '2', codingFormation, setGridLayoutInit)
+    hs.hotkey.bind(mash, '3', tutorialMode, setGridLayoutInit)
+    hs.hotkey.bind(mash, '4', fourSquareMode, setGridLayoutInit)
 
     hs.hotkey.bind(mash, '0', (function() setGridLayoutInit('one') end))
     hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('two') end))
