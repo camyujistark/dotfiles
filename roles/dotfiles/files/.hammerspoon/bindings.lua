@@ -881,7 +881,7 @@ return {
     hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Slack') end)
     hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Spotify') end)
     hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') end)
-    hs.hotkey.bind(mash, 'm', function() hs.application.launchOrFocus('Marked 2') end)
+    hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Marked 2') end)
 
     hs.hotkey.bind(mash, 'z', function() hs.application.launchOrFocus('Zoom') end)
     hs.hotkey.bind(mash, 'w', function() hs.application.launchOrFocus('Sketchbook') end)
