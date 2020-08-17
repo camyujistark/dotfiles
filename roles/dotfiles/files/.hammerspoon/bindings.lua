@@ -51,6 +51,7 @@ bundleIDs.whasapp = 'WhatsApp'
 bundleIDs.zoom = 'us.zoom.xos'
 bundleIDs.unity = 'com.unity3d.UnityEditor5.x'
 bundleIDs.unityhub = 'com.unity3d.unityhub'
+bundleIDs.vscode = 'com.microsoft.VSCode'
 
 
 local grid = {
@@ -660,6 +661,7 @@ local setAppGroup = (function(layout)
       },
       B = getBundleWindows({
         bundleIDs.iterm2,
+        bundleIDs.vscode,
         bundleIDs.notion,
       }),
       C = tablemerge(
@@ -697,6 +699,7 @@ local setAppGroup = (function(layout)
         },
         getBundleWindows({
           bundleIDs.iterm2,
+          bundleIDs.vscode,
           bundleIDs.notion,
         })
       ),
@@ -928,7 +931,7 @@ return {
     -- Sound
     hs.hotkey.bind(mash, 'help', function() hs.execute("SwitchAudioSource -s 'CalDigit Thunderbolt 3 Audio'", true) end)
     hs.hotkey.bind(mash, 'home', function() hs.execute("SwitchAudioSource -s 'Logitech BT Adapter'", true) end)
-    hs.hotkey.bind(mash, 'pageup', function() hs.execute("SwitchAudioSource -s 'MacBook Pro Speakers'", true) end)
+    hs.hotkey.bind(mash, 'pageup', function() hs.execute("SwitchAudioSource -s 'Built-in Output'", true) end)
 
     -- hs.hotkey.bind(mods, key, pressedfn, releasedfn, repeatfn) ->
     -- hs.hotkey object --
