@@ -382,9 +382,23 @@ todos() {
   tvim "$BRANCHNAME";
 }
 
-tvim() { 
-	PROJECT='divi'
-	PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
+tvim() {
+  BRANCHNAME=$( git branch | grep '*' | cut -d ' ' -f2)
+
+  echo $BRANCHNAME;
+
+  if [ $BRANCHNAME = 'master' ] || [ $BRANCHNAME = 'develop' ] ; then
+    echo 'must be on project branch for tvim to work. e.g. DIVI-1'
+    return
+  fi
+
+  if [ -z $BRANCHNAME ]; then
+    PROJECT='divi'
+  else
+    PROJECT=$($BRANCHNAME | awk -F'-' '{print $1;}')
+  fi
+
+  PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
   if [[ -z "$1" ]] then
     BRANCHNAME=$( git branch | grep '*' | cut -d ' ' -f2)
   else
