@@ -10,6 +10,7 @@ local isSplitY = false
 local currentLayout = nil
 local currentAppLayout = 'default'
 local isDebounceChange = false
+-- currently you need chrome to be open on startup for this setup to work
 local chromeWindow = {}
 
 local macBookAir13 = '1440x900'
@@ -705,6 +706,7 @@ local setAppGroup = (function(layout)
       ),
       C = getBundleWindows({
         bundleIDs.anki,
+        bundleIDs.marked2,
         bundleIDs.finder,
         bundleIDs.calendar,
         bundleIDs.dayone,
