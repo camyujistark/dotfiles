@@ -385,38 +385,25 @@ todos() {
 tvim() {
   BRANCHNAME=$( git branch | grep '*' | cut -d ' ' -f2)
 
-  echo $BRANCHNAME;
-
-  if [ $BRANCHNAME = 'master' ] || [ $BRANCHNAME = 'develop' ] ; then
-    echo 'must be on project branch for tvim to work. e.g. DIVI-1'
-    return
-  fi
-
-  if [ -z $BRANCHNAME ]; then
-    PROJECT='divi'
-  else
-    PROJECT=$($BRANCHNAME | awk -F'-' '{print $1;}')
-  fi
-
-  PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
   if [[ -z "$1" ]] then
     BRANCHNAME=$( git branch | grep '*' | cut -d ' ' -f2)
   else
     BRANCHNAME=$1
   fi
 
-  if [[ -z "$2" ]] then
-    # issue where if you open a folder, Cmd T will default to open to a non
-    # folder pane. This can be imporved.
-    FILE=$(git diff HEAD --name-only | tr '\r\n' ' ')
-  else
-    FILE=$2
+  if [ $BRANCHNAME = 'master' ] || [ $BRANCHNAME = 'develop' ] ; then
+    echo 'must be on project branch for tvim to work. e.g. DIVI-1'
+    return
   fi
+
+  PROJECT=$($BRANCHNAME | awk -F'-' '{print $1;}')
+  PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
 
   # resize window on load and open notes
   vim -O -c ":vertical resize 80" \
       -c ":wincmd l"\
-      $(echo $FILE | head -n1 | awk '{print $1; }') "$PROJECTPATH/$BRANCHNAME.md";
+      "$PROJECTPATH/$BRANCHNAME.md";
+      # $(echo $FILE | head -n1 | awk '{print $1; }')
       # -c ":badd $FILE";
 }
 
