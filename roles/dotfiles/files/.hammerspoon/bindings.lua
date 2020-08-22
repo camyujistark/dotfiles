@@ -53,6 +53,7 @@ bundleIDs.zoom = 'us.zoom.xos'
 bundleIDs.unity = 'com.unity3d.UnityEditor5.x'
 bundleIDs.unityhub = 'com.unity3d.unityhub'
 bundleIDs.vscode = 'com.microsoft.VSCode'
+bundleIDs.preview = 'com.apple.Preview'
 
 
 local grid = {
@@ -652,8 +653,9 @@ local setAppGroup = (function(layout)
         { chromeWindow.home },
         getBundleWindows({
           bundleIDs.marked2,
-          bundleIDs.sketchbookpro,
+          bundleIDs.preview,
           bundleIDs.sketchbook,
+          bundleIDs.sketchbookpro,
           bundleIDs.unity,
         })
       ),
@@ -662,16 +664,16 @@ local setAppGroup = (function(layout)
       },
       B = getBundleWindows({
         bundleIDs.iterm2,
-        bundleIDs.vscode,
         bundleIDs.notion,
+        bundleIDs.vscode,
       }),
       C = tablemerge(
         { chromeWindow.side },
         getBundleWindows({
           bundleIDs.anki,
-          bundleIDs.finder,
           bundleIDs.calendar,
           bundleIDs.dayone,
+          bundleIDs.finder,
           bundleIDs.mail,
           bundleIDs.postman,
           bundleIDs.slack,
@@ -694,24 +696,25 @@ local setAppGroup = (function(layout)
       -- no A2
       B = tablemerge(
         {
-          chromeWindow.side,
           chromeWindow.alien,
-          chromeWindow.home
+          chromeWindow.home,
+          chromeWindow.side,
         },
         getBundleWindows({
           bundleIDs.iterm2,
-          bundleIDs.vscode,
           bundleIDs.notion,
+          bundleIDs.vscode,
         })
       ),
       C = getBundleWindows({
         bundleIDs.anki,
-        bundleIDs.marked2,
-        bundleIDs.finder,
         bundleIDs.calendar,
         bundleIDs.dayone,
+        bundleIDs.finder,
         bundleIDs.mail,
+        bundleIDs.marked2,
         bundleIDs.postman,
+        bundleIDs.preview,
         bundleIDs.slack,
         bundleIDs.spotify,
         bundleIDs.whasapp,
@@ -720,10 +723,10 @@ local setAppGroup = (function(layout)
         bundleIDs.todoist,
       }),
       closeBundleIDs = {
-        bundleIDs.unity,
-        bundleIDs.unityhub,
         bundleIDs.sketchbook,
         bundleIDs.sketchbookpro,
+        bundleIDs.unity,
+        bundleIDs.unityhub,
       }
     }
   }
