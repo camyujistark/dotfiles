@@ -12,6 +12,7 @@ local currentAppLayout = 'default'
 local isDebounceChange = false
 -- currently you need chrome to be open on startup for this setup to work
 local chromeWindow = {}
+local toggleFocusFull = false
 
 local macBookAir13 = '1440x900'
 local macBookPro15_2019 = '1680x1050'
@@ -646,7 +647,7 @@ local appLayoutFormation = {
   'zoom',
 }
 
-local setAppGroup = (function(layout)
+local getAppGroup = (function(layout)
   local appLayouts = {
     default = {
       A1 = tablemerge(
@@ -654,9 +655,9 @@ local setAppGroup = (function(layout)
         getBundleWindows({
           bundleIDs.marked2,
           bundleIDs.preview,
-          bundleIDs.sketchbook,
-          bundleIDs.sketchbookpro,
-          bundleIDs.unity,
+          -- bundleIDs.sketchbook,
+          -- bundleIDs.sketchbookpro,
+          -- bundleIDs.unity,
         })
       ),
       A2 = {
@@ -723,10 +724,10 @@ local setAppGroup = (function(layout)
         bundleIDs.todoist,
       }),
       closeBundleIDs = {
-        bundleIDs.sketchbook,
-        bundleIDs.sketchbookpro,
-        bundleIDs.unity,
-        bundleIDs.unityhub,
+        -- bundleIDs.sketchbook,
+        -- bundleIDs.sketchbookpro,
+        -- bundleIDs.unity,
+        -- bundleIDs.unityhub,
       }
     }
   }
@@ -736,8 +737,7 @@ local setAppGroup = (function(layout)
   return appLayouts.default
 end)
 
-local setGridLayoutInit = (function(layout, appLayout)
-  getChromeProfileWindows()
+local getGridSettings = (function(layout)
   local _layout
   if layout then
     _layout = layout
@@ -748,6 +748,14 @@ local setGridLayoutInit = (function(layout, appLayout)
     return
   end
 
+  if internalDisplay() then
+     return laptopGridLayout[_layout]()
+  else
+     return largeGridLayout[_layout]()
+  end
+end)
+
+local getAppLayout = (function(appLayout)
   local _appLayout
   if appLayout then
     _appLayout = appLayout
@@ -758,17 +766,10 @@ local setGridLayoutInit = (function(layout, appLayout)
     return
   end
 
-  local windowInFocus = hs.window.frontmostWindow()
-  local gridSettings = nil
+  return getAppGroup(_appLayout);
+end)
 
-  if internalDisplay() then
-     gridSettings = laptopGridLayout[_layout]()
-  else
-     gridSettings = largeGridLayout[_layout]()
-  end
-
-  local appGroup = setAppGroup(_appLayout)
-
+local updateGridLayout = (function(appGroup, gridSettings)
   if appGroup.openBundleIds then
     openApplicationsByBundleID( appGroup.openBundleIds )
   end
@@ -793,6 +794,20 @@ local setGridLayoutInit = (function(layout, appLayout)
   end
   if appGroup.closeBundleIDs then
     closeApplications( appGroup.closeBundleIDs )
+  end
+end)
+
+local setGridLayoutInit = (function(layout, appLayout)
+  getChromeProfileWindows()
+  local windowInFocus = hs.window.frontmostWindow()
+  if toggleFocusFull then
+    local windowScreen = hs.screen.primaryScreen()
+    local gridSettings = maybeIsSideBar('0,0/10x12','0,0/12x12')
+    hs.grid.set(windowInFocus, gridSettings, windowScreen)
+  else
+    local gridSettings = getGridSettings(layout)
+    local appGroup = getAppLayout(appLayout)
+    updateGridLayout(appGroup, gridSettings)
   end
   windowInFocus:focus()
 end)
@@ -839,6 +854,14 @@ local turnOnSplitYGridCoord = (function()
   end
 end)
 
+local turnOnWindowFocus = (function()
+  if not toggleFocusFull then
+    toggleFocusFull = true
+  else
+    toggleFocusFull = false
+  end
+end)
+
 local resetAllFormations = (function()
     isSplitX = false
     isSplitY = false
@@ -862,6 +885,7 @@ local codingFormation = (function()
     isSplitY = false
     isWindowsVertical = true
 end)
+
 
 --
 -- Key bindings.
@@ -953,9 +977,10 @@ return {
     hs.hotkey.bind(mash, '3', tutorialMode, setGridLayoutInit)
     hs.hotkey.bind(mash, '4', fourSquareMode, setGridLayoutInit)
 
-    hs.hotkey.bind(mash, '0', (function() setGridLayoutInit('one') end))
-    hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('two') end))
-    hs.hotkey.bind(mash, ']', (function() setGridLayoutInit('three') end))
+    hs.hotkey.bind(mash, '9', (function() setGridLayoutInit('one') end))
+    hs.hotkey.bind(mash, '0', (function() setGridLayoutInit('two') end))
+    hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('three') end))
+    hs.hotkey.bind(mash, ']', turnOnWindowFocus, setGridLayoutInit)
 
     hs.hotkey.bind(mash, '-', function()
       local layout
