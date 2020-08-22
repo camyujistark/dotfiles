@@ -7,7 +7,7 @@ local sideBar = false
 local isWindowsVertical = true
 local isSplitX = false
 local isSplitY = false
-local currentLayout = nil
+local currentLayout = 'one'
 local currentAppLayout = 'default'
 local isDebounceChange = false
 -- currently you need chrome to be open on startup for this setup to work
