@@ -56,7 +56,6 @@ bundleIDs.unityhub = 'com.unity3d.unityhub'
 bundleIDs.vscode = 'com.microsoft.VSCode'
 bundleIDs.preview = 'com.apple.Preview'
 
-
 local grid = {
   topHalf = '0,0/12x6',
   topThird = '0,0/12x4',
@@ -900,22 +899,28 @@ return {
     getChromeProfileWindows()
 
     -- APP MASH --
-
-    hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Calendar') end)
-    hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Mail') end)
-    hs.hotkey.bind(mash, '.', function() hs.application.launchOrFocus('Finder') end)
+    hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Anki') end)
+    hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Calendar') end)
+    hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Mail') end)
+    --left
     hs.hotkey.bind(mash, "a", function() chrome_switch_to(chromeProfiles.home) end)
-    hs.hotkey.bind(mash, "o", function() chrome_switch_to(chromeProfiles.alien) end)
-    hs.hotkey.bind(mash, ";", function() chrome_switch_to(chromeProfiles.side) end)
-    hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Notion') end)
-    hs.hotkey.bind(mash, 'u', function() hs.application.launchOrFocus('iTerm') end)
+    hs.hotkey.bind(mash, "o", function() hs.application.launchOrFocus('Notion') end)
+    hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Visual Studio Code') end)
+    hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocus('iTerm') end)
     hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end)
-    hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Slack') end)
-    hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Spotify') end)
-    hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') end)
-    hs.hotkey.bind(mash, 'd', function() hs.application.launchOrFocus('Marked 2') end)
 
+    hs.hotkey.bind(mash, ";", function() chrome_switch_to(chromeProfiles.side) end)
+    hs.hotkey.bind(mash, "q", function() chrome_switch_to(chromeProfiles.alien) end)
+    hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Slack') end)
+    hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('Spotify') end)
+    hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocus('WhatsApp') end)
+
+    -- right
+    hs.hotkey.bind(mash, '-', function() hs.application.launchOrFocus('Finder') end)
+    hs.hotkey.bind(mash, 's', function() hs.application.launchOrFocus('Preview') end)
+    hs.hotkey.bind(mash, 'n', function() hs.application.launchOrFocus('Marked 2') end)
     hs.hotkey.bind(mash, 'z', function() hs.application.launchOrFocus('Zoom') end)
+
     hs.hotkey.bind(mash, 'w', function() hs.application.launchOrFocus('Sketchbook') end)
     hs.hotkey.bind(mash, 'm', function() hs.application.launchOrFocus('Unity') end)
 
@@ -982,7 +987,7 @@ return {
     hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('three') end))
     hs.hotkey.bind(mash, ']', turnOnWindowFocus, setGridLayoutInit)
 
-    hs.hotkey.bind(mash, '-', function()
+    hs.hotkey.bind(mash, 'v', function()
       local layout
       if currentAppLayout == 'default' then
         layout = 'zoom'
