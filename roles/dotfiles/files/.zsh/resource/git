@@ -383,12 +383,10 @@ todos() {
 }
 
 tvim() {
-  BRANCHNAME=$( git branch | grep '*' | cut -d ' ' -f2)
-
-  if [[ -z "$1" ]] then
-    BRANCHNAME=$( git branch | grep '*' | cut -d ' ' -f2)
-  else
+  if [ "$1" ]; then
     BRANCHNAME=$1
+  else
+    BRANCHNAME=$(git branch --show-current)
   fi
 
   if [ $BRANCHNAME = 'master' ] || [ $BRANCHNAME = 'develop' ] ; then
@@ -396,13 +394,14 @@ tvim() {
     return
   fi
 
-  PROJECT=$($BRANCHNAME | awk -F'-' '{print $1;}')
-  PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
+  PROJECT="$(echo $BRANCHNAME | awk -F'-' '{print $1;}' | tr '[:upper:]' '[:lower:]')"
+  NOTES_PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
+  BRANCH_MD_PATH="$NOTES_PROJECTPATH/$BRANCHNAME.md"
 
   # resize window on load and open notes
   vim -O -c ":vertical resize 80" \
       -c ":wincmd l"\
-      "$PROJECTPATH/$BRANCHNAME.md";
+      "$BRANCH_MD_PATH";
       # $(echo $FILE | head -n1 | awk '{print $1; }')
       # -c ":badd $FILE";
 }
