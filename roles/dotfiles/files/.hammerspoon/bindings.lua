@@ -799,18 +799,23 @@ end)
 local setGridLayoutInit = (function(layout, appLayout)
   getChromeProfileWindows()
   local windowInFocus = hs.window.frontmostWindow()
-  if toggleFocusFull then
-    local windowScreen = hs.screen.primaryScreen()
-    local gridSettings = maybeIsSideBar('0,0/10x12','0,0/12x12')
-    hs.grid.set(windowInFocus, gridSettings, windowScreen)
-  else
-    local gridSettings = getGridSettings(layout)
-    local appGroup = getAppLayout(appLayout)
-    updateGridLayout(appGroup, gridSettings)
-  end
+  local gridSettings = getGridSettings(layout)
+  local appGroup = getAppLayout(appLayout)
+  updateGridLayout(appGroup, gridSettings)
   windowInFocus:focus()
 end)
 
+local fullScreenInit = (function()
+  if toggleFocusFull then
+    local windowInFocus = hs.window.frontmostWindow()
+    local windowScreen = hs.screen.primaryScreen()
+    local gridSettings = maybeIsSideBar('0,0/10x12','0,0/12x12')
+    hs.grid.set(windowInFocus, gridSettings, windowScreen)
+    windowInFocus:focus()
+  else
+    setGridLayoutInit()
+  end
+end)
 
 -- Toggle Sidebar
 
@@ -916,10 +921,10 @@ return {
     hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocus('WhatsApp') end)
 
     -- right
-    hs.hotkey.bind(mash, '-', function() hs.application.launchOrFocus('Finder') end)
-    hs.hotkey.bind(mash, 's', function() hs.application.launchOrFocus('Preview') end)
-    hs.hotkey.bind(mash, 'n', function() hs.application.launchOrFocus('Marked 2') end)
-    hs.hotkey.bind(mash, 'z', function() hs.application.launchOrFocus('Zoom') end)
+    hs.hotkey.bind(mash, 'f', function() hs.application.launchOrFocus('Finder') end)
+    hs.hotkey.bind(mash, 'g', function() hs.application.launchOrFocus('Preview') end)
+    hs.hotkey.bind(mash, 'c', function() hs.application.launchOrFocus('Marked 2') end)
+    hs.hotkey.bind(mash, 'r', function() hs.application.launchOrFocus('zoom.us') end)
 
     hs.hotkey.bind(mash, 'w', function() hs.application.launchOrFocus('Sketchbook') end)
     hs.hotkey.bind(mash, 'm', function() hs.application.launchOrFocus('Unity') end)
@@ -985,16 +990,16 @@ return {
     hs.hotkey.bind(mash, '9', (function() setGridLayoutInit('one') end))
     hs.hotkey.bind(mash, '0', (function() setGridLayoutInit('two') end))
     hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('three') end))
-    hs.hotkey.bind(mash, ']', turnOnWindowFocus, setGridLayoutInit)
+    hs.hotkey.bind(mash, ']', turnOnWindowFocus, fullScreenInit)
 
-    hs.hotkey.bind(mash, 'v', function()
+    hs.hotkey.bind(mash, '-', function()
       local layout
       if currentAppLayout == 'default' then
         layout = 'zoom'
       else
         layout = 'default'
       end
-      setGridLayoutInit(false, layout)
+      setGridLayoutInit(nil, layout)
     end)
   end)
 }
