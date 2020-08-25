@@ -47,6 +47,9 @@ jhstart() {
   JIRA_ID=$1
   if [ -z "$JIRA_ID" ]; then
     JIRA_ID=$(grl | awk -F'-' '{print $2;}')
+    if [ -z $JIRA_ID ]; then
+      return
+    fi
   fi
   python $HOME/Documents/Scripts/harvest-api/harvestStart.py $DEFAULT_DEVELOPMENT_TASK "$(jira summary $JIRA_ID)" > /dev/null 2>&1 &
 }
@@ -164,7 +167,7 @@ jopennotes() {
 
   BRANCHNAME=$(jira branch $JIRA_ID)
   CURRENT_BRANCH=$(git branch --show-current)
-  PROJECT="$(echo $BRANCHNAME | awk -F'-' '{print $1;}')"
+  PROJECT="$(echo $BRANCHNAME | awk -F'-' '{print $1;}' | tr '[:upper:]' '[:lower:]')"
 
   if [ $CURRENT_BRANCH != $BRANCHNAME ]; then
     git checkout $BRANCHNAME
@@ -205,7 +208,7 @@ jopennotes() {
       rm "$BRANCH_MD_TEMP_PATH"
     fi
   else
-    touch $BRANCH_MD_PATH
+    touch "$BRANCH_MD_PATH"
     jira view $JIRA_ID > "$BRANCH_MD_PATH"
     echo "\n## Notes\n- " >> "$BRANCH_MD_PATH"
   fi
