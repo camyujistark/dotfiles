@@ -31,11 +31,11 @@ jmine() {
   # while true
   # do
       # load before clear
-      todo=$(jira project_todo)
-      inprogress=$(jira project_inprogress)
-      inreview=$(jira project_inreview)
-      discussion=$(jira project_discussion)
-      inqa=$(jira project_inqa)
+      todo=$(jira project_todo 'To Do')
+      inprogress=$(jira project_status 'In Progress' 'inprogress')
+      inreview=$(jira project_status 'In Review' 'inreview')
+      discussion=$(jira project_status 'Needs Discussion' 'discussion')
+      inqa=$(jira project_status 'In QA' 'inqa')
       clear
       paste <(printf %s "$(fold -w 80 <<< $(echo $todo; echo ' \n \n \n \n'))") <(printf %s "$(fold -w 80 <<< $(echo $inprogress; echo $discussion; echo $inreview; echo $inqa))") | column -s $'\t' -t
       # echo 'here'
@@ -130,6 +130,25 @@ jassign() {
   fi
 }
 
+jqa() {
+  JIRA_ID=$1
+  if [[ $JIRA_ID ]]; then
+    ticketStatus="$(jira status $JIRA_ID)"
+    if [ "$ticketStatus" = "To Do" ]; then 
+      jira transition "In Progress" $JIRA_ID --noedit
+      jira transition "Code Review" $JIRA_ID --noedit
+    fi
+    if [ "$ticketStatus" = "In Progress" ]; then 
+      jira transition "Code Review" $JIRA_ID --noedit
+    fi
+    jira transition "QA Ready" $JIRA_ID --noedit
+    ASSIGNEE_ID=$(getConfigValue "users.wesley")
+    jira edit --noedit "$JIRA_ID" -o assigneeid="$ASSIGNEE_ID"
+  else
+    echo "JIRAQA: need to have ISSUE_ID"
+  fi
+}
+
 jtransition() {
   JIRA_ID=$1
   moveTo=$2
@@ -196,7 +215,7 @@ jopennotes() {
 
       ## TODO: if has lines
       ## Remove mardown meta 12 lines
-      sed -i.bak '1,12d' "$BRANCH_MD_PATH"
+      sed -i.bak '1,14d' "$BRANCH_MD_PATH"
 
       ## Make temp version
       cat "$BRANCH_MD_PATH" > "$BRANCH_MD_TEMP_PATH"
