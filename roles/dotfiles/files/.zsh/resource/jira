@@ -1,7 +1,32 @@
-
-# 
+#
 # Jira
 #
+
+BASE_JIRA_D_CONFIG="~/.jira.d/config.yml";
+
+NOTES_PATH="$HOME/Documents/Notes/"
+
+getProjectYaml() {
+  # TODO: Would like to maoke this something that checks the git root for project specific variables such as basebranch. but neet to merge both the parent with the project specific output
+  # If not git path then will look in the current folder
+  BASE_GIT_PATH="$(git rev-parse --show-toplevel 2> /dev/null || echo -n '.')"
+  #  ${FILE%/*} will get you the parent folder
+  PROJECT_YML="${BASE_GIT_PATH%/*}/.jira.d/config.yml"
+  if [ ! -f $PROJECT_YML ]; then
+    PROJECT_YML=$BASE_JIRA_D_CONFIG
+  fi
+  echo $PROJECT_YML
+}
+
+getProjectValue() {
+  local PROJECT_YML=$(getProjectYaml)
+  cat $PROJECT_YML | shyaml get-value $1
+}
+
+getProjectValues() {
+  local PROJECT_YML=$(getProjectYaml)
+  cat $PROJECT_YML | shyaml get-values $1
+}
 
 getConfigValue() {
   cat ~/.jira.d/config.yml | shyaml get-value $1
@@ -16,35 +41,31 @@ getConfigKeys() {
 }
 
 JIRA_USERNAMES=$(getConfigKeys users)
-JIRA_WORKFLOW=$(getConfigValues workflow)
-DEFAULT_DEVELOPMENT_TASK=$(getConfigValue 'harvest.default_development_task')
 
-jnew() {
-  jira-cli new --type=$1 --priority=Medium --project LE $2 | grep issue | pbcopy;
-}
-
-jlist() {
-  jira-cli view --search-jql="$1" --oneline
+getWorkflowStatus() {
+  LIST=$1
+  while read -r line; do
+    STATUS=$(jira project_status "$line")
+    echo "$line $STATUS"
+  done < <(getProjectValues "$LIST")
 }
 
 jmine() {
   # while true
   # do
-      # load before clear
-      todo=$(jira project_todo 'To Do')
-      inprogress=$(jira project_status 'In Progress' 'inprogress')
-      inreview=$(jira project_status 'In Review' 'inreview')
-      discussion=$(jira project_status 'Needs Discussion' 'discussion')
-      inqa=$(jira project_status 'In QA' 'inqa')
+      todo=$(getWorkflowStatus 'workflow.todo')
+      other=$(getWorkflowStatus 'workflow.other')
+
       clear
-      paste <(printf %s "$(fold -w 80 <<< $(echo $todo; echo ' \n \n \n \n'))") <(printf %s "$(fold -w 80 <<< $(echo $inprogress; echo $discussion; echo $inreview; echo $inqa))") | column -s $'\t' -t
+      paste <(printf %s "$(fold -w 80 <<< $(echo $todo; echo ' \n \n \n \n'))") <(printf %s "$(fold -w 80 <<< $(echo $other; ))") | column -s $'\t' -t
       # echo 'here'
       # sleep 60
   # done
 }
 
 jhstart() {
-  JIRA_ID=$1
+  local JIRA_ID=$1
+  DEFAULT_DEVELOPMENT_TASK=$(getProjectValue 'harvest.default_development_task')
   if [ -z "$JIRA_ID" ]; then
     JIRA_ID=$(grl | awk -F'-' '{print $2;}')
     if [ -z $JIRA_ID ]; then
@@ -60,6 +81,7 @@ jhstop() {
 
 harvestTask() {
   DESCRIPTION=$1
+  DEFAULT_DEVELOPMENT_TASK=$(getProjectValue 'harvest.default_development_task')
   if [ -z "$DESCRIPTION" ]; then
     echo "Need DESCRIPTION to run"
     return
@@ -68,21 +90,15 @@ harvestTask() {
 }
 
 jrun () {
-  PROJECT='divi'
-  PROJECT_FILE_NAME='lsc_odrs_app'
-  BASE_BRANCH='develop'
-  CURRENT_BRANCH=$( git branch | grep '*' | cut -d ' ' -f2)
-  BASE_FILE_NAME=$(basename `git rev-parse --show-toplevel`)
-  JIRA_ID=$1
-
+  local BASEBRANCH=$(getProjectValue 'basebranch')
   if [ $2 ]; then
-    BASE_BRANCH=$2
+    BASEBRANCH=$2
   fi
+  setBranch "$BASEBRANCH" 'develop'
+
+  local JIRA_ID=$1
 
   if [ $JIRA_ID ]; then
-    git checkout $BASE_BRANCH
-    git pull
-    jcheckout $JIRA_ID
     jinit $JIRA_ID
   else
     PS3='Please enter your choice: '
@@ -96,11 +112,11 @@ jrun () {
                 break
                 ;;
             "Create New Branch")
-                jcreate $BASE_BRANCH
+                jcreate $BASEBRANCH
                 return
                 ;;
             "Create New Branch Start")
-                jcreate $BASE_BRANCH
+                jcreate $BASEBRANCH
                 JIRA_ID=$(grep issue /tmp/cstory.yml | awk '{print $2}')
                 jinit $JIRA_ID
                 return
@@ -120,10 +136,10 @@ jrun () {
 }
 
 jassign() {
-  JIRA_ID=$1
+  local JIRA_ID=$1
   if [[ $JIRA_ID ]]; then
-    ASSIGNEE="users.$(echo $JIRA_USERNAMES | fzf)"
-    ASSIGNEE_ID=$(getConfigValue $ASSIGNEE)
+    local ASSIGNEE="users.$(echo $JIRA_USERNAMES | fzf)"
+    local ASSIGNEE_ID=$(getConfigValue $ASSIGNEE)
     jira edit --noedit "$JIRA_ID" -o assigneeid="$ASSIGNEE_ID"
   else
     echo "JIRAQA: need to have ISSUE_ID"
@@ -131,7 +147,7 @@ jassign() {
 }
 
 jqa() {
-  JIRA_ID=$1
+  local JIRA_ID=$1
   if [[ $JIRA_ID ]]; then
     ticketStatus="$(jira status $JIRA_ID)"
     if [ "$ticketStatus" = "To Do" ]; then 
@@ -142,7 +158,7 @@ jqa() {
       jira transition "Code Review" $JIRA_ID --noedit
     fi
     jira transition "QA Ready" $JIRA_ID --noedit
-    ASSIGNEE_ID=$(getConfigValue "users.wesley")
+    local ASSIGNEE_ID=$(getConfigValue "users.wesley")
     jira edit --noedit "$JIRA_ID" -o assigneeid="$ASSIGNEE_ID"
   else
     echo "JIRAQA: need to have ISSUE_ID"
@@ -150,8 +166,12 @@ jqa() {
 }
 
 jtransition() {
-  JIRA_ID=$1
-  moveTo=$2
+  local JIRA_ID=$1
+  local moveTo=$2
+  local JIRA_WORKFLOW_TODO=$(getProjectValues 'workflow.todo')
+  local JIRA_WORKFLOW_OTHER=$(getProjectValues 'workflow.other')
+  local JIRA_WORKFLOW=$(echo $JIRA_WORKFLOW_TODO; echo $JIRA_WORKFLOW_OTHER)
+
   if [ -z $JIRA_ID ]; then
     JIRA_ID=$(grl | awk -F'-' '{print $2;}')
   fi
@@ -167,40 +187,134 @@ jtransition() {
 }
 
 jcreate () {
-  BASEBRANCH="master"
+  local BASEBRANCH=$(getProjectValue 'basebranch')
   if [ $1 ]; then
     BASEBRANCH=$1
   fi
-  TYPE="$(echo 'Task\nBug' | fzf)"
-  ASSIGNEE="users.$(echo $JIRA_USERNAMES | fzf)"
-  ASSIGNEE_ID=$(getConfigValue $ASSIGNEE)
+  local TYPE="$(echo 'Task\nBug' | fzf)"
+  local ASSIGNEE="users.$(echo $JIRA_USERNAMES | fzf)"
+  local ASSIGNEE_ID=$(getConfigValue $ASSIGNEE)
   git checkout $BASEBRANCH && git pull
   jira create -i "$TYPE" -o assigneeid="$ASSIGNEE_ID" --saveFile /tmp/cstory.yml
-
   jopen $JIRA_ID
 }
 
-jopennotes() {
-  # Todo: Open tvim if you set it in param. Was not as easy as I thought
-  JIRA_ID=$1
+setBranch() {
+  local BRANCHNAME=$1
+  local BASEBRANCH=$2
 
-  BRANCHNAME=$(jira branch $JIRA_ID)
-  CURRENT_BRANCH=$(git branch --show-current)
-  PROJECT="$(echo $BRANCHNAME | awk -F'-' '{print $1;}' | tr '[:upper:]' '[:lower:]')"
-
-  if [ $CURRENT_BRANCH != $BRANCHNAME ]; then
-    git checkout $BRANCHNAME
+  if [ -z $BRANCHNAME ]; then
+    echo 'Need a argument with branchname'
+    exit 1
   fi
 
-  NOTES_PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
+  if [ -z $BASEBRANCH ]; then
+    echo 'Need a base branch'
+    exit 1
+  fi
 
-  # TODO: There is too much conflict whene using the branchname as md. In future
-  # would like to change this to JIRA_ID. I can see that this could have issues
-  # with the branch association to jira task in future. This might need to be
-  # resolved by getting the bitbucket ids associated in there too. food for
-  # thought
+  if [[ `git branch --list $BRANCHNAME` ]]; then
+    git checkout $BRANCHNAME
+    git pull
+  else
+    git checkout $BASEBRANCH
+    git checkout -b $BRANCHNAME
+    gitpu
+    # You cannot have a pr at this stage
+    # gitppr;
+  fi
+}
 
-  BRANCH_MD_PATH="$NOTES_PROJECTPATH/$BRANCHNAME.md"
+generateBranchName() {
+  local JIRA_ID=$1
+  local EPIC_FLAG="feature"
+  local BRANCHNAME=$(git branch --show-current)
+  if [ $JIRA_ID ]; then
+    BRANCHNAME=$(jira branch $JIRA_ID)
+    ISSUETYPE=$(jira issuetype $JIRA_ID) 
+    if [ "$ISSUETYPE" = 'Epic' ]; then
+      BRANCHNAME="$EPIC_FLAG/$BRANCHNAME"
+    fi
+  fi
+  echo "$BRANCHNAME"
+}
+
+createJiraBranches() {
+  local JIRA_ID=$1
+
+  if [ -z "$JIRA_ID" ]; then
+    exit 1
+  fi
+
+  if [[ $(git status -s) ]]; then 
+    echo 'You have uncommited changes. please fix first'
+    exit 1;
+  fi
+
+  local BASEBRANCH=$(getProjectValue 'basebranch')
+  local BRANCHNAME=$(generateBranchName $JIRA_ID)
+
+  if [[ -z $BRANCHNAME ]]; then
+    echo 'jira id does not exist. branchname cannot be generated'
+    exit 1;
+  fi
+
+  echo "base: $BASEBRANCH"
+
+  local EPIC_KEY=$(jira epickey $JIRA_ID)
+  if [ "$EPIC_KEY" ]; then
+    EPIC_FLAG="feature"
+    EPIC_BRANCH="$EPIC_FLAG/$(jira branch $EPIC_KEY)"
+    echo "epic: $EPIC_BRANCH"
+    jopennotes $EPIC_KEY
+    setBranch "$EPIC_BRANCH" $BASEBRANCH
+    BASEBRANCH=$EPIC_BRANCH
+  fi
+
+  local PARENT_TASK_KEY=$(jira parentkey $JIRA_ID)
+  if [ "$PARENT_TASK_KEY" ]; then
+    PARENT_BRANCH=$(jira branch $PARENT_TASK_KEY)
+    echo "parent: $PARENT_BRANCH"
+    setBranch "$PARENT_BRANCH" $BASEBRANCH
+    BASEBRANCH=$PARENT_BRANCH
+  fi
+
+  echo "creating: $BRANCHNAME"
+  if [[ `git branch --list $BRANCHNAME` ]]; then
+    git checkout $BRANCHNAME
+  else
+    git checkout $BASEBRANCH
+    git checkout -b $BRANCHNAME
+  fi
+}
+
+generateNotesPath() {
+  local JIRA_ID=$1
+  local PROJECT=$(getProjectValue 'project')
+  local NOTES_PROJECTPATH="$NOTES_PATH/$PROJECT"
+  if [ ! -d $NOTES_PROJECTPATH ]; then
+    mkdir $NOTES_PROJECTPATH;
+  fi
+  local BRANCHNAME=$(generateBranchName $JIRA_ID)
+  local BRANCH_MD_PATH="$NOTES_PROJECTPATH/$BRANCHNAME.md"
+  if [ ! -d ${BRANCH_MD_PATH%/*} ]; then
+    mkdir -p ${BRANCH_MD_PATH%/*}
+  fi
+  # Return MD PATH
+  echo $BRANCH_MD_PATH;
+}
+
+jopennotes() {
+
+  local JIRA_ID=$1
+
+  if [ -z $JIRA_ID ]; then
+    echo "Need $JIRA_ID";
+    exit 1;
+  fi
+
+  # Todo: Open tvim if you set it in param. Was not as easy as I thought
+  local BRANCH_MD_PATH="$(generateNotesPath $JIRA_ID)"
 
   # Update Meta data
   # Note: Limitation is that we predict that its 12 lines of metddata. Would
@@ -214,7 +328,7 @@ jopennotes() {
       touch $BRANCH_MD_TEMP_PATH
 
       ## TODO: if has lines
-      ## Remove mardown meta 12 lines
+      ## Remove mardown meta 14 lines
       sed -i.bak '1,14d' "$BRANCH_MD_PATH"
 
       ## Make temp version
@@ -225,6 +339,7 @@ jopennotes() {
       cat "$BRANCH_MD_TEMP_PATH" >> "$BRANCH_MD_PATH"
       ## clean up
       rm "$BRANCH_MD_TEMP_PATH"
+      rm "$BRANCH_MD_PATH.bak"
     fi
   else
     touch "$BRANCH_MD_PATH"
@@ -234,7 +349,7 @@ jopennotes() {
 }
 
 jopennotes_tmux() {
-  JIRA_ID=$1
+  local JIRA_ID=$1
 
   # limitation to having the second pane to always have vim running with notes
   # note this is a hack atm. would like to make this more specific
@@ -250,50 +365,40 @@ jopennotes_tmux() {
   tmux send-keys -t 2 Enter
 }
 
-jnotes() {
-	PROJECT='divi'
-	PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
-  if [[ -z "$1" ]]; then
-    SEARCH='\- \[ \]'
-  else
-    SEARCH="$( echo $1 | sed 's/\([^[:alnum:]]\)/\\\1/g' | tr '[:upper:]' '[:lower:]')"
-  fi
-
-  TODOSELECT=$(awk 'function branchname(file) {
-    sub(".*/", "", file)
-    sub("\.md", "", file)
-    return file
-  }
-  tolower($0) ~ /'$SEARCH'/{print branchname(FILENAME), "---", $0}' $PROJECTPATH/* | fzf)
-
-  if [ $TODOSELECT ]; then
-    BRANCHNAME=${TODOSELECT%% ---*} # Delete after
-    # BRANCHNAME=${TODOSELECT##*------- } # Delete before
-    tvim "$BRANCHNAME"
-  fi
-}
-
-jcheckout() {
-  JIRA_ID=$1
-  BRANCHNAME=$(jira branch $JIRA_ID)
-  if git rev-parse --verify $BRANCHNAME; then
-    git checkout $BRANCHNAME
-  else
-    git checkout -b $BRANCHNAME
-  fi
-}
-
+# jnotes() {
+# 	PROJECT='divi'
+# 	PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
+#   if [[ -z "$1" ]]; then
+#     SEARCH='\- \[ \]'
+#   else
+#     SEARCH="$( echo $1 | sed 's/\([^[:alnum:]]\)/\\\1/g' | tr '[:upper:]' '[:lower:]')"
+#   fi
+#
+#   TODOSELECT=$(awk 'function branchname(file) {
+#     sub(".*/", "", file)
+#     sub("\.md", "", file)
+#     return file
+#   }
+#   tolower($0) ~ /'$SEARCH'/{print branchname(FILENAME), "---", $0}' $PROJECTPATH/* | fzf)
+#
+#   if [ $TODOSELECT ]; then
+#     BRANCHNAME=${TODOSELECT%% ---*} # Delete after
+#     # BRANCHNAME=${TODOSELECT##*------- } # Delete before
+#     tvim "$BRANCHNAME"
+#   fi
+# }
+#
 jinit() {
-  JIRA_ID=$1
+  local JIRA_ID=$1
+  createJiraBranches $JIRA_ID
   jhstart $JIRA_ID
   jira transition "In Progress" $JIRA_ID --noedit
-  jcheckout $JIRA_ID
   jopennotes_tmux $JIRA_ID
   jopen $JIRA_ID
 }
 
 jopen() {
-  JIRA_ID=$1
+  local JIRA_ID=$1
   if [ -z $JIRA_ID ]; then
     JIRA_ID=$(grl | awk -F'-' '{print $2;}')
   fi
