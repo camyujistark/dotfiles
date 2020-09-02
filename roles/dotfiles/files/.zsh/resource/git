@@ -388,6 +388,9 @@ tvim() {
   else
     BRANCHNAME=$(git branch --show-current)
   fi
+  if [ -z "$BRANCHNAME" ]; then
+    exit 1;
+  fi
 
   if [ $BRANCHNAME = 'master' ] || [ $BRANCHNAME = 'develop' ] ; then
     echo 'must be on project branch for tvim to work. e.g. DIVI-1'
