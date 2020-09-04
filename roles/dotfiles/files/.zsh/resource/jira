@@ -196,6 +196,7 @@ jcreate () {
   local ASSIGNEE_ID=$(getConfigValue $ASSIGNEE)
   git checkout $BASEBRANCH && git pull
   jira create -i "$TYPE" -o assigneeid="$ASSIGNEE_ID" --saveFile /tmp/cstory.yml
+  JIRA_ID=$(grep issue /tmp/cstory.yml | awk '{print $2}')
   jopen $JIRA_ID
 }
 
@@ -219,7 +220,6 @@ setBranch() {
   else
     git checkout $BASEBRANCH
     git checkout -b $BRANCHNAME
-    gitpu
     # You cannot have a pr at this stage
     # gitppr;
   fi
@@ -241,7 +241,6 @@ generateBranchName() {
 
 createJiraBranches() {
   local JIRA_ID=$1
-  local CURRENT_BRANCHNAME=$(git branch --show-current)
 
   if [ -z "$JIRA_ID" ]; then
     exit 1
@@ -262,35 +261,46 @@ createJiraBranches() {
 
   echo "base: $BASEBRANCH"
 
-  # TODO: think this could be seperated
   local EPIC_KEY=$(jira epickey $JIRA_ID)
   if [ "$EPIC_KEY" ]; then
     EPIC_FLAG="feature"
     EPIC_BRANCH="$EPIC_FLAG/$(jira branch $EPIC_KEY)"
+    EPIC_BRANCH_LOC="${EPIC_BRANCH}-LOC"
+
     echo "epic: $EPIC_BRANCH"
     jopennotes $EPIC_KEY
-    setBranch $EPIC_BRANCH $BASEBRANCH
-    BASEBRANCH=$EPIC_BRANCH
+    # remote
+    setBranch "$EPIC_BRANCH" $BASEBRANCH
+    if [[ ! `git branch --list $BRANCHNAME` ]]; then
+      gitpu
+    fi
+    # local
+    setBranch "$EPIC_BRANCH_LOC" "$EPIC_BRANCH"
+    BASEBRANCH=$EPIC_BRANCH_LOC
   fi
 
   local PARENT_TASK_KEY=$(jira parentkey $JIRA_ID)
   if [ "$PARENT_TASK_KEY" ]; then
     PARENT_BRANCH=$(jira branch $PARENT_TASK_KEY)
+    PARENT_BRANCH_LOC="${PARENT_BRANCH}-LOC"
     echo "parent: $PARENT_BRANCH"
+    jopennotes $PARENT_BRANCH
+    # remote
     setBranch "$PARENT_BRANCH" $BASEBRANCH
-    BASEBRANCH=$PARENT_BRANCH
+    if [[ ! `git branch --list $BRANCHNAME` ]]; then
+      gitpu
+    fi
+    # local
+    setBranch "$PARENT_BRANCH_LOC" "$PARENT_BRANCH"
+    BASEBRANCH=$PARENT_BRANCH_LOC
   fi
 
   echo "creating: $BRANCHNAME"
   if [[ `git branch --list $BRANCHNAME` ]]; then
-    echo "branch already exists";
-    exit 1;
+    git checkout $BRANCHNAME
   else
-    git checkout $CURRENT_BRANCHNAME
-    git branch $BRANCHNAME
-    git rebase -i $BASEBRANCH
-    gitppr
-    gitcheckout $BRANCHNAME
+    git checkout $BASEBRANCH
+    git checkout -b $BRANCHNAME
   fi
 }
 
@@ -301,8 +311,8 @@ generateNotesPath() {
   if [ ! -d $NOTES_PROJECTPATH ]; then
     mkdir $NOTES_PROJECTPATH;
   fi
-  local BRANCHNAME=$(generateBranchName $JIRA_ID)
-  local BRANCH_MD_PATH="$NOTES_PROJECTPATH/$BRANCHNAME.md"
+  # local BRANCHNAME=$(generateBranchName $JIRA_ID)
+  local BRANCH_MD_PATH="$NOTES_PROJECTPATH/$JIRA_ID.md"
   if [ ! -d ${BRANCH_MD_PATH%/*} ]; then
     mkdir -p ${BRANCH_MD_PATH%/*}
   fi
