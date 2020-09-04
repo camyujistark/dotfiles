@@ -89,7 +89,7 @@ harvestTask() {
   python $HOME/Documents/Scripts/harvest-api/harvestStart.py $DEFAULT_DEVELOPMENT_TASK  "$DESCRIPTION" > /dev/null 2>&1 &
 }
 
-jrun () {
+jr () {
   local BASEBRANCH=$(getProjectValue 'basebranch')
   if [ $2 ]; then
     BASEBRANCH=$2
@@ -102,8 +102,8 @@ jrun () {
     jinit $JIRA_ID
   else
     PS3='Please enter your choice: '
-    jrunoptions=("Go to previous branch" "Create New Branch" "Create New Branch Start" "Find branch" "Quit")
-    select opt in "${jrunoptions[@]}"
+    jroptions=("Go to previous branch" "Create New Branch" "Create New Branch Start" "Find branch" "Quit")
+    select opt in "${jroptions[@]}"
     do
         case $opt in
             "Go to previous branch")
@@ -241,6 +241,7 @@ generateBranchName() {
 
 createJiraBranches() {
   local JIRA_ID=$1
+  local CURRENT_BRANCHNAME=$(git branch --show-current)
 
   if [ -z "$JIRA_ID" ]; then
     exit 1
@@ -261,13 +262,14 @@ createJiraBranches() {
 
   echo "base: $BASEBRANCH"
 
+  # TODO: think this could be seperated
   local EPIC_KEY=$(jira epickey $JIRA_ID)
   if [ "$EPIC_KEY" ]; then
     EPIC_FLAG="feature"
     EPIC_BRANCH="$EPIC_FLAG/$(jira branch $EPIC_KEY)"
     echo "epic: $EPIC_BRANCH"
     jopennotes $EPIC_KEY
-    setBranch "$EPIC_BRANCH" $BASEBRANCH
+    setBranch $EPIC_BRANCH $BASEBRANCH
     BASEBRANCH=$EPIC_BRANCH
   fi
 
@@ -281,10 +283,14 @@ createJiraBranches() {
 
   echo "creating: $BRANCHNAME"
   if [[ `git branch --list $BRANCHNAME` ]]; then
-    git checkout $BRANCHNAME
+    echo "branch already exists";
+    exit 1;
   else
-    git checkout $BASEBRANCH
-    git checkout -b $BRANCHNAME
+    git checkout $CURRENT_BRANCHNAME
+    git branch $BRANCHNAME
+    git rebase -i $BASEBRANCH
+    gitppr
+    gitcheckout $BRANCHNAME
   fi
 }
 
