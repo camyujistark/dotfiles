@@ -3,7 +3,7 @@ autocmd FileType typescript setlocal formatprg=eslint\ --parser\ typescript
 let g:ale_linter_aliases = {'typescriptreact': 'typescript'}
 
 let g:ale_linters = {
-\   'javascript': ['eslint'],
+\   'javascript': ['prettier'],
 \   'typescript': ['tsserver', 'tslint'],
 \   'vue': ['eslint']
 \}
