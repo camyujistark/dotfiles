@@ -6,6 +6,11 @@ BASE_JIRA_D_CONFIG="~/.jira.d/config.yml";
 
 NOTES_PATH="$HOME/Documents/Notes/"
 
+# EPIC: Per Epic
+# BASE: Direct to base
+# MASTER: Straight to master
+BRANCH_METHOD="BASE"
+
 getProjectYaml() {
   # TODO: Would like to maoke this something that checks the git root for project specific variables such as basebranch. but neet to merge both the parent with the project specific output
   # If not git path then will look in the current folder
@@ -196,7 +201,6 @@ jcreate () {
   local ASSIGNEE_ID=$(getConfigValue $ASSIGNEE)
   git checkout $BASEBRANCH && git pull
   jira create -i "$TYPE" -o assigneeid="$ASSIGNEE_ID" --saveFile /tmp/cstory.yml
-  JIRA_ID=$(grep issue /tmp/cstory.yml | awk '{print $2}')
   jopen $JIRA_ID
 }
 
@@ -261,47 +265,93 @@ createJiraBranches() {
 
   echo "base: $BASEBRANCH"
 
-  local EPIC_KEY=$(jira epickey $JIRA_ID)
-  if [ "$EPIC_KEY" ]; then
-    EPIC_FLAG="feature"
-    EPIC_BRANCH="$EPIC_FLAG/$(jira branch $EPIC_KEY)"
-    EPIC_BRANCH_LOC="${EPIC_BRANCH}-LOC"
+  if [ $BRANCH_METHOD = 'EPIC' ]; then
+    local EPIC_KEY=$(jira epickey $JIRA_ID)
+    if [ "$EPIC_KEY" ]; then
+      EPIC_FLAG="feature"
+      EPIC_BRANCH="$EPIC_FLAG/$(jira branch $EPIC_KEY)"
+      EPIC_BRANCH_LOC="${EPIC_BRANCH}-LOC"
 
-    echo "epic: $EPIC_BRANCH"
-    jopennotes $EPIC_KEY
-    # remote
-    setBranch "$EPIC_BRANCH" $BASEBRANCH
-    if [[ ! `git branch --list $BRANCHNAME` ]]; then
-      gitpu
+      echo "epic: $EPIC_BRANCH"
+      jopennotes $EPIC_KEY
+      # remote
+      setBranch "$EPIC_BRANCH" $BASEBRANCH
+      if [[ ! `git branch --list $BRANCHNAME` ]]; then
+        gitpu
+      fi
+      # local
+      setBranch "$EPIC_BRANCH_LOC" "$EPIC_BRANCH"
+      BASEBRANCH=$EPIC_BRANCH_LOC
     fi
-    # local
-    setBranch "$EPIC_BRANCH_LOC" "$EPIC_BRANCH"
-    BASEBRANCH=$EPIC_BRANCH_LOC
+
+    local PARENT_TASK_KEY=$(jira parentkey $JIRA_ID)
+    if [ "$PARENT_TASK_KEY" ]; then
+      PARENT_BRANCH=$(jira branch $PARENT_TASK_KEY)
+      PARENT_BRANCH_LOC="${PARENT_BRANCH}-LOC"
+      echo "parent: $PARENT_BRANCH"
+      jopennotes $PARENT_BRANCH
+      # remote
+      setBranch "$PARENT_BRANCH" $BASEBRANCH
+      if [[ ! `git branch --list $BRANCHNAME` ]]; then
+        gitpu
+      fi
+      # local
+      setBranch "$PARENT_BRANCH_LOC" "$PARENT_BRANCH"
+      BASEBRANCH=$PARENT_BRANCH_LOC
+    fi
+    echo "creating: $BRANCHNAME"
+    if [[ `git branch --list $BRANCHNAME` ]]; then
+      git checkout $BRANCHNAME
+    else
+      git checkout $BASEBRANCH
+      git checkout -b $BRANCHNAME
+    fi
   fi
 
-  local PARENT_TASK_KEY=$(jira parentkey $JIRA_ID)
-  if [ "$PARENT_TASK_KEY" ]; then
-    PARENT_BRANCH=$(jira branch $PARENT_TASK_KEY)
-    PARENT_BRANCH_LOC="${PARENT_BRANCH}-LOC"
-    echo "parent: $PARENT_BRANCH"
-    jopennotes $PARENT_BRANCH
-    # remote
-    setBranch "$PARENT_BRANCH" $BASEBRANCH
-    if [[ ! `git branch --list $BRANCHNAME` ]]; then
-      gitpu
-    fi
-    # local
-    setBranch "$PARENT_BRANCH_LOC" "$PARENT_BRANCH"
+  if [ $BRANCH_METHOD = 'BASE' ]; then
+    # Branch from LOC
+    echo "creating: $BRANCHNAME"
+    setBranch "${BASEBRANCH}-LOC" "$BASEBRANCH"
     BASEBRANCH=$PARENT_BRANCH_LOC
+    if [[ `git branch --list $BRANCHNAME` ]]; then
+      git checkout $BRANCHNAME
+    else
+      git checkout $BASEBRANCH
+      git checkout -b $BRANCHNAME
+    fi
+  fi
+}
+
+jcleanup() {
+  if [ ! $BRANCH_METHOD = 'BASE' ]; then
+    echo "have no method for none BASE method atm"
+    exit 1
   fi
 
-  echo "creating: $BRANCHNAME"
-  if [[ `git branch --list $BRANCHNAME` ]]; then
-    git checkout $BRANCHNAME
-  else
-    git checkout $BASEBRANCH
-    git checkout -b $BRANCHNAME
-  fi
+  local BRANCHNAME=$(git branch --show-current)
+  local BASEBRANCH=$(getProjectValue 'basebranch')
+
+  # Waterfall
+  git checkout master &&
+  git pull &&
+  git checkout develop &&
+  git pull &&
+  git checkout $BASEBRANCH &&
+  git pull &&
+  git checkout "${BASEBRANCH}-LOC" &&
+  git pull &&
+  git checkout $BRANCHNAME &&
+  git pull &&
+
+  # Rebase change for current branch
+  # rebase to clean up your change
+  git rebase -i "${BASEBRANCH}-LOC" &&
+  git checkout "${BASEBRANCH}-LOC" &&
+  # add to the local
+  git merge "$BRANCHNAME" &&
+  git checkout - &&
+  # rebase to just the change from ground
+  git rebase -i "${BASEBRANCH}"
 }
 
 generateNotesPath() {
