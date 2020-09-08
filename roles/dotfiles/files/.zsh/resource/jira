@@ -333,9 +333,13 @@ jcleanup() {
 
   # Waterfall
   git checkout master &&
-  git pull &&
-  git checkout develop &&
-  git pull &&
+  git pull
+
+  if [[ `git branch --list develop` ]]; then
+    git checkout develop &&
+    git pull
+  fi
+
   git checkout $BASEBRANCH &&
   git pull &&
   git checkout "${BASEBRANCH}-LOC" &&
