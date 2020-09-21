@@ -359,14 +359,19 @@ jcleanup() {
 }
 
 generateNotesPath() {
-  local JIRA_ID=$1
+  local NOTE_NAME=$1
   local PROJECT=$(getProjectValue 'project')
   local NOTES_PROJECTPATH="$NOTES_PATH/$PROJECT"
   if [ ! -d $NOTES_PROJECTPATH ]; then
     mkdir $NOTES_PROJECTPATH;
   fi
-  # local BRANCHNAME=$(generateBranchName $JIRA_ID)
-  local BRANCH_MD_PATH="$NOTES_PROJECTPATH/$JIRA_ID.md"
+  # If $NOTE_NAME is just a number add project
+  if [[ $NOTE_NAME =~ ^[0-9]+$ ]]
+  then
+    NOTE_NAME="$PROJECT-$NOTE_NAME";
+  fi
+  # local BRANCHNAME=$(generateBranchName $NOTE_NAME)
+  local BRANCH_MD_PATH="$NOTES_PROJECTPATH/$NOTE_NAME.md"
   if [ ! -d ${BRANCH_MD_PATH%/*} ]; then
     mkdir -p ${BRANCH_MD_PATH%/*}
   fi
