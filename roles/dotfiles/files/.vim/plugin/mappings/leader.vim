@@ -3,6 +3,8 @@
 " <Leader><Leader> -- Open last buffer.
 nnoremap <Leader><Leader> <C-^>
 
+nnoremap <Leader>t :Files<CR>
+
 " <Leader>g -- git grep for something (mnemonic: [g]it [g]rep).
 nnoremap <Leader>g :VcsJump grep<Space>
 

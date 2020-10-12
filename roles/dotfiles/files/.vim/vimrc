@@ -179,7 +179,9 @@ if &loadplugins
   if has('packages')
     packadd! LanguageClient-neovim
     packadd! base16-vim
-    packadd! command-t
+    packadd! fzf
+    packadd! fzf.vim
+    " packadd! command-t
     packadd! ferret
     packadd! loupe
     packadd! neco-ghc
@@ -220,7 +222,7 @@ if &loadplugins
     packadd! ale
     packadd! yats.vim
     packadd! vim-gitgutter
-    packadd! vim-styled-components
+    " packadd! vim-styled-components
   else
     source $HOME/.vim/pack/bundle/opt/vim-pathogen/autoload/pathogen.vim
     call pathogen#infect('pack/bundle/opt/{}')

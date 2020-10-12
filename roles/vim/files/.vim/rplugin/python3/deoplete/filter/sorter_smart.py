@@ -1,6 +1,6 @@
 from .base import Base
 
-import commandt.score
+# import commandt.score
 
 class Filter(Base):
     def __init__(self, vim):
@@ -13,6 +13,6 @@ class Filter(Base):
         complete_str = context['complete_str']
         input_len = len(complete_str)
         smart_case = int(complete_str.lower() != complete_str)
-        return sorted(context['candidates'],
-                key=lambda x: -1 * commandt.score.calc(complete_str, x['word'],
-                    smart_case))
+        # return sorted(context['candidates'],
+        #         key=lambda x: -1 * commandt.score.calc(complete_str, x['word'],
+        #             smart_case))

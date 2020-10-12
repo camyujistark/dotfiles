@@ -18,4 +18,4 @@
     install_deoplete_extensions: true
     install_masochist_vim_dependencies: true
     update_vim_bundle: true
-    use_karabiner: true
+    use_karabiner: false
