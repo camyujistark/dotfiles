@@ -208,12 +208,9 @@
 [submodule "roles/dotfiles/files/.zsh/zsh-autosuggestions"]
 	path = roles/dotfiles/files/.zsh/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions
-[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/vim-devicons"]
-	path = roles/dotfiles/files/.vim/pack/bundle/opt/vim-devicons
-	url = https://github.com/ryanoasis/vim-devicons
-[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/vim-gitgutter"]
-	path = roles/dotfiles/files/.vim/pack/bundle/opt/vim-gitgutter
-	url = https://github.com/airblade/vim-gitgutter
 [submodule "roles/dotfiles/files/.vim/pack/bundle/opt/auto-pairs"]
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/auto-pairs
 	url = https://github.com/jiangmiao/auto-pairs
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/vim-styled-components"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/vim-styled-components
+	url = https://github.com/styled-components/vim-styled-components
