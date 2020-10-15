@@ -28,9 +28,7 @@ function spaceFN(from, to) {
           {
             key_code: 'spacebar',
           },
-          {
-            key_code: from,
-          },
+          from,
         ],
         simultaneous_options: {
           key_down_order: 'strict',
@@ -55,9 +53,7 @@ function spaceFN(from, to) {
             value: 1,
           },
         },
-        {
-          key_code: to,
-        },
+        to,
       ],
       type: 'basic',
     },
@@ -70,16 +66,12 @@ function spaceFN(from, to) {
         },
       ],
       from: {
-        key_code: from,
+        ...from,
         modifiers: {
           optional: ['any'],
         },
       },
-      to: [
-        {
-          key_code: to,
-        },
-      ],
+      to: [ to ],
       type: 'basic',
     },
   ];
@@ -270,11 +262,13 @@ const DEFAULT_PROFILE = applyExemptions({
       {
         description: 'SpaceFN layer',
         manipulators: [
-          ...spaceFN('b', 'spacebar'),
-          ...spaceFN('p', 'right_arrow'),
-          ...spaceFN('c', 'down_arrow'),
-          ...spaceFN('j', 'left_arrow'),
-          ...spaceFN('v', 'up_arrow'),
+          ...spaceFN({key_code: 'b'}, {key_code: 'spacebar'}),
+          ...spaceFN({key_code: 'p'}, {key_code: 'right_arrow'}),
+          ...spaceFN({key_code: 'c'}, {key_code: 'down_arrow'}),
+          ...spaceFN({key_code: 'j'}, {key_code: 'left_arrow'}),
+          ...spaceFN({key_code: 'v'}, {key_code: 'up_arrow'}),
+          ...spaceFN({key_code: 'd'}, {key_code: 'f2', modifiers: ['left_control']}),
+          ...spaceFN({key_code: 'f'}, {pointing_button: 'button2'}),
         ],
       },
       {
