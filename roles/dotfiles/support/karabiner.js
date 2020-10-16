@@ -94,6 +94,20 @@ const IDENTIFIER_DEFAULTS = {
   is_pointing_device: false,
 };
 
+const APPLE_INTERNAL_ES = {
+  ...DEVICE_DEFAULTS,
+  identifiers: {
+    ...IDENTIFIER_DEFAULTS,
+    product_id: 636,
+    vendor_id: 1452,
+  },
+  simple_modifications: [
+    ...fromTo('non_us_backslash', 'grave_accent_and_tilde'),
+    ...fromTo('grave_accent_and_tilde', 'left_shift'),
+    ...fromTo('backslash', 'return_or_enter'),
+  ],
+};
+
 const APPLE_INTERNAL_US = {
   ...DEVICE_DEFAULTS,
   identifiers: {
@@ -103,7 +117,7 @@ const APPLE_INTERNAL_US = {
   },
 };
 
-const LTC_BLUETOOTH = {
+const AKKO = {
   ...DEVICE_DEFAULTS,
   identifiers: {
     ...IDENTIFIER_DEFAULTS,
@@ -463,7 +477,7 @@ const DEFAULT_PROFILE = applyExemptions({
       },
     ],
   },
-  devices: [LTC_BLUETOOTH, APPLE_INTERNAL_US, APPLE_INTERNAL_ES],
+  devices: [AKKO, APPLE_INTERNAL_US, APPLE_INTERNAL_ES],
   name: 'Default',
   selected: true,
 });
