@@ -286,67 +286,6 @@ const DEFAULT_PROFILE = applyExemptions({
         ],
       },
       {
-        description: 'Tab + Return to Backslash',
-        manipulators: [
-          {
-            from: {
-              modifiers: {
-                optional: ['any'],
-              },
-              simultaneous: [
-                {
-                  key_code: 'tab',
-                },
-                {
-                  key_code: 'return_or_enter',
-                },
-              ],
-              simultaneous_options: {
-                key_down_order: 'insensitive',
-                key_up_order: 'insensitive',
-              },
-            },
-            to: [
-              {
-                key_code: 'backslash',
-              },
-            ],
-            conditions: [
-              {
-                type: 'device_if',
-                identifiers: [APPLE_INTERNAL_ES.identifiers],
-              },
-            ],
-            type: 'basic',
-          },
-        ],
-      },
-      // {
-      //   description:
-      //     'Disable Karabiner-Elements with Fn+Control+Option+Command+Z',
-      //   manipulators: [
-      //     {
-      //       type: 'basic',
-      //       from: {
-      //         key_code: 'n',
-      //         modifiers: {
-      //           mandatory: [
-      //             'fn',
-      //             'left_control',
-      //             'left_command',
-      //             'left_option',
-      //           ],
-      //         },
-      //       },
-      //       to: [
-      //         {
-      //           shell_command: 'osascript ~/.zsh/bin/karabiner-kill.scpt',
-      //         },
-      //       ],
-      //     },
-      //   ],
-      // },
-      {
         description: 'Change Caps Lock to Control when used as modifier, Esc when used alone',
         manipulators: [
           {
