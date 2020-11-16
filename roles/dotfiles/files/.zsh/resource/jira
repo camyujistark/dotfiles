@@ -2,7 +2,7 @@
 # Jira
 #
 
-BASE_JIRA_D_CONFIG="~/.jira.d/config.yml";
+BASE_JIRA_D_CONFIG="$HOME/.jira.d/config.yml";
 
 NOTES_PATH="$HOME/Documents/Notes/"
 
@@ -210,12 +210,14 @@ setBranch() {
 
   if [ -z $BRANCHNAME ]; then
     echo 'Need a argument with branchname'
-    exit 1
+    # exit 1
+    return;
   fi
 
   if [ -z $BASEBRANCH ]; then
     echo 'Need a base branch'
-    exit 1
+    # exit 1
+    return;
   fi
 
   if [[ `git branch --list $BRANCHNAME` ]]; then
@@ -247,12 +249,14 @@ createJiraBranches() {
   local JIRA_ID=$1
 
   if [ -z "$JIRA_ID" ]; then
-    exit 1
+    # exit 1
+    return;
   fi
 
   if [[ $(git status -s) ]]; then 
     echo 'You have uncommited changes. please fix first'
-    exit 1;
+    # exit 1;
+    return;
   fi
 
   local BASEBRANCH=$(getProjectValue 'basebranch')
@@ -260,7 +264,8 @@ createJiraBranches() {
 
   if [[ -z $BRANCHNAME ]]; then
     echo 'jira id does not exist. branchname cannot be generated'
-    exit 1;
+    # exit 1;
+    return;
   fi
 
   echo "base: $BASEBRANCH"
@@ -325,7 +330,8 @@ createJiraBranches() {
 jcleanup() {
   if [ ! $BRANCH_METHOD = 'BASE' ]; then
     echo "have no method for none BASE method atm"
-    exit 1
+    # exit 1
+    return;
   fi
 
   local BRANCHNAME=$(git branch --show-current)
@@ -385,7 +391,8 @@ jopennotes() {
 
   if [ -z $JIRA_ID ]; then
     echo "Need $JIRA_ID";
-    exit 1;
+    # exit 1
+    return;
   fi
 
   # Todo: Open tvim if you set it in param. Was not as easy as I thought
@@ -466,7 +473,7 @@ jopennotes_tmux() {
 jinit() {
   local JIRA_ID=$1
   createJiraBranches $JIRA_ID
-  jhstart $JIRA_ID
+  # jhstart $JIRA_ID
   jira transition "In Progress" $JIRA_ID --noedit
   jopennotes_tmux $JIRA_ID
   jopen $JIRA_ID
