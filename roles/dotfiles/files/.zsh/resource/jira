@@ -316,8 +316,8 @@ createJiraBranches() {
   if [ $BRANCH_METHOD = 'BASE' ]; then
     # Branch from LOC
     echo "creating: $BRANCHNAME"
-    setBranch "${BASEBRANCH}-LOC" "$BASEBRANCH"
-    BASEBRANCH=$PARENT_BRANCH_LOC
+    # setBranch "${BASEBRANCH}-LOC" "$BASEBRANCH"
+    # BASEBRANCH=$PARENT_BRANCH_LOC
     if [[ `git branch --list $BRANCHNAME` ]]; then
       git checkout $BRANCHNAME
     else
@@ -327,42 +327,42 @@ createJiraBranches() {
   fi
 }
 
-jcleanup() {
-  if [ ! $BRANCH_METHOD = 'BASE' ]; then
-    echo "have no method for none BASE method atm"
-    # exit 1
-    return;
-  fi
-
-  local BRANCHNAME=$(git branch --show-current)
-  local BASEBRANCH=$(getProjectValue 'basebranch')
-
-  # Waterfall
-  git checkout master &&
-  git pull
-
-  if [[ `git branch --list develop` ]]; then
-    git checkout develop &&
-    git pull
-  fi
-
-  git checkout $BASEBRANCH &&
-  git pull &&
-  git checkout "${BASEBRANCH}-LOC" &&
-  git pull &&
-  git checkout $BRANCHNAME &&
-  git pull &&
-
-  # Rebase change for current branch
-  # rebase to clean up your change
-  git rebase -i "${BASEBRANCH}-LOC" &&
-  git checkout "${BASEBRANCH}-LOC" &&
-  # add to the local
-  git merge "$BRANCHNAME" &&
-  git checkout - &&
-  # rebase to just the change from ground
-  git rebase -i "${BASEBRANCH}"
-}
+# jcleanup() {
+#   if [ ! $BRANCH_METHOD = 'BASE' ]; then
+#     echo "have no method for none BASE method atm"
+#     # exit 1
+#     return;
+#   fi
+#
+#   local BRANCHNAME=$(git branch --show-current)
+#   local BASEBRANCH=$(getProjectValue 'basebranch')
+#
+#   # Waterfall
+#   git checkout master &&
+#   git pull
+#
+#   if [[ `git branch --list develop` ]]; then
+#     git checkout develop &&
+#     git pull
+#   fi
+#
+#   git checkout $BASEBRANCH &&
+#   git pull &&
+#   git checkout "${BASEBRANCH}-LOC" &&
+#   git pull &&
+#   git checkout $BRANCHNAME &&
+#   git pull &&
+#
+#   # Rebase change for current branch
+#   # rebase to clean up your change
+#   git rebase -i "${BASEBRANCH}-LOC" &&
+#   git checkout "${BASEBRANCH}-LOC" &&
+#   # add to the local
+#   git merge "$BRANCHNAME" &&
+#   git checkout - &&
+#   # rebase to just the change from ground
+#   git rebase -i "${BASEBRANCH}"
+# }
 
 generateNotesPath() {
   local NOTE_NAME=$1
