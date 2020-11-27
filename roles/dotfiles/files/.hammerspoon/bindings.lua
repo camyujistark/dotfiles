@@ -278,126 +278,6 @@ end)
 --|------|------|------------|-------|
 
 
--- local laptopGridLayout = {
---   one = (function()
---     return maybeIsSideBar({
---       -- A = '0,0/10x12',
---       A1 = '0,0/8x12',
---       A2 = '0,0/8x12',
---       B = '0,0/8x12',
---       C = '0,0/8x12',
---       D = '8,0/4x12',
---     },
---     {
---       -- A = '0,0/12x12',
---       A1 = '0,0/12x12',
---       A2 = '0,0/12x12',
---       B = '0,0/12x12',
---       C = '0,0/12x12',
---       D = '0,0/12x12',
---     })
---   end),
---   two = (function()
---     return maybeIsSideBar(
---       maybeIsHorizonal({
---         -- too small to have a vertical split
---         -- A = '0,0/4x12',
---         A1 = maybeSplitXGridCoord('0,0/5x6','0,0/5x12'),
---         A2 = maybeSplitYGridCoord(
---           maybeSplitXGridCoord('0,6/5x6', '0,0/5x12'),
---           maybeSplitXGridCoord('0,0/5x6', '0,0/5x12')
---         ),
---         B = '5,0/5x12',
---         C = maybeSplitYGridCoord(
---           maybeSplitXGridCoord('0,6/5x6', '0,0/5x12'),
---           maybeSplitXGridCoord('0,6/5x6', '0,0/5x12')
---         ),
---         D = '10,0/2x12',
---       },
---       {
---         -- A = '0,0/10x6',
---         A1 = maybeSplitYGridCoord('0,0/4x6', '0,0/10x6'),
---         A2 = maybeSplitYGridCoord('4,0/6x6', '0,0/10x6'),
---         B = maybeSplitXGridCoord('4,6/6x6', '0,6/10x6'),
---         C = maybeSplitXGridCoord('0,6/4x6', maybeSplitYGridCoord('4,0/6x6', '0,0/10x6')),
---         D = '10,0/2x12',
---       }),
---       maybeIsHorizonal({
---         A1 = maybeSplitYGridCoord(
---           '0,0/3x12',
---           maybeSplitXGridCoord('0,0/6x6','0,0/6x12')
---         ),
---         A2 = maybeSplitYGridCoord(
---           maybeSplitXGridCoord('3,0/3x6', '3,0/3x12'),
---           maybeSplitXGridCoord('0,0/6x6','0,0/6x12')
---         ),
---         B = '6,0/6x12',
---         C = maybeSplitYGridCoord(
---           maybeSplitXGridCoord('3,6/3x6','3,0/3x12'),
---           maybeSplitXGridCoord('0,6/6x6','0,0/6x12')
---         ),
---         D = '6,0/6x12',
---       },
---       {
---         A1 = maybeSplitYGridCoord('0,0/6x6', '0,0/12x6'),
---         A2 = maybeSplitYGridCoord('6,0/6x6', '0,0/12x6'),
---         B = maybeSplitXGridCoord('6,6/6x6', '0,6/12x6'),
---         C = maybeSplitXGridCoord('0,6/6x6', maybeSplitYGridCoord('6,0/6x6', '0,0/12x6')),
---         D = maybeSplitXGridCoord('6,6/6x6', '0,6/12x6'),
---       })
---     )
---   end),
---   three = (function()
---     return maybeIsSideBar(
---       maybeIsHorizonal({
---         A1 = maybeSplitYGridCoord(
---           '0,0/3x12',
---           maybeSplitXGridCoord('0,0/6x6','0,0/6x12')
---         ),
---         A2 = maybeSplitYGridCoord(
---           maybeSplitXGridCoord('3,0/3x6', '3,0/3x12'), 
---           maybeSplitXGridCoord('0,0/6x6','0,0/6x12')
---         ),
---         B = '6,0/4x12',
---         C = maybeSplitYGridCoord(
---           maybeSplitXGridCoord('3,6/3x6','3,0/3x12'),
---           maybeSplitXGridCoord('0,6/6x6','0,0/6x12')
---         ),
---         D = '10,0/2x12',
---       },
---       {
---         A1 = maybeSplitYGridCoord('0,0/4x8', '0,0/10x8'),
---         A2 = maybeSplitYGridCoord('4,0/6x8', '0,0/10x8'),
---         B = maybeSplitXGridCoord('4,8/6x4', '0,8/10x4'),
---         C = maybeSplitXGridCoord('0,8/4x4', maybeSplitYGridCoord('0,0/4x8', '0,0/10x8')),
---         D = '10,0/2x12',
---       }),
---       maybeIsHorizonal({
---         A1 = maybeSplitYGridCoord(
---           '0,0/4x12',
---           maybeSplitXGridCoord('0,0/8x6','0,0/8x12')
---         ),
---         A2 = maybeSplitYGridCoord(
---           maybeSplitXGridCoord('4,0/4x6', '4,0/4x12'), 
---           maybeSplitXGridCoord('0,0/8x6','0,0/8x12')
---         ),
---         B = '8,0/4x12',
---         C = maybeSplitYGridCoord(
---           maybeSplitXGridCoord('4,6/4x6','4,0/4x12'),
---           maybeSplitXGridCoord('0,6/8x6','0,0/8x12')
---         ),
---         D = '8,0/4x12',
---       },
---       {
---         A1 = maybeSplitYGridCoord('0,0/6x8', '0,0/12x8'),
---         A2 = maybeSplitYGridCoord('6,0/6x8', '0,0/12x8'),
---         B = maybeSplitXGridCoord('6,8/6x4', '0,8/12x4'),
---         C = maybeSplitXGridCoord('0,8/6x4', maybeSplitYGridCoord('6,0/6x8', '0,0/12x8')),
---         D = maybeSplitYGridCoord('6,0/6x8', '0,0/12x8'),
---       })
---     )
---   end),
--- }
 local laptopGridLayout = {
   one = (function()
     return maybeIsSideBar({
@@ -747,11 +627,7 @@ local getGridSettings = (function(layout)
     return
   end
 
-  if internalDisplay() then
-     return laptopGridLayout[_layout]()
-  else
-     return largeGridLayout[_layout]()
-  end
+  return largeGridLayout[_layout]()
 end)
 
 local getAppLayout = (function(appLayout)
@@ -776,11 +652,7 @@ local updateGridLayout = (function(appGroup, gridSettings)
     runOnApplications( appGroup.D, gridSettings.D )
   end
   if appGroup.C then
-    if internalDisplay() then
-      runOnApplications( appGroup.C, gridSettings.C, internalDisplay() )
-    else
       runOnApplications( appGroup.C, gridSettings.C )
-    end
   end
   if appGroup.B then
     runOnApplications( appGroup.B, gridSettings.B )
@@ -909,16 +781,16 @@ return {
     hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Mail') end)
     --left
     hs.hotkey.bind(mash, "a", function() chrome_switch_to(chromeProfiles.home) end)
-    hs.hotkey.bind(mash, "o", function() hs.application.launchOrFocus('Notion') end)
-    hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Visual Studio Code') end)
+    hs.hotkey.bind(mash, "o", function() chrome_switch_to(chromeProfiles.alien) end)
+    hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Notion') end)
     hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocus('iTerm') end)
     hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end)
 
     hs.hotkey.bind(mash, ";", function() chrome_switch_to(chromeProfiles.side) end)
-    hs.hotkey.bind(mash, "q", function() chrome_switch_to(chromeProfiles.alien) end)
-    hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Slack') end)
-    hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('Spotify') end)
-    hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocus('WhatsApp') end)
+    hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Slack') end)
+    hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Spotify') end)
+    hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') end)
+    hs.hotkey.bind(mash, "x", function() hs.application.launchOrFocus('Visual Studio Code') end)
 
     -- right
     hs.hotkey.bind(mash, 'f', function() hs.application.launchOrFocus('Finder') end)
@@ -987,10 +859,10 @@ return {
     hs.hotkey.bind(mash, '3', tutorialMode, setGridLayoutInit)
     hs.hotkey.bind(mash, '4', fourSquareMode, setGridLayoutInit)
 
-    hs.hotkey.bind(mash, '9', (function() setGridLayoutInit('one') end))
-    hs.hotkey.bind(mash, '0', (function() setGridLayoutInit('two') end))
-    hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('three') end))
-    hs.hotkey.bind(mash, ']', turnOnWindowFocus, fullScreenInit)
+    hs.hotkey.bind(mash, '9', turnOnWindowFocus, fullScreenInit)
+    hs.hotkey.bind(mash, '0', (function() setGridLayoutInit('one') end))
+    hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('two') end))
+    hs.hotkey.bind(mash, ']', (function() setGridLayoutInit('three') end))
 
     hs.hotkey.bind(mash, '-', function()
       local layout
