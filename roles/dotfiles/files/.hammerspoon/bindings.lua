@@ -562,7 +562,7 @@ local getAppGroup = (function(layout)
         })
       ),
       D = getBundleWindows({
-        bundleIDs.todoist,
+        -- bundleIDs.todoist,
       }),
       closeBundleIDs = {
         bundleIDs.zoom,
@@ -600,7 +600,7 @@ local getAppGroup = (function(layout)
         bundleIDs.whasapp,
       }),
       D = getBundleWindows({
-        bundleIDs.todoist,
+        -- bundleIDs.todoist,
       }),
       closeBundleIDs = {
         -- bundleIDs.sketchbook,
