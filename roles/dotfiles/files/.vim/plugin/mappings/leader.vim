@@ -4,6 +4,7 @@
 nnoremap <Leader><Leader> <C-^>
 
 nnoremap <Leader>t :Files<CR>
+nnoremap <Leader>b :Buffers<CR>
 
 " <Leader>g -- git grep for something (mnemonic: [g]it [g]rep).
 nnoremap <Leader>g :VcsJump grep<Space>
