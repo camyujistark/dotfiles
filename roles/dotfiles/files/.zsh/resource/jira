@@ -4,7 +4,7 @@
 
 BASE_JIRA_D_CONFIG="$HOME/.jira.d/config.yml";
 
-NOTES_PATH="$HOME/Documents/Notes/"
+NOTES_PATH="$HOME/Documents/Notes/Jira/"
 
 # EPIC: Per Epic
 # BASE: Direct to base
@@ -367,17 +367,13 @@ createJiraBranches() {
 generateNotesPath() {
   local NOTE_NAME=$1
   local PROJECT=$(getProjectValue 'project')
-  local NOTES_PROJECTPATH="$NOTES_PATH/$PROJECT"
-  if [ ! -d $NOTES_PROJECTPATH ]; then
-    mkdir $NOTES_PROJECTPATH;
-  fi
   # If $NOTE_NAME is just a number add project
   if [[ $NOTE_NAME =~ ^[0-9]+$ ]]
   then
     NOTE_NAME="$PROJECT-$NOTE_NAME";
   fi
   # local BRANCHNAME=$(generateBranchName $NOTE_NAME)
-  local BRANCH_MD_PATH="$NOTES_PROJECTPATH/$NOTE_NAME.md"
+  local BRANCH_MD_PATH="$NOTES_PATH/$NOTE_NAME.md"
   if [ ! -d ${BRANCH_MD_PATH%/*} ]; then
     mkdir -p ${BRANCH_MD_PATH%/*}
   fi
@@ -426,25 +422,29 @@ jopennotes() {
   else
     touch "$BRANCH_MD_PATH"
     jira view $JIRA_ID > "$BRANCH_MD_PATH"
-    echo "\n## Notes\n- " >> "$BRANCH_MD_PATH"
+    echo $(jira view $JIRA_ID) > "$BRANCH_MD_PATH"
+    echo "\n## Background\n\n" >> "$BRANCH_MD_PATH"
+    echo "$(jira description $JIRA_ID)" >> "$BRANCH_MD_PATH"
+    echo "\n## Questions\n\n- " >> "$BRANCH_MD_PATH"
+    echo "\n## Notes\n\n- " >> "$BRANCH_MD_PATH"
   fi
 }
 
 jopennotes_tmux() {
-  local JIRA_ID=$1
+#   local JIRA_ID=$1
 
   # limitation to having the second pane to always have vim running with notes
   # note this is a hack atm. would like to make this more specific
-  tmux select-window -t :-
-  tmux send-keys -t 2 ":w"
-  tmux send-keys -t 2 Enter
-  tmux send-keys -t 2 ":q"
-  tmux send-keys -t 2 Enter
-
+#   tmux select-window -t :-
+#   tmux send-keys -t 2 ":w"
+#   tmux send-keys -t 2 Enter
+#   tmux send-keys -t 2 ":q"
+#   tmux send-keys -t 2 Enter
+#
   jopennotes $JIRA_ID
-
-  tmux send-keys -t 2 "tvim"
-  tmux send-keys -t 2 Enter
+#
+#   tmux send-keys -t 2 "tvim"
+#   tmux send-keys -t 2 Enter
 }
 
 # jnotes() {

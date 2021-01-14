@@ -400,8 +400,7 @@ tvim() {
   PROJECT="$(echo $BRANCHNAME | awk -F'-' '{print $1;}' | tr '[:upper:]' '[:lower:]')"
   JIRA_ID="$(echo $BRANCHNAME | awk -F'-' '{print $2;}')"
 
-  NOTES_PROJECTPATH="$HOME/Documents/Notes/$PROJECT"
-  BRANCH_MD_PATH="$NOTES_PROJECTPATH/$PROJECT-$JIRA_ID.md"
+  BRANCH_MD_PATH="$HOME/Documents/Notes/Jira/$PROJECT-$JIRA_ID.md"
 
   # resize window on load and open notes
   vim -O -c ":vertical resize 80" \
