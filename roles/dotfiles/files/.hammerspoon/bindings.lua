@@ -41,7 +41,7 @@ bundleIDs.dayone = 'com.bloombuilt.dayone-mac'
 bundleIDs.finder = 'com.apple.finder'
 bundleIDs.iterm2 = 'com.googlecode.iterm2'
 bundleIDs.mail = 'com.apple.mail'
-bundleIDs.notion = 'notion.id'
+bundleIDs.obsidian = 'md.obsidian'
 bundleIDs.postman = 'com.postmanlabs.mac'
 bundleIDs.marked2 = 'com.brettterpstra.marked2'
 bundleIDs.sketchbookpro = 'com.autodesk.sketchbookpro7mac'
@@ -544,7 +544,7 @@ local getAppGroup = (function(layout)
       },
       B = getBundleWindows({
         bundleIDs.iterm2,
-        bundleIDs.notion,
+        bundleIDs.obsidian,
         bundleIDs.vscode,
       }),
       C = tablemerge(
@@ -582,7 +582,7 @@ local getAppGroup = (function(layout)
         },
         getBundleWindows({
           bundleIDs.iterm2,
-          bundleIDs.notion,
+          bundleIDs.obsidian,
           bundleIDs.vscode,
         })
       ),
@@ -782,7 +782,7 @@ return {
     --left
     hs.hotkey.bind(mash, "a", function() chrome_switch_to(chromeProfiles.home) end)
     hs.hotkey.bind(mash, "o", function() chrome_switch_to(chromeProfiles.alien) end)
-    hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Notion') end)
+    hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Obsidian') end)
     hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocus('iTerm') end)
     hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end)
 
