@@ -177,6 +177,7 @@ endif
 
 if &loadplugins
   if has('packages')
+    packadd! vim-php-cs-fixer
     packadd! LanguageClient-neovim
     packadd! base16-vim
     packadd! fzf

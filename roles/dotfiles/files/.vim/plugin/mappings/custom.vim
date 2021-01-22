@@ -13,7 +13,8 @@ let g:ale_fixers = {
 \    'typescript': ['prettier'],
 \    'vue': ['eslint'],
 \    'scss': ['prettier'],
-\    'html': ['prettier']
+\    'html': ['prettier'],
+\    'php': ['php_cs_fixer']
 \}
 
 let g:ale_fix_on_save = 1
