@@ -175,12 +175,13 @@ if has('gui')
   set guioptions-=r
 endif
 
+set rtp+=/usr/local/opt/fzf
+
 if &loadplugins
   if has('packages')
     packadd! vim-php-cs-fixer
     packadd! LanguageClient-neovim
     packadd! base16-vim
-    packadd! fzf
     packadd! fzf.vim
     " packadd! command-t
     packadd! ferret
