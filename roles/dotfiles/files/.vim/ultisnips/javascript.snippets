@@ -204,7 +204,7 @@ console.dir(${1});
 endsnippet
 
 snippet log "console.log"
-console.log(${1});
+console.log(${1:${VISUAL}});
 endsnippet
 
 snippet time "console.time"
@@ -258,7 +258,7 @@ endsnippet
 
 # React & JSX
 snippet <> "- Place a custom tag and cursors" w
-<${1:}></$1>
+<${1:}>${0:${VISUAL}}</$1>
 endsnippet
 
 snippet div "- Plain div" b
@@ -341,24 +341,6 @@ snippet span "<span>" w
 <span> ${0:${VISUAL}} </span>
 endsnippet
 
-snippet const "const" w
-const $1 = $2
-endsnippet
-
-snippet constr "const ()" w
-const ${1} = (${2}) => ${3}
-endsnippet
-
-snippet constf "const {}" w
-const $1 = ($2) => {
-	return $3
-}
-endsnippet
-
-snippet const{} "const {}" w
-const {$1} = $2
-endsnippet
-
 snippet span# "<span> with ID & className" w
 <span`!p snip.rv=' id="' if t[1] else ""`${1:name}`!p snip.rv = '"' if t[1] else ""``!p snip.rv=' className="' if t[2] else ""`${2:name}`!p snip.rv = '"' if t[2] else ""`> ${0:${VISUAL}} </span>
 endsnippet
@@ -409,4 +391,47 @@ snippet test "test jest" w:
 test('$1', () => {
 	$2
 })
+endsnippet
+
+snippet try "try catch" w:
+try {
+	${1:${VISUAL}}
+} catch (error) {
+	$2
+}${3: finally {
+	$4
+}}
+endsnippet
+
+
+snippet const "const"
+const $1 = $0
+endsnippet
+
+snippet const" "const with string"
+const $1 = "$1"
+endsnippet
+
+snippet const{} "const {}" w
+const {$1} = $2
+endsnippet
+
+snippet ()=>
+($1) => ${0:${VISUAL}}
+endsnippet
+
+snippet ()=>{}
+($1) => ${0:${VISUAL}}
+endsnippet
+
+snippet class
+class $1 {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet (){}
+$1() {
+	${0:${VISUAL}}
+}
 endsnippet

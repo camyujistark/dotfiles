@@ -80,5 +80,5 @@ nnoremap <silent> <Leader>m :call wincent#mappings#leader#matchparen()<CR>
 nnoremap <Leader>= :GitGutterPrevHunk<cr>
 nnoremap <Leader>\ :GitGutterNextHunk<cr>
 " Move to next ALE Fix
-nnoremap <Leader>[ :ALEPrevious<cr>
-nnoremap <Leader>] :ALENext<cr>
+" nnoremap <Leader>[ :ALEPrevious<cr>
+" nnoremap <Leader>] :ALENext<cr>
