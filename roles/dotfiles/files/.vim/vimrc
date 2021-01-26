@@ -100,27 +100,16 @@ set rtp+=/usr/local/opt/fzf
 
 if &loadplugins
   if has('packages')
-<<<<<<< Updated upstream
-    packadd! vim-php-cs-fixer
-    packadd! LanguageClient-neovim
-||||||| constructed merge base
-    packadd! LanguageClient-neovim
-=======
-    " packadd! LanguageClient-neovim
     packadd! coc.nvim
->>>>>>> Stashed changes
     packadd! base16-vim
     packadd! fzf.vim
-    " packadd! command-t
     packadd! ferret
     packadd! loupe
-    " packadd! neco-ghc
     packadd! pinnacle
     packadd! replay
     packadd! scalpel
     packadd! tcomment_vim
     packadd! terminus
-    " packadd! typescript-vim
     packadd! ultisnips
     packadd! vcs-jump
     packadd! vim-ansible-yaml
@@ -149,10 +138,8 @@ if &loadplugins
     packadd! vim-textobj-rubyblock
     packadd! vim-textobj-user
     packadd! vim-zsh
-    " packadd! ale
     packadd! yats.vim
     packadd! vim-gitgutter
-    " packadd! vim-styled-components
   else
     source $HOME/.vim/pack/bundle/opt/vim-pathogen/autoload/pathogen.vim
     call pathogen#infect('pack/bundle/opt/{}')
