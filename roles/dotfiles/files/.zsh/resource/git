@@ -129,10 +129,21 @@ select_branch() {
 }
 
 clean_branches() {
-# Todo - make it so you can select more than one
-  select=$(select_branch) &&
-  git branch -D "$select" &&
-  git branch -D -r "origin/$select" &&
+  select=$1
+  if [ -z "$select" ]; then
+    select=$(select_branch)
+  fi
+
+  if [ "$select" == 'develop' ] || [ "$select" == 'master' ]; then
+    echo "You cannot delete $select with this command"
+    return
+  fi
+
+  # delete local
+  git branch -D "$select"
+  # delete tracking
+  git branch -D -r "origin/$select" 
+  # delete remote
   git push origin --delete "$select"
 }
 
