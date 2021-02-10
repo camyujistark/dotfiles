@@ -521,11 +521,6 @@ local largeGridLayout = {
   end),
 }
 
-local appLayoutFormation = {
-  'default',
-  'zoom',
-}
-
 local getAppGroup = (function(layout)
   local appLayouts = {
     default = {
@@ -534,6 +529,7 @@ local getAppGroup = (function(layout)
         getBundleWindows({
           bundleIDs.marked2,
           bundleIDs.preview,
+          bundleIDs.zoom,
           -- bundleIDs.sketchbook,
           -- bundleIDs.sketchbookpro,
           -- bundleIDs.unity,
@@ -564,51 +560,10 @@ local getAppGroup = (function(layout)
       D = getBundleWindows({
         -- bundleIDs.todoist,
       }),
-      closeBundleIDs = {
-        bundleIDs.zoom,
-      }
+      -- closeBundleIDs = {
+        -- bundleIDs.zoom,
+      -- }
     },
-    zoom = {
-      openBundleIds = { bundleIDs.zoom },
-      A1 = getBundleWindows({
-        bundleIDs.zoom
-      }),
-      -- no A2
-      B = tablemerge(
-        {
-          chromeWindow.alien,
-          chromeWindow.home,
-          chromeWindow.side,
-        },
-        getBundleWindows({
-          bundleIDs.iterm2,
-          bundleIDs.obsidian,
-          bundleIDs.vscode,
-        })
-      ),
-      C = getBundleWindows({
-        bundleIDs.anki,
-        bundleIDs.calendar,
-        bundleIDs.dayone,
-        bundleIDs.finder,
-        bundleIDs.mail,
-        bundleIDs.marked2,
-        bundleIDs.postman,
-        bundleIDs.preview,
-        bundleIDs.slack,
-        bundleIDs.spotify,
-        bundleIDs.whasapp,
-      }),
-      D = getBundleWindows({
-        -- bundleIDs.todoist,
-      }),
-      closeBundleIDs = {
-        -- bundleIDs.sketchbook,
-        -- bundleIDs.sketchbookpro,
-        -- bundleIDs.unity,
-        -- bundleIDs.unityhub,
-      }
-    }
   }
   if layout then
     return appLayouts[layout]
@@ -796,7 +751,7 @@ return {
     hs.hotkey.bind(mash, 'f', function() hs.application.launchOrFocus('Finder') end)
     hs.hotkey.bind(mash, 'g', function() hs.application.launchOrFocus('Preview') end)
     hs.hotkey.bind(mash, 'c', function() hs.application.launchOrFocus('Marked 2') end)
-    hs.hotkey.bind(mash, 'r', function() hs.application.launchOrFocus('zoom.us') end)
+    hs.hotkey.bind(mash, '-', function() hs.application.launchOrFocus('zoom.us') end)
 
     hs.hotkey.bind(mash, 'w', function() hs.application.launchOrFocus('Sketchbook') end)
     hs.hotkey.bind(mash, 'm', function() hs.application.launchOrFocus('Unity') end)
@@ -864,14 +819,14 @@ return {
     hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('two') end))
     hs.hotkey.bind(mash, ']', (function() setGridLayoutInit('three') end))
 
-    hs.hotkey.bind(mash, '-', function()
-      local layout
-      if currentAppLayout == 'default' then
-        layout = 'zoom'
-      else
-        layout = 'default'
-      end
-      setGridLayoutInit(nil, layout)
-    end)
+    -- hs.hotkey.bind(mash, '-', function()
+    --   local layout
+    --   if currentAppLayout == 'default' then
+    --     layout = 'zoom'
+    --   else
+    --     layout = 'default'
+    --   end
+    --   setGridLayoutInit(nil, layout)
+    -- end)
   end)
 }
