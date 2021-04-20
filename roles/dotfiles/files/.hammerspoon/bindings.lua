@@ -46,7 +46,7 @@ bundleIDs.postman = 'com.postmanlabs.mac'
 bundleIDs.marked2 = 'com.brettterpstra.marked2'
 bundleIDs.sketchbookpro = 'com.autodesk.sketchbookpro7mac'
 bundleIDs.sketchbook = 'com.autodesk.SketchBook'
-bundleIDs.slack = 'com.tinyspeck.slackmacgap'
+bundleIDs.slack = 'org.whispersystems.signal-desktop'
 bundleIDs.spotify = 'com.spotify.client'
 bundleIDs.todoist = 'com.todoist.mac.Todoist'
 bundleIDs.whasapp = 'WhatsApp'
@@ -623,8 +623,16 @@ return {
     hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocus('iTerm') end)
     hs.hotkey.bind(mash, 'i', function() hs.application.launchOrFocus('Todoist') end)
 
+<<<<<<< HEAD
     hs.hotkey.bind(mash, ";", function() chrome_switch_to(chromeProfiles.alien) end)
     hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Slack') end)
+||||||| parent of 36b62213 (bindings update)
+    hs.hotkey.bind(mash, ";", function() chrome_switch_to(chromeProfiles.side) end)
+    hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Slack') end)
+=======
+    hs.hotkey.bind(mash, ";", function() chrome_switch_to(chromeProfiles.side) end)
+    hs.hotkey.bind(mash, 'q', function() hs.application.launchOrFocus('Signal') end)
+>>>>>>> 36b62213 (bindings update)
     hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Spotify') end)
     hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') end)
     hs.hotkey.bind(mash, "x", function() hs.application.launchOrFocus('Visual Studio Code') end)
