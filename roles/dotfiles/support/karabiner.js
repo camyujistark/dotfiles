@@ -22,7 +22,7 @@ function spaceFN(from, to) {
     {
       from: {
         modifiers: {
-          optional: ['any'],
+          optional: [ 'any' ],
         },
         simultaneous: [
           {
@@ -68,7 +68,7 @@ function spaceFN(from, to) {
       from: {
         ...from,
         modifiers: {
-          optional: ['any'],
+          optional: [ 'any' ],
         },
       },
       to: [ to ],
@@ -78,7 +78,7 @@ function spaceFN(from, to) {
 }
 
 function swap(a, b) {
-  return [...fromTo(a, b), ...fromTo(b, a)];
+  return [ ...fromTo(a, b), ...fromTo(b, a) ];
 }
 
 const DEVICE_DEFAULTS = {
@@ -177,8 +177,8 @@ function deepCopy(item) {
     return item.map(deepCopy);
   } if (isObject(item)) {
     const copy = {};
-    Object.entries(item).forEach(([k, v]) => {
-      copy[k] = deepCopy(v);
+    Object.entries(item).forEach(([ k, v ]) => {
+      copy[ k ] = deepCopy(v);
     });
     return copy;
   }
@@ -202,33 +202,33 @@ function visit(item, path, updater) {
     /^(?<root>\$)|\.(?<child>\w+)|\[(?<slice>.+?)\]|(?<done>$)/,
   );
   const {
-    groups: {root, child, slice},
+    groups: { root, child, slice },
   } = match;
-  const subpath = path.slice(match[0].length);
+  const subpath = path.slice(match[ 0 ].length);
   if (root) {
     return visit(item, subpath, updater);
   } if (child) {
-    const next = visit(item[child], subpath, updater);
+    const next = visit(item[ child ], subpath, updater);
     if (next !== undefined) {
       return {
         ...item,
-        [child]: next,
+        [ child ]: next,
       };
     }
   } else if (slice) {
     const {
-      groups: {start, end},
+      groups: { start, end },
     } = slice.match(/^(?<start>\d+):(?<end>\d+)?$/);
     let array;
     for (let i = start, max = end == null ? item.length : end; i < max; i++) {
-      const next = visit(item[i], subpath, updater);
+      const next = visit(item[ i ], subpath, updater);
       if (next !== undefined) {
         if (!array) {
           array = item.slice(0, i);
         }
-        array[i] = next;
+        array[ i ] = next;
       } else if (array) {
-        array[i] = item[i];
+        array[ i ] = item[ i ];
       }
     }
     return array;
@@ -238,7 +238,7 @@ function visit(item, path, updater) {
   }
 }
 
-const EXEMPTIONS = ['com.factorio', 'com.feralinteractive.dirtrally'];
+const EXEMPTIONS = [ 'com.factorio', 'com.feralinteractive.dirtrally' ];
 
 function applyExemptions(profile) {
   const exemptions = {
@@ -258,9 +258,9 @@ function applyExemptions(profile) {
         ) {
           return conditions;
         }
-        return [...deepCopy(conditions), exemptions];
+        return [ ...deepCopy(conditions), exemptions ];
       }
-      return [exemptions];
+      return [ exemptions ];
     },
   );
 }
@@ -276,57 +276,26 @@ const DEFAULT_PROFILE = applyExemptions({
       {
         description: 'SpaceFN layer',
         manipulators: [
-          ...spaceFN({key_code: 'b'}, {key_code: 'spacebar'}),
-          ...spaceFN({key_code: 'p'}, {key_code: 'right_arrow'}),
-          ...spaceFN({key_code: 'c'}, {key_code: 'down_arrow'}),
-          ...spaceFN({key_code: 'j'}, {key_code: 'left_arrow'}),
-          ...spaceFN({key_code: 'v'}, {key_code: 'up_arrow'}),
-          ...spaceFN({key_code: 'd'}, {key_code: 'f2', modifiers: ['left_control']}),
-          ...spaceFN({key_code: 'f'}, {pointing_button: 'button2'}),
+          ...spaceFN({ key_code: 'a' }, { key_code: 'home' }),
+          ...spaceFN({ key_code: 'o' }, { key_code: 'end' }),
+          ...spaceFN({ key_code: 'e' }, { key_code: 'pageup' }),
+          ...spaceFN({ key_code: 'u' }, { key_code: 'pagedown' }),
+          ...spaceFN({ key_code: 'b' }, { key_code: 'spacebar' }),
+          ...spaceFN({ key_code: 'p' }, { key_code: 'right_arrow' }),
+          ...spaceFN({ key_code: 'c' }, { key_code: 'down_arrow' }),
+          ...spaceFN({ key_code: 'j' }, { key_code: 'left_arrow' }),
+          ...spaceFN({ key_code: 'v' }, { key_code: 'up_arrow' }),
+          // ...spaceFN({key_code: 'f'}, {pointing_button: 'button2'}),
         ],
       },
       {
-        description: 'Change Caps Lock to Control when used as modifier, Esc when used alone',
+        description: 'Mash: Caps with Command',
         manipulators: [
           {
             from: {
               key_code: 'caps_lock',
               modifiers: {
-                optional: [
-                  'any',
-                ],
-              },
-            },
-            to: [
-              {
-                key_code: 'left_control',
-                lazy: true,
-              },
-            ],
-            to_if_alone: [
-              {
-                key_code: 'escape',
-              },
-            ],
-            to_if_held_down: [
-              {
-                key_code: 'escape',
-              },
-            ],
-            type: 'basic',
-          },
-        ],
-      },
-      {
-        description: 'Change Return to mash when used as modifier, Return when used alone',
-        manipulators: [
-          {
-            from: {
-              key_code: 'return_or_enter',
-              modifiers: {
-                optional: [
-                  'any',
-                ],
+                mandatory: [ 'command' ],
               },
             },
             to: [
@@ -339,14 +308,33 @@ const DEFAULT_PROFILE = applyExemptions({
                 ],
               },
             ],
+            type: 'basic',
+          },
+        ],
+      },
+      {
+        description: 'Change Caps Lock to Control when used as modifier, Esc when used alone',
+        manipulators: [
+          {
+            from: {
+              key_code: 'caps_lock',
+              modifiers: {
+                optional: [ 'left_shift', 'left_option', 'left_control' ],
+              },
+            },
+            to: [
+              {
+                key_code: 'left_control',
+              },
+            ],
             to_if_alone: [
               {
-                key_code: 'return_or_enter',
+                key_code: 'escape',
               },
             ],
             to_if_held_down: [
               {
-                key_code: 'return_or_enter',
+                key_code: 'escape',
               },
             ],
             type: 'basic',
@@ -370,14 +358,14 @@ const DEFAULT_PROFILE = applyExemptions({
             from: {
               key_code: 'l',
               modifiers: {
-                mandatory: ['control'],
-                optional: ['any'],
+                mandatory: [ 'control' ],
+                optional: [ 'any' ],
               },
             },
             to: [
               {
                 key_code: 'f6',
-                modifiers: ['fn'],
+                modifiers: [ 'fn' ],
               },
             ],
             type: 'basic',
@@ -390,7 +378,7 @@ const DEFAULT_PROFILE = applyExemptions({
           {
             from: {
               modifiers: {
-                optional: ['any'],
+                optional: [ 'any' ],
               },
               simultaneous: [
                 {
@@ -416,7 +404,7 @@ const DEFAULT_PROFILE = applyExemptions({
       },
     ],
   },
-  devices: [AKKO, APPLE_INTERNAL_US, APPLE_INTERNAL_ES],
+  devices: [ AKKO, APPLE_INTERNAL_US, APPLE_INTERNAL_ES ],
   name: 'Default',
   selected: true,
 });
@@ -427,7 +415,7 @@ const CONFIG = {
     show_in_menu_bar: true,
     show_profile_name_in_menu_bar: false,
   },
-  profiles: [DEFAULT_PROFILE, VANILLA_PROFILE],
+  profiles: [ DEFAULT_PROFILE, VANILLA_PROFILE ],
 };
 
 if (require.main === module) {
