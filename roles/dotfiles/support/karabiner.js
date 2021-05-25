@@ -289,13 +289,47 @@ const DEFAULT_PROFILE = applyExemptions({
         ],
       },
       {
-        description: 'Mash: Caps with Command',
+        description: 'Change Caps Lock to Control when used as modifier, Esc when used alone',
         manipulators: [
           {
             from: {
               key_code: 'caps_lock',
               modifiers: {
-                mandatory: [ 'command' ],
+                optional: [
+                  'any',
+                ],
+              },
+            },
+            to: [
+              {
+                key_code: 'left_control',
+                lazy: true,
+              },
+            ],
+            to_if_alone: [
+              {
+                key_code: 'escape',
+              },
+            ],
+            to_if_held_down: [
+              {
+                key_code: 'escape',
+              },
+            ],
+            type: 'basic',
+          },
+        ],
+      },
+      {
+        description: 'Change Return to mash when used as modifier, Return when used alone',
+        manipulators: [
+          {
+            from: {
+              key_code: 'return_or_enter',
+              modifiers: {
+                optional: [
+                  'any',
+                ],
               },
             },
             to: [
@@ -308,33 +342,14 @@ const DEFAULT_PROFILE = applyExemptions({
                 ],
               },
             ],
-            type: 'basic',
-          },
-        ],
-      },
-      {
-        description: 'Change Caps Lock to Control when used as modifier, Esc when used alone',
-        manipulators: [
-          {
-            from: {
-              key_code: 'caps_lock',
-              modifiers: {
-                optional: [ 'left_shift', 'left_option', 'left_control' ],
-              },
-            },
-            to: [
-              {
-                key_code: 'left_control',
-              },
-            ],
             to_if_alone: [
               {
-                key_code: 'escape',
+                key_code: 'return_or_enter',
               },
             ],
             to_if_held_down: [
               {
-                key_code: 'escape',
+                key_code: 'return_or_enter',
               },
             ],
             type: 'basic',

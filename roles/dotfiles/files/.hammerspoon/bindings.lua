@@ -745,7 +745,7 @@ return {
     hs.hotkey.bind(mash, "q", function() chrome_switch_to(chromeProfiles.alien) end)
     hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Slack') end)
     hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('Spotify') end)
-    hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('WhatsApp') end)
+    hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocus('WhatsApp') end)
     -- hs.hotkey.bind(mash, "x", function() hs.application.launchOrFocus('Visual Studio Code') end)
 
     -- right
