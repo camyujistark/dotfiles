@@ -226,3 +226,6 @@
 [submodule "roles/dotfiles/files/.vim/pack/bundle/opt/coc.nvim"]
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/coc.nvim
 	url = https://github.com/neoclide/coc.nvim
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/editorconfig-vim"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/editorconfig-vim
+	url = https://github.com/editorconfig/editorconfig-vim
