@@ -46,11 +46,3 @@ let g:UltiSnipsExpandTrigger = '<tab>'
 let g:UltiSnipsJumpForwardTrigger = '<c-j>'
 let g:UltiSnipsJumpBackwardTrigger = '<c-k>'
 let g:UltiSnipsRemoveSelectModeMappings = 0
-
-let g:coc_filetype_map = {
-  \ '': 'html',
-  \ 'javascript.react': 'javascriptreact',
-  \ 'typescript.react': 'typescriptreact',
-  \ 'typescript.jest': 'typescript',
-  \ 'javascript.jest': 'javascript'
-  \ }

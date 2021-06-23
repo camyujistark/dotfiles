@@ -229,3 +229,12 @@
 [submodule "roles/dotfiles/files/.vim/pack/bundle/opt/editorconfig-vim"]
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/editorconfig-vim
 	url = https://github.com/editorconfig/editorconfig-vim
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/vim-jsx-typescript"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/vim-jsx-typescript
+	url = https://github.com/peitalin/vim-jsx-typescript
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/vim-jsx-pretty"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/vim-jsx-pretty
+	url = https://github.com/maxmellon/vim-jsx-pretty
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/vim-graphql"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/vim-graphql
+	url = https://github.com/jparise/vim-graphql

@@ -3,12 +3,8 @@
 " <Leader><Leader> -- Open last buffer.
 nnoremap <Leader><Leader> <C-^>
 
-nnoremap <Leader>t :Files<CR>
+nnoremap <Leader>t :GFiles<CR>
 nnoremap <Leader>b :Buffers<CR>
-
-" <Leader>g -- git grep for something (mnemonic: [g]it [g]rep).
-nnoremap <Leader>g :VcsJump grep<Space>
-
 nnoremap <Leader>o :only<CR>
 
 " <Leader>p -- Show the path of the current file (mnemonic: path; useful when
@@ -19,14 +15,14 @@ nnoremap <Leader>p :echo expand('%')<CR>
 " off to Clipper.
 nnoremap <Leader>pp :let @0=expand('%') <Bar> :Clip<CR> :echo expand('%')<CR>
 
-nnoremap <Leader>q :quit<CR>
 
 " <Leader>r -- Cycle through relativenumber + number, number (only), and no
 " numbering (mnemonic: relative).
 nnoremap <silent> <Leader>r :call wincent#mappings#leader#cycle_numbering()<CR>
 
 nnoremap <Leader>w :write<CR>
-nnoremap <Leader>x :xit<CR>
+nnoremap <Leader>x mt<C-V>}mb<BS>$A - <Esc>gvd'bjPkd't
+" nnoremap <Leader>x :xit<CR>
 
 " <Leader>zz -- Zap trailing whitespace in the current buffer.
 "
@@ -82,3 +78,26 @@ nnoremap <Leader>\ :GitGutterNextHunk<cr>
 " Move to next ALE Fix
 " nnoremap <Leader>[ :ALEPrevious<cr>
 " nnoremap <Leader>] :ALENext<cr>
+"
+" -----
+" COC 
+" Ref: https://dev.to/nikolalsvk/ultimate-vim-typescript-setup-2b35
+" -----
+" Remap keys for applying codeAction to the current line.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+" GoTo code navigation.
+nmap <silent>gd <Plug>(coc-definition)
+nmap <silent>gy <Plug>(coc-type-definition)
+nmap <silent>gi <Plug>(coc-implementation)
+nmap <silent>gr <Plug>(coc-references)
+
+
+" --
+"  Unused
+"  ---
+
+" <Leader>g -- git grep for something (mnemonic: [g]it [g]rep).
+" nnoremap <Leader>g :VcsJump grep<Space>
+" nnoremap <Leader>q :quit<CR>

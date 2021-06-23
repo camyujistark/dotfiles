@@ -3,6 +3,16 @@
 # GIT
 #
 
+gqc() {
+  temp='temp'
+  if [ "$1" ]; then
+    temp="$1"
+  fi
+  git add --all && git commit -m $temp --no-verify
+}
+
+
+
 gvmod() { _s $1; vim `git status --porcelain | sed -ne 's/^ M //p'` }
 # TODO: Make so if not in git root then go to correct location
 

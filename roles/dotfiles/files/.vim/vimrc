@@ -166,4 +166,6 @@ syntax on
 
 " Error where tsx files were getting recognized as ts files 
 " :set ft
-autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.react
+autocmd BufNewFile,BufRead *.tsx set filetype=typescriptreact
+
+autocmd BufNewFile,BufRead *.jsx set filetype=javascriptreact
