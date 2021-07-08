@@ -1,15 +1,18 @@
 {
   "coc.preferences.formatOnSaveFiletypes": [
     "css",
+    "scss",
     "markdown",
     "javascript",
     "typescript",
     "typescriptreact",
+    "typescriptreact.jest",
     "graphql",
     "php",
     "yaml",
     "json",
-    "python"
+    "python",
+    "liquid"
   ],
   "eslint.autoFixOnSave": true,
   "python.linting.enabled": true,
