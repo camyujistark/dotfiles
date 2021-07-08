@@ -3,7 +3,7 @@
 " <Leader><Leader> -- Open last buffer.
 nnoremap <Leader><Leader> <C-^>
 
-nnoremap <Leader>t :GFiles<CR>
+nnoremap <Leader>t :Files<CR>
 nnoremap <Leader>b :Buffers<CR>
 nnoremap <Leader>o :only<CR>
 
