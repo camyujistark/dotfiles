@@ -42,6 +42,7 @@ bundleIDs.finder = 'com.apple.finder'
 bundleIDs.iterm2 = 'com.googlecode.iterm2'
 bundleIDs.mail = 'com.apple.mail'
 bundleIDs.obsidian = 'md.obsidian'
+bundleIDs.notion = 'notion.id'
 bundleIDs.postman = 'com.postmanlabs.mac'
 bundleIDs.marked2 = 'com.brettterpstra.marked2'
 bundleIDs.sketchbookpro = 'com.autodesk.sketchbookpro7mac'
@@ -541,6 +542,7 @@ local getAppGroup = (function(layout)
       B = getBundleWindows({
         bundleIDs.iterm2,
         bundleIDs.obsidian,
+        bundleIDs.notion,
         bundleIDs.vscode,
       }),
       C = tablemerge(
