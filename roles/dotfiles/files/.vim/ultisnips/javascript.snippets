@@ -435,3 +435,11 @@ $1() {
 	${0:${VISUAL}}
 }
 endsnippet
+
+snippet throwerror
+	throw new Error(JSON.stringify($1));
+endsnippet
+
+snippet <> "- Place a custom tag and cursors" w
+<${1:}>${0:${VISUAL}}</$1>
+endsnippet
