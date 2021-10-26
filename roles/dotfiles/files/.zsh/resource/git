@@ -105,11 +105,11 @@ branch() {
 
 gall() {
   if [[ -z "$1" ]] ; then
-    git add --all && git commit && git push;
+    git add --all && git commit;
   elif [[ -z "$2" ]] ; then
-    git add --all && git commit -m $1 && git push ;
+    git add --all && git commit -m $1;
   else
-    git add --all && git commit -m $1 -m $2 && git push ;
+    git add --all && git commit -m $1 -m $2;
   fi;
 }
 
@@ -367,13 +367,15 @@ bash $HOME/.zsh/bindkey
 # Bitbucket
 gitprs() {
   project=$( git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p')
+  if [ -z $project ] ; then
+    url=$(git config --local remote.origin.url);
+    project=$(echo "${url#*/}");
+  fi
   open 'https://bitbucket.org/portable/'$project'/pull-requests/'
 }
 
-gitpr() {
-  project=$( git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p')
-  branchname=$( git branch | grep '*' | cut -d ' ' -f2)
-  openChromeSide 'https://bitbucket.org/portable/'$project'/pull-requests/new?source='$branchname'&t=1'
+gitp() {
+  git push
 }
 
 gitpu() {
@@ -383,8 +385,14 @@ gitpu() {
   fi
 }
 
-gitppr() {
-  gitpu && gitpr;
+gitpr() {
+  project=$( git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p')
+  if [ -z $project ] ; then
+    url=$(git config --local remote.origin.url);
+    project=$(echo "${url#*/}");
+  fi
+  branchname=$( git branch | grep '*' | cut -d ' ' -f2)
+  gitpu && openChromeSide 'https://bitbucket.org/portable/'$project'/pull-requests/new?source='$branchname'&t=1'
 }
 
 todos() {
