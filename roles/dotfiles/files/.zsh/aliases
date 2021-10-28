@@ -142,5 +142,7 @@ alias vimcheatsheet="md ~/Documents/Cheatsheets/vim.md"
 alias tmuxcheatsheet="md ~/Documents/Cheatsheets/tmux.md"
 alias cheatsheet="md ~/Documents/Cheatsheets/golbal.md"
 
+alias logseq="$docs/logseq/"
+
 #Python Path
 # export PYTHONPATH="$HOME/lib/python2.7/site-packages"
