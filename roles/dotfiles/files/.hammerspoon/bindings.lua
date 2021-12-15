@@ -740,9 +740,9 @@ return {
     hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Mail') end)
     --left
     hs.hotkey.bind(mash, "a", function() chrome_switch_to(chromeProfiles.home) end)
-    hs.hotkey.bind(mash, "o", function() hs.application.launchOrFocus('Obsidian') end)
-    hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Notion') end)
-    hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocus('iTerm') end)
+    hs.hotkey.bind(mash, "o", function() hs.application.launchOrFocus('iTerm') end)
+    hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Logseq') end)
+    hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocus('Obsidian') end)
     hs.hotkey.bind(mash, "i", function() hs.application.launchOrFocus('Todoist') end)
 
     hs.hotkey.bind(mash, ";", function() chrome_switch_to(chromeProfiles.side) end)
