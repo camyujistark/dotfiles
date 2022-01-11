@@ -536,13 +536,7 @@ local getAppGroup = (function(layout)
           -- bundleIDs.unity,
         })
       ),
-      A2 = tablemerge(
-        { chromeWindow.alien },
-        getBundleWindows({
-          bundleIDs.obsidian,
-          bundleIDs.notion,
-        })
-      ),
+      A2 = { chromeWindow.alien },
       B = getBundleWindows({
         bundleIDs.iterm2,
         bundleIDs.vscode,
@@ -550,6 +544,8 @@ local getAppGroup = (function(layout)
       C = tablemerge(
         { chromeWindow.side },
         getBundleWindows({
+          bundleIDs.obsidian,
+          bundleIDs.notion,
           bundleIDs.anki,
           bundleIDs.calendar,
           bundleIDs.dayone,
@@ -607,12 +603,12 @@ local updateGridLayout = (function(appGroup, gridSettings)
   if appGroup.openBundleIds then
     openApplicationsByBundleID( appGroup.openBundleIds )
   end
-  if appGroup.D then
-    runOnApplications( appGroup.D, gridSettings.D )
-  end
-  if appGroup.C then
-      runOnApplications( appGroup.C, gridSettings.C )
-  end
+  -- if appGroup.D then
+  --   runOnApplications( appGroup.D, gridSettings.D, internalDisplay() )
+  -- end
+  -- if appGroup.C then
+  --     runOnApplications( appGroup.C, gridSettings.C, internalDisplay() )
+  -- end
   if appGroup.B then
     runOnApplications( appGroup.B, gridSettings.B )
   end
