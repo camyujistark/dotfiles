@@ -56,6 +56,8 @@ bundleIDs.unity = 'com.unity3d.UnityEditor5.x'
 bundleIDs.unityhub = 'com.unity3d.unityhub'
 bundleIDs.vscode = 'com.microsoft.VSCode'
 bundleIDs.preview = 'com.apple.Preview'
+bundleIDs.logseq = 'com.electron.logseq'
+bundleIDs.obsidian = 'md.obsidian'
 
 local grid = {
   topHalf = '0,0/12x6',
@@ -528,9 +530,7 @@ local getAppGroup = (function(layout)
       A1 = tablemerge(
         { chromeWindow.home },
         getBundleWindows({
-          bundleIDs.marked2,
           bundleIDs.preview,
-          bundleIDs.zoom,
           -- bundleIDs.sketchbook,
           -- bundleIDs.sketchbookpro,
           -- bundleIDs.unity,
@@ -540,6 +540,8 @@ local getAppGroup = (function(layout)
       B = getBundleWindows({
         bundleIDs.iterm2,
         bundleIDs.vscode,
+        bundleIDs.logseq,
+        bundleIDs.obsidian,
       }),
       C = tablemerge(
         { chromeWindow.side },
