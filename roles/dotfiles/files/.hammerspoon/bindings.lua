@@ -35,7 +35,7 @@ chromeProfiles.side = 'Cam (Side)'
 -- programs
 local bundleIDs = {}
 bundleIDs.anki = 'net.ankiweb.dtop'
-bundleIDs.calendar = 'com.apple.iCal'
+bundleIDs.calendar = 'com.cron.electron'
 bundleIDs.chrome ='com.google.Chrome'
 bundleIDs.dayone = 'com.bloombuilt.dayone-mac'
 bundleIDs.finder = 'com.apple.finder'
@@ -734,7 +734,7 @@ return {
 
     -- APP MASH --
     hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Anki') end)
-    hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Calendar') end)
+    hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Cron') end)
     hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Mail') end)
     --left
     hs.hotkey.bind(mash, "a", function() chrome_switch_to(chromeProfiles.home) end)
