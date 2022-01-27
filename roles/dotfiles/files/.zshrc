@@ -446,3 +446,6 @@ fi
 # Added by serverless binary installer
 export PATH="$HOME/.serverless/bin:$PATH"
 
+# need to enable for python multithreading
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+
