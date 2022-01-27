@@ -145,4 +145,4 @@ alias cheatsheet="md ~/Documents/Cheatsheets/golbal.md"
 alias logseq="$docs/logseq/"
 
 #Python Path
-# export PYTHONPATH="$HOME/lib/python2.7/site-packages"
+alias python=/usr/local/bin/python3
