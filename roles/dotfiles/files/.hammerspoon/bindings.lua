@@ -536,7 +536,8 @@ local getAppGroup = (function(layout)
           -- bundleIDs.unity,
         })
       ),
-      A2 = { chromeWindow.alien },
+      A2 = { chromeWindow.alien,
+            chromeWindow.side },
       B = getBundleWindows({
         bundleIDs.iterm2,
         bundleIDs.vscode,
