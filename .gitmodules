@@ -161,9 +161,6 @@
 [submodule "typescript-vim"]
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/typescript-vim
 	url = https://github.com/leafgarland/typescript-vim.git
-[submodule "vim-slime"]
-	path = roles/dotfiles/files/.vim/pack/bundle/opt/vim-slime
-	url = https://github.com/jpalardy/vim-slime.git
 [submodule "vim-operator-user"]
 	ignore = dirty
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/vim-operator-user
