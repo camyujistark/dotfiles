@@ -1,3 +1,0 @@
----
-- name: Install FZF
-  command: bash /usr/local/opt/fzf/install
