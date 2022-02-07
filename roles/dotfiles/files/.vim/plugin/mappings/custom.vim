@@ -46,3 +46,6 @@ let g:UltiSnipsExpandTrigger = '<tab>'
 let g:UltiSnipsJumpForwardTrigger = '<c-j>'
 let g:UltiSnipsJumpBackwardTrigger = '<c-k>'
 let g:UltiSnipsRemoveSelectModeMappings = 0
+
+" CoC extensions
+let g:coc_global_extensions = ['coc-tsserver', 'coc-eslint', 'coc-prettier']
