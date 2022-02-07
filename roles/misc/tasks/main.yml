@@ -40,3 +40,6 @@
     - gh-jira
     - 'gradle-launcher'
   when: "'work' in group_names"
+
+- name: misc | update fzf
+  command: /usr/local/opt/fzf/install --all
