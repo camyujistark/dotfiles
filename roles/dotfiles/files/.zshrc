@@ -449,3 +449,51 @@ export PATH="$HOME/.serverless/bin:$PATH"
 # need to enable for python multithreading
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
+#HOMEBREW
+
+export HOMEBREW_GITHUB_API_TOKEN=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
+
+#TMUX 
+
+# Share history across tmux sessions
+# https://egghead.io/lessons/tools-handle-history-in-tmux-sessions
+# shopt (bash) = setopt (zsh)
+#
+#  completion
+
+setopt CORRECT
+setopt NO_NOMATCH
+setopt LIST_PACKED
+setopt ALWAYS_TO_END
+setopt GLOB_COMPLETE
+setopt COMPLETE_ALIASES
+setopt COMPLETE_IN_WORD
+
+# builtin command behaviour
+
+setopt AUTO_CD
+setopt C_BASES
+setopt BSD_ECHO
+setopt OCTAL_ZEROES
+
+# job control
+
+setopt AUTO_CONTINUE
+setopt LONG_LIST_JOBS
+
+# history control
+
+setopt HIST_VERIFY
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_SPACE
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+
+# misc
+
+setopt EXTENDED_GLOB
+setopt TRANSIENT_RPROMPT
+setopt INTERACTIVE_COMMENTS
+
+HISTCONTROL='ignoreboth'
+PROMPT_COMMAND="history -a;history -c;history -r; $PROMPT_COMMAND"
