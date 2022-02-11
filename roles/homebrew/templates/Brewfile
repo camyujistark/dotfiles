@@ -73,6 +73,7 @@ brew "cabal-install"
 brew "cairo"
 brew "camlp5"
 brew "chruby"
+brew "chrome-cli"
 brew "clasp"
 brew "clipper", restart_service: true
 brew "cloc"
