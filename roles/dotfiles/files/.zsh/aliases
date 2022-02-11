@@ -2,7 +2,7 @@
 # Command aliases
 #
 
-SCRIPT_PATH="$HOME/Documents/Scripts"
+SCRIPT_PATH="$HOME/Documents/Coding\ Files/Scripts"
 
 alias ....='cd ../..'
 # alias vim=nvim
@@ -55,9 +55,9 @@ docs="$HOME/Documents"
 sites="$docs/Sites"
 alias _a="vim $HOME/.zsh/aliases"
 alias _ass="$docs/Assets"
-alias _brew="vim $HOME/Documents/dotfiles/roles/homebrew/templates/Brewfile"
+alias _b="vim $HOME/dotfiles/roles/homebrew/templates/Brewfile"
 alias _d="$HOME/Downloads"
-alias _dot="$HOME/Documents/dotfiles"
+alias _dot="$HOME/dotfiles"
 alias _f="vim $HOME/.zsh/functions"
 alias _g="vim $HOME/.zsh/resource/git"
 alias _j="vim $HOME/.zsh/resource/jira"
@@ -67,7 +67,6 @@ alias _hs="$HOME/.hammerspoon"
 alias _i="$docs/Assets/images"
 alias _k="$HOME/.config/karabiner"
 alias _n="$docs/Notes"
-alias _n="vim "
 alias _s="$sites"
 alias _lsc="$sites/divi/lsc_odrs_app"
 alias _sa="$sites/site\ assets/"
