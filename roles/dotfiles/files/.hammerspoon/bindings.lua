@@ -28,8 +28,8 @@ end)
 
 -- chrome profiles
 local chromeProfiles = {}
-chromeProfiles.home = 'Cam'
-chromeProfiles.alien = 'Cam (Alien)'
+chromeProfiles.work = 'Cam'
+chromeProfiles.home = 'Cam (Home)'
 chromeProfiles.side = 'Cam (Side)'
 
 -- programs
@@ -119,18 +119,18 @@ end)
 
 local getChromeProfileWindows = (function()
   -- note may need
+  if chromeWindow.work == nil
+    or hs.window.find(chromeWindow.work:id()) == nil then
+    -- work
+    chrome_switch_to(chromeProfiles.work)
+    chromeWindow.work = hs.window.frontmostWindow()
+    log.i(chromeWindow.work)
+  end
   if chromeWindow.home == nil
     or hs.window.find(chromeWindow.home:id()) == nil then
     -- home
     chrome_switch_to(chromeProfiles.home)
     chromeWindow.home = hs.window.frontmostWindow()
-    log.i(chromeWindow.home)
-  end
-  if chromeWindow.alien == nil
-    or hs.window.find(chromeWindow.alien:id()) == nil then
-    -- alien
-    chrome_switch_to(chromeProfiles.alien)
-    chromeWindow.alien = hs.window.frontmostWindow()
   end
   if chromeWindow.side == nil
     or hs.window.find(chromeWindow.side:id()) == nil then
@@ -528,7 +528,7 @@ local getAppGroup = (function(layout)
   local appLayouts = {
     default = {
       A1 = tablemerge(
-        { chromeWindow.home },
+        { chromeWindow.work },
         getBundleWindows({
           bundleIDs.preview,
           -- bundleIDs.sketchbook,
@@ -536,7 +536,7 @@ local getAppGroup = (function(layout)
           -- bundleIDs.unity,
         })
       ),
-      A2 = { chromeWindow.alien,
+      A2 = { chromeWindow.home,
             chromeWindow.side },
       B = getBundleWindows({
         bundleIDs.iterm2,
@@ -544,9 +544,7 @@ local getAppGroup = (function(layout)
         bundleIDs.logseq,
         bundleIDs.obsidian,
       }),
-      C = tablemerge(
-        { chromeWindow.side },
-        getBundleWindows({
+      C = getBundleWindows({
           bundleIDs.obsidian,
           bundleIDs.notion,
           bundleIDs.anki,
@@ -558,8 +556,7 @@ local getAppGroup = (function(layout)
           bundleIDs.slack,
           bundleIDs.spotify,
           bundleIDs.whasapp,
-        })
-      ),
+        }),
       D = getBundleWindows({
          bundleIDs.todoist,
       }),
@@ -606,12 +603,12 @@ local updateGridLayout = (function(appGroup, gridSettings)
   if appGroup.openBundleIds then
     openApplicationsByBundleID( appGroup.openBundleIds )
   end
-  -- if appGroup.D then
-  --   runOnApplications( appGroup.D, gridSettings.D, internalDisplay() )
-  -- end
-  -- if appGroup.C then
-  --     runOnApplications( appGroup.C, gridSettings.C, internalDisplay() )
-  -- end
+  if appGroup.D then
+    runOnApplications( appGroup.D, gridSettings.D, internalDisplay() )
+  end
+  if appGroup.C then
+      runOnApplications( appGroup.C, gridSettings.C, internalDisplay() )
+  end
   if appGroup.B then
     runOnApplications( appGroup.B, gridSettings.B )
   end
@@ -738,14 +735,14 @@ return {
     hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Calendar') end)
     hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Mail') end)
     --left
-    hs.hotkey.bind(mash, "a", function() chrome_switch_to(chromeProfiles.home) end)
+    hs.hotkey.bind(mash, "a", function() chrome_switch_to(chromeProfiles.work) end)
     hs.hotkey.bind(mash, "o", function() hs.application.launchOrFocus('Logseq') end)
     hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Obsidian') end)
     hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocus('iTerm') end)
     hs.hotkey.bind(mash, "i", function() hs.application.launchOrFocus('Todoist') end)
 
     hs.hotkey.bind(mash, ";", function() chrome_switch_to(chromeProfiles.side) end)
-    hs.hotkey.bind(mash, "q", function() chrome_switch_to(chromeProfiles.alien) end)
+    hs.hotkey.bind(mash, "q", function() chrome_switch_to(chromeProfiles.home) end)
     hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Slack') end)
     hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('Spotify') end)
     hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocus('WhatsApp') end)
