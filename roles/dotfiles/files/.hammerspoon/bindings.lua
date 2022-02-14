@@ -50,7 +50,7 @@ bundleIDs.sketchbook = 'com.autodesk.SketchBook'
 bundleIDs.slack = 'com.tinyspeck.slackmacgap'
 bundleIDs.spotify = 'com.spotify.client'
 bundleIDs.todoist = 'com.todoist.mac.Todoist'
-bundleIDs.whasapp = 'WhatsApp'
+bundleIDs.whatsapp = 'WhatsApp'
 bundleIDs.zoom = 'us.zoom.xos'
 bundleIDs.unity = 'com.unity3d.UnityEditor5.x'
 bundleIDs.unityhub = 'com.unity3d.unityhub'
@@ -58,6 +58,7 @@ bundleIDs.vscode = 'com.microsoft.VSCode'
 bundleIDs.preview = 'com.apple.Preview'
 bundleIDs.logseq = 'com.electron.logseq'
 bundleIDs.obsidian = 'md.obsidian'
+bundleIDs.raindropio = 'io.raindrop.macapp'
 
 local grid = {
   topHalf = '0,0/12x6',
@@ -545,7 +546,7 @@ local getAppGroup = (function(layout)
         bundleIDs.obsidian,
       }),
       C = getBundleWindows({
-          bundleIDs.obsidian,
+          bundleIDs.raindropio,
           bundleIDs.notion,
           bundleIDs.anki,
           bundleIDs.calendar,
@@ -555,7 +556,7 @@ local getAppGroup = (function(layout)
           bundleIDs.postman,
           bundleIDs.slack,
           bundleIDs.spotify,
-          bundleIDs.whasapp,
+          bundleIDs.whatsapp,
         }),
       D = getBundleWindows({
          bundleIDs.todoist,
@@ -731,32 +732,32 @@ return {
     getChromeProfileWindows()
 
     -- APP MASH --
-    hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocus('Anki') end)
-    hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocus('Calendar') end)
-    hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocus('Mail') end)
+    hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocusByBundleID(bundleIDs.mail) end)
+    hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocusByBundleID(bundleIDs.calendar) end)
+    hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocusByBundleID(bundleIDs.obsidian) end)
     --left
     hs.hotkey.bind(mash, "a", function() chrome_switch_to(chromeProfiles.work) end)
-    hs.hotkey.bind(mash, "o", function() hs.application.launchOrFocus('Logseq') end)
-    hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocus('Obsidian') end)
-    hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocus('iTerm') end)
-    hs.hotkey.bind(mash, "i", function() hs.application.launchOrFocus('Todoist') end)
+    hs.hotkey.bind(mash, "o", function() hs.application.launchOrFocusByBundleID(bundleIDs.logseq) end)
+    hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocusByBundleID(bundleIDs.raindropio) end)
+    hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocusByBundleID(bundleIDs.iterm2) end)
+    hs.hotkey.bind(mash, "i", function() hs.application.launchOrFocusByBundleID(bundleIDs.todoist) end)
 
     hs.hotkey.bind(mash, ";", function() chrome_switch_to(chromeProfiles.side) end)
     hs.hotkey.bind(mash, "q", function() chrome_switch_to(chromeProfiles.home) end)
-    hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocus('Slack') end)
-    hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocus('Spotify') end)
-    hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocus('WhatsApp') end)
+    hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocusByBundleID(bundleIDs.slack) end)
+    hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocusByBundleID(bundleIDs.spotify) end)
+    hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocusByBundleID(bundleIDs.whatsapp) end)
     -- hs.hotkey.bind(mash, "x", function() hs.application.launchOrFocus('Visual Studio Code') end)
 
     -- right
-    hs.hotkey.bind(mash, 'f', function() hs.application.launchOrFocus('Finder') end)
-    hs.hotkey.bind(mash, 'g', function() hs.application.launchOrFocus('Preview') end)
-    hs.hotkey.bind(mash, 'c', function() hs.application.launchOrFocus('Marked 2') end)
-    hs.hotkey.bind(mash, 'r', function() hs.application.launchOrFocus('zoom.us') end)
+    -- hs.hotkey.bind(mash, 'f', function() hs.application.launchOrFocusByBundleID(bundleIDs.finder) end)
+    -- hs.hotkey.bind(mash, 'g', function() hs.application.launchOrFocusByBundleID(bundleIDs.preview) end)
+    -- hs.hotkey.bind(mash, 'c', function() hs.application.launchOrFocusByBundleID(bundleIDs.marked2) end)
+    -- hs.hotkey.bind(mash, 'r', function() hs.application.launchOrFocusByBundleID(bundleIDs.zoom) end)
 
     -- only on some computers
-    hs.hotkey.bind(mash, 'w', function() hs.application.launchOrFocus('Sketchbook') end)
-    hs.hotkey.bind(mash, 'm', function() hs.application.launchOrFocus('Unity') end)
+    -- hs.hotkey.bind(mash, 'w', function() hs.application.launchOrFocusByBundleID(bundleIDs.sketchbook) end)
+    -- hs.hotkey.bind(mash, 'm', function() hs.application.launchOrFocusByBundleID(bundleIDs.unity) end)
 
     -- FREE MOVE CHAIN --
     hs.hotkey.bind({'ctrl', 'alt'}, 'up', chain({
