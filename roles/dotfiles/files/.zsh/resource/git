@@ -82,17 +82,20 @@ gac() {
 }
 
 merge_conflicts() {
+  basename=$(basename "$PWD")
   top=$(git rev-parse --show-toplevel 2> /dev/null || echo -n ".");
-  docs=$(ag -l '<<<<<<<' $top);
-  echo "$docs";
+  docs=$(ag -l '<<<<<<<' $top | sed 's/.*\('$basename'\)/\1/g' | sed "s/$basename/./" );
+  echo "$docs" 
 }
 
 gmc() {
-  merge_conflicts | fzf --multi --preview "head -$LINES {}"
+  merge_conflicts | fzf --multi --preview "head -$LINES {}" |  sed 's/ /\\ /g' | tr '\r\n' ' '
 }
 
 fmi() {
-  ${EDITOR} -p $( echo "$(gmc)" | tr '\r\n' ' ');
+  # Not 100% about eval but works
+  # Was having issues with pathnames with spaces
+  eval ${EDITOR} -p "$( gmc )";
   # git mergetool $( echo "$doc" | tr '\r\n' ' ');
 }
 
@@ -366,12 +369,13 @@ bash $HOME/.zsh/bindkey
 
 # Bitbucket
 gitprs() {
+  company=$(getProjectValue company)
   project=$( git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p')
   if [ -z $project ] ; then
     url=$(git config --local remote.origin.url);
     project=$(echo "${url#*/}");
   fi
-  open 'https://bitbucket.org/portable/'$project'/pull-requests/'
+  open 'https://bitbucket.org/'$company'/'$project'/pull-requests/'
 }
 
 gitp() {
@@ -386,13 +390,14 @@ gitpu() {
 }
 
 gitpr() {
+  company=$(getProjectValue company)
   project=$( git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p')
   if [ -z $project ] ; then
     url=$(git config --local remote.origin.url);
     project=$(echo "${url#*/}");
   fi
   branchname=$( git branch | grep '*' | cut -d ' ' -f2)
-  gitpu && openChromeSide 'https://bitbucket.org/portable/'$project'/pull-requests/new?source='$branchname'&t=1'
+  gitpu && openChromeSide 'https://bitbucket.org/'$company'/'$project'/pull-requests/new?source='$branchname'&t=1'
 }
 
 todos() {
