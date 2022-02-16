@@ -125,12 +125,12 @@ if &loadplugins
     packadd! vim-jsx
     packadd! vim-lion
     packadd! vim-markdown
+    packadd! vim-mdx-js
     packadd! vim-operator-user
     packadd! vim-projectionist
     packadd! vim-reason-plus
     packadd! vim-repeat
     packadd! vim-signature
-    packadd! vim-slime
     packadd! vim-soy
     packadd! vim-speeddating
     packadd! vim-surround
