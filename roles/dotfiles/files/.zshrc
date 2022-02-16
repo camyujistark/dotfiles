@@ -449,11 +449,7 @@ export PATH="$HOME/.serverless/bin:$PATH"
 # need to enable for python multithreading
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
-#HOMEBREW
-
 export HOMEBREW_GITHUB_API_TOKEN=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
-
-#TMUX 
 
 # Share history across tmux sessions
 # https://egghead.io/lessons/tools-handle-history-in-tmux-sessions

@@ -2,7 +2,6 @@
   "coc.preferences.formatOnSaveFiletypes": [
     "css",
     "scss",
-    "markdown",
     "javascript",
     "typescript",
     "typescriptreact",
@@ -10,6 +9,7 @@
     "graphql",
     "php",
     "html",
+    "lua",
     "yaml",
     "json",
     "python",

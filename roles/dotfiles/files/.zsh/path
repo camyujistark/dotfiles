@@ -15,8 +15,8 @@ if [ -d /usr/local/opt/mysql@5.7 ]; then
   PATH=$PATH:/usr/local/opt/mysql@5.7/bin
 fi
 
-PATH=$PATH:/Users/camstark/.composer/vendor/bin/
-PATH=$PATH:/Users/camstark/.rvm/rubies/ruby-2.7.0/bin/ruby
+PATH=$PATH:$HOME/.composer/vendor/bin/
+PATH=$PATH:$HOME/.rvm/rubies/ruby-2.7.0/bin/ruby
 PATH=$PATH:/usr/local/bin
 PATH=$PATH:/usr/local/Cellar/node/12.1.0/bin
 PATH=$PATH:/usr/local/sbin
@@ -25,5 +25,4 @@ PATH=$PATH:$SYSTEM_PATH
 PATH=$PATH:$EC2_HOME/bin
 PATH=$PATH:$HOME/.local/bin
 PATH=$PATH:$HOME/.cabal/bin
-PATH=$PATH:/usr/local/opt/openjdk/bin
 export PATH

@@ -1,11 +1,6 @@
 ---
-- name: homebrew | download Homebrew install script
-  get_url:
-    url=https://raw.githubusercontent.com/Homebrew/install/master/install
-    dest=vendor/homebrew/install
-
-- name: homebrew | install Homebrew
-  command: ruby vendor/homebrew/install creates=/usr/local/bin/brew
+- name: homebrew | update Homebrew 
+  homebrew: update_homebrew=yes
 
 - name: homebrew | update Homebrew
   homebrew: update_homebrew=yes

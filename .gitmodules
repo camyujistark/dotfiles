@@ -230,6 +230,3 @@
 [submodule "roles/dotfiles/files/.vim/pack/bundle/opt/vim-graphql"]
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/vim-graphql
 	url = https://github.com/jparise/vim-graphql
-[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/vim-mdx"]
-	path = roles/dotfiles/files/.vim/pack/bundle/opt/vim-mdx
-	url = https://github.com/findango/vim-mdx.git
