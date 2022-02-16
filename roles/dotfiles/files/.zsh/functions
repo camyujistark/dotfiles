@@ -361,15 +361,26 @@ amazonmeta() {
 }
 
 openChrome() {
-  bash $SCRIPT_PATH/openProfileInChrome/openInChrome.sh $1
+  FLAGS=''; 
+  if [ -z "$3" ] ; then 
+    FLAGS="$3"; 
+  fi;
+  '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' $1 \
+  "$FLAGS" \
+  --profile-directory="$2" \
+  &>/dev/null &
 }
 
-openChromeAlien() {
-  bash $SCRIPT_PATH/openProfileInChrome/openInChromeAlien.sh $1
+openChromeWork() {
+  openChrome "$1" "Profile 1"
+}
+
+openChromeHome() {
+  openChrome "$1" "Profile 4"
 }
 
 openChromeSide() {
-  bash $SCRIPT_PATH/openProfileInChrome/openInChromeSide.sh $1
+  openChrome "$1" "Profile 3"
 }
 
 source $HOME/.zsh/resource/bulknaming
