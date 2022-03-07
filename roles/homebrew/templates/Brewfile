@@ -33,7 +33,6 @@ cask "omnidisksweeper"
 cask "raindropio"
 cask "steam"
 cask "transmission"
-cask "vlc"
 cask 'alfred'
 cask 'anki'
 cask 'bartender'
@@ -56,6 +55,7 @@ cask 'vlc'
 cask 'whatsapp'
 cask 'xmind'
 cask 'virtualbox'
+cask 'pgadmin4'
 # download from app store copynpaste pastebin pixel todoist clipastex line
 
 # General packages.
@@ -187,6 +187,7 @@ brew "potrace"
 brew "protobuf"
 brew "pstree"
 brew "pth"
+brew "php"
 brew "pwgen"
 brew "python"
 brew "python3"
