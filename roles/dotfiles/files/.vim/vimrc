@@ -110,6 +110,7 @@ if &loadplugins
     packadd! scalpel
     packadd! tcomment_vim
     packadd! terminus
+    packadd! twig.vim
     packadd! ultisnips
     packadd! vcs-jump
     packadd! vim-ansible-yaml

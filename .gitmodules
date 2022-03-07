@@ -233,3 +233,6 @@
 [submodule "roles/dotfiles/files/.vim/pack/bundle/opt/vim-mdx"]
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/vim-mdx
 	url = https://github.com/findango/vim-mdx
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/twig.vim"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/twig.vim
+	url = https://github.com/nelsyeung/twig.vim
