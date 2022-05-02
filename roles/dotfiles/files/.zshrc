@@ -434,6 +434,9 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=59'
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# NVM
+
+export NVM_SYMLINK_CURRENT=true
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" 
@@ -443,13 +446,21 @@ if [[ -s $HOME/.rvm/scripts/rvm ]]; then
   source $HOME/.rvm/scripts/rvm;
 fi
 
+# Serverless
+
 # Added by serverless binary installer
 export PATH="$HOME/.serverless/bin:$PATH"
+
+# Python
 
 # need to enable for python multithreading
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
+# Homebrew
+
 export HOMEBREW_GITHUB_API_TOKEN=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
+
+# Tmux
 
 # Share history across tmux sessions
 # https://egghead.io/lessons/tools-handle-history-in-tmux-sessions

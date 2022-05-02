@@ -124,13 +124,13 @@ gallup() {
   fi;
 }
 
-gup() {
-  if [[ -z "$2" ]] ; then
-    git commit -m $1 && git push -u origin $(git branch | grep \* | cut -d ' ' -f2);
-  else
-    git commit -m $1 -m $2 && git push -u origin $(git branch | grep \* | cut -d ' ' -f2);
-  fi;
-}
+# gup() {
+#   if [[ -z "$2" ]] ; then
+#     git commit -m $1 && git push -u origin $(git branch | grep \* | cut -d ' ' -f2);
+#   else
+#     git commit -m $1 -m $2 && git push -u origin $(git branch | grep \* | cut -d ' ' -f2);
+#   fi;
+# }
 
 ghistory() { git rev-list --all | xargs git grep "$1" }
 
@@ -283,13 +283,13 @@ fzf-down() {
   fzf --height 50% "$@" --border
 }
 
-gf() {
-  is_in_git_repo || return
-  git -c color.status=always status --short |
-  fzf-down -m --ansi --nth 2..,.. \
-    --preview '(git diff --color=always -- {-1} | sed 1,4d; cat {-1}) | head -500' |
-  cut -c4- | sed 's/.* -> //'
-}
+# gf() {
+#   is_in_git_repo || return
+#   git -c color.status=always status --short |
+#   fzf-down -m --ansi --nth 2..,.. \
+#     --preview '(git diff --color=always -- {-1} | sed 1,4d; cat {-1}) | head -500' |
+#   cut -c4- | sed 's/.* -> //'
+# }
 
 gb() {
   is_in_git_repo || return
@@ -337,13 +337,13 @@ grl() {
   echo $SELECT
 }
 
-gr() {
-  is_in_git_repo || return
-  git remote -v | awk '{print $1 "\t" $2}' | uniq |
-  fzf-down --tac \
-    --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" {1} | head -200' |
-  cut -d$'\t' -f1
-}
+# gr() {
+#   is_in_git_repo || return
+#   git remote -v | awk '{print $1 "\t" $2}' | uniq |
+#   fzf-down --tac \
+#     --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" {1} | head -200' |
+#   cut -d$'\t' -f1
+# }
 
 join-lines() {
   local item
@@ -392,6 +392,11 @@ gitpu() {
 gitpr() {
   company=$(getProjectValue company)
   project=$( git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p')
+
+  # transition to Code Review
+  JIRA_ID=$(git branch --show-current | awk -F'-' '{print $2;}')
+  jira transition "Peer Review" $JIRA_ID --noedit
+
   if [ -z $project ] ; then
     url=$(git config --local remote.origin.url);
     project=$(echo "${url#*/}");

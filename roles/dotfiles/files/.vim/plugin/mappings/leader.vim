@@ -3,6 +3,9 @@
 " <Leader><Leader> -- Open last buffer.
 nnoremap <Leader><Leader> <C-^>
 
+noremap <Leader>1  :silent !npx prettier --write %<CR>
+noremap <Leader>2  :silent !bash ./main.sh -x -m %<CR>
+
 nnoremap <Leader>t :Files<CR>
 nnoremap <Leader>b :Buffers<CR>
 nnoremap <Leader>o :only<CR>

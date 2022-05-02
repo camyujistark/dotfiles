@@ -310,7 +310,7 @@ fkill() {
 #ack
 vack() {
   if [ -n "$2" ] ; then
-    docs=$(ag --nobreak --nonumbers --noheading -l $2 "$1")
+    docs=$(ag --nobreak --nonumbers --noheading -l $2 "$1" )
   else
     docs=$(ag --nobreak --nonumbers --noheading -l "$1") &&
     fi
@@ -385,8 +385,9 @@ openChromeSide() {
 
 source $HOME/.zsh/resource/bulknaming
 source $HOME/.zsh/resource/git
-source $HOME/.zsh/resource/linktree
 source $HOME/.zsh/resource/jira
+# source $HOME/.zsh/resource/ohmyzsh-git
+# source $HOME/.zsh/resource/linktree
 # source $HOME/.zsh/resource/ubuntu
 # source $HOME/.zsh/resource/twenty4
 

@@ -95,11 +95,7 @@ harvestTask() {
 }
 
 jr () {
-  local BASEBRANCH=$(getProjectValue 'basebranch')
-  if [ $2 ]; then
-    BASEBRANCH=$2
-  fi
-  setBranch "$BASEBRANCH" 'develop'
+  local BASEBRANCH=$(git branch --show-current)
 
   local JIRA_ID=$1
 
@@ -278,7 +274,7 @@ createJiraBranches() {
       EPIC_BRANCH_LOC="${EPIC_BRANCH}-LOC"
 
       echo "epic: $EPIC_BRANCH"
-      jopennotes $EPIC_KEY
+      # jopennotes $EPIC_KEY
       # remote
       setBranch "$EPIC_BRANCH" $BASEBRANCH
       if [[ ! `git branch --list $BRANCHNAME` ]]; then
@@ -294,7 +290,7 @@ createJiraBranches() {
       PARENT_BRANCH=$(jira branch $PARENT_TASK_KEY)
       PARENT_BRANCH_LOC="${PARENT_BRANCH}-LOC"
       echo "parent: $PARENT_BRANCH"
-      jopennotes $PARENT_BRANCH
+      # jopennotes $PARENT_BRANCH
       # remote
       setBranch "$PARENT_BRANCH" $BASEBRANCH
       if [[ ! `git branch --list $BRANCHNAME` ]]; then
@@ -382,7 +378,7 @@ generateNotesPath() {
 }
 
 jopennotes() {
-
+  return;
   local JIRA_ID=$1
 
   if [ -z $JIRA_ID ]; then
@@ -480,6 +476,7 @@ jinit() {
 }
 
 jopen() {
+  return
   local JIRA_ID=$1
   if [ -z $JIRA_ID ]; then
     JIRA_ID=$(grl | awk -F'-' '{print $2;}')
@@ -492,3 +489,4 @@ jopen() {
     echo "Tob already open"
   fi
 }
+

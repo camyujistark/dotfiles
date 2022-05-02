@@ -18,7 +18,6 @@ fi
 PATH=$PATH:$HOME/.composer/vendor/bin/
 PATH=$PATH:$HOME/.rvm/rubies/ruby-2.7.0/bin/ruby
 PATH=$PATH:/usr/local/bin
-PATH=$PATH:/usr/local/Cellar/node/12.1.0/bin
 PATH=$PATH:/usr/local/sbin
 PATH=$PATH:/usr/local/opt/srm/bin
 PATH=$PATH:$SYSTEM_PATH
