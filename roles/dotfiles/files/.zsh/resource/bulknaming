@@ -12,7 +12,7 @@ rename() {
 bulkrename() {
   if [ $# -eq 3 ]; then
     for i in $(find "$PWD" -type f -iname "*$1*") ; do
-      base=$(basename $i);
+      base="$(basename $i)";
       mv -- "$i" "${i//$base/${base//$2/$3}}";
     done
   else

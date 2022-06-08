@@ -453,3 +453,6 @@ gitco() {
   git checkout $(grl);
 }
 
+gitlog() {
+  git log --pretty=format:'# %ad %H %s' --date=short --first-parent
+}

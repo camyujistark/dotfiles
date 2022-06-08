@@ -6,6 +6,49 @@ BASE_JIRA_D_CONFIG="$HOME/.jira.d/config.yml";
 
 NOTES_PATH="$HOME/Documents/Notes/Jira/"
 
+#################
+# JIRA SERVICES #
+#################
+
+JQL_SORT='ORDER BY summary DESC'
+JQL_HIDDEN='(labels IS EMPTY OR labels != Hidden)'
+DEFAULT_TICKET_TYPE="Task"
+PROJECT_ID="JCV"
+function jira_create() {
+  jira create
+}
+
+function jira_search () {
+  name="$1"
+  re='^[0-9]+$'
+  if [[ $name =~ $re ]] ; then
+    jira ls -q "project = '$PROJECT_ID' AND id = '$PROJECT_ID-$name' AND $JQL_HIDDEN $JQL_SORT"
+  else
+    jira ls -q "project = '$PROJECT_ID' AND text ~ '$name' AND $JQL_HIDDEN $JQL_SORT"
+  fi
+}
+
+function jira_empty_description_reporter_me () {
+  name="$1"
+  jira ls -q "project = '$PROJECT_ID' AND description is EMPTY AND reporter =
+  currentUser() AND $JQL_HIDDEN $JQL_SORT"
+}
+
+function jira_reporter_me () {
+  name="$1"
+  jira ls -q "project = '$PROJECT_ID' AND reporter = currentUser() AND
+  $JQL_HIDDEN $JQL_SORT"
+}
+
+function jira_summary () {
+  JIRA_ID="$1"
+  jira summary $JIRA_ID
+}
+
+#####################
+# END Jira Services #
+#####################
+
 # EPIC: Per Epic
 # BASE: Direct to base
 # MASTER: Straight to master
@@ -103,29 +146,25 @@ jr () {
     jinit $JIRA_ID
   else
     PS3='Please enter your choice: '
-    jroptions=("Go to previous branch" "Create New Branch" "Create New Branch Start" "Find branch" "Quit")
+    jroptions=("Go to previous branch" "Search Jira" "Create New Branch" "Quit")
     select opt in "${jroptions[@]}"
     do
         case $opt in
             "Go to previous branch")
-                JIRA_ID=$(grl | awk -F'-' '{print $2;}')
+                JIRA_ID=$(grl | awk -F'-' '{print $1 "-" $2;}')
+                jinit $JIRA_ID
+                break
+                ;;
+            "Search Jira")
+                printf "Search for Jira Ticket: "
+                read search
+                JIRA_ID=$(jira_search "$search" | fzf | awk -F':' '{print $1;}')
                 jinit $JIRA_ID
                 break
                 ;;
             "Create New Branch")
-                jcreate $BASEBRANCH
+                jcreate
                 return
-                ;;
-            "Create New Branch Start")
-                jcreate $BASEBRANCH
-                JIRA_ID=$(grep issue /tmp/cstory.yml | awk '{print $2}')
-                jinit $JIRA_ID
-                return
-                ;;
-            "Find branch")
-                JIRA_ID=$(git branch | fzf | awk -F'-' '{print $2;}')
-                jinit $JIRA_ID
-                break
                 ;;
             "Quit")
                 break
@@ -192,12 +231,9 @@ jcreate () {
   if [ $1 ]; then
     BASEBRANCH=$1
   fi
-  local TYPE="$(echo 'Task\nBug' | fzf)"
-  local ASSIGNEE="users.$(echo $JIRA_USERNAMES | fzf)"
-  local ASSIGNEE_ID=$(getConfigValue $ASSIGNEE)
   git checkout $BASEBRANCH && git pull
-  jira create -i "$TYPE" -o assigneeid="$ASSIGNEE_ID" --saveFile /tmp/cstory.yml
-  jopen $JIRA_ID
+  jira_create
+  # jopen $JIRA_ID
 }
 
 setBranch() {
@@ -246,13 +282,13 @@ createJiraBranches() {
 
   if [ -z "$JIRA_ID" ]; then
     # exit 1
-    return;
+    return 0;
   fi
 
   if [[ $(git status -s) ]]; then 
     echo 'You have uncommited changes. please fix first'
     # exit 1;
-    return;
+    return 0;
   fi
 
   local BASEBRANCH=$(getProjectValue 'basebranch')
@@ -261,7 +297,7 @@ createJiraBranches() {
   if [[ -z $BRANCHNAME ]]; then
     echo 'jira id does not exist. branchname cannot be generated'
     # exit 1;
-    return;
+    return 0;
   fi
 
   echo "base: $BASEBRANCH"
@@ -321,6 +357,7 @@ createJiraBranches() {
       git checkout -b $BRANCHNAME
     fi
   fi
+  return 1
 }
 
 # jcleanup() {
@@ -437,7 +474,6 @@ jopennotes_tmux() {
 #   tmux send-keys -t 2 ":q"
 #   tmux send-keys -t 2 Enter
 #
-  jopennotes $JIRA_ID
 #
 #   tmux send-keys -t 2 "tvim"
 #   tmux send-keys -t 2 Enter
@@ -468,11 +504,22 @@ jopennotes_tmux() {
 #
 jinit() {
   local JIRA_ID=$1
-  createJiraBranches $JIRA_ID
-  # jhstart $JIRA_ID
-  jira transition "In Progress" $JIRA_ID --noedit
-  jopennotes_tmux $JIRA_ID
-  jopen $JIRA_ID
+
+  if [[ "$JIRA_ID" =~ ^[A-Z]{1,4}-[0-9]{1,3}$ ]]; then
+    SUMMARY="`jira summary $JIRA_ID`"
+    echo "Summary: $SUMMARY";
+    bash ~/Documents/Scripts/stream-deck/run.sh "action-start-work-portable" "JCV" "$JIRA_ID $SUMMARY" "1" "1"
+    createJiraBranches $JIRA_ID
+    jira transition "In Progress" $JIRA_ID --noedit
+    jopen $JIRA_ID
+  else
+    bash ~/Documents/Scripts/stream-deck/run.sh "action-start-work-portable" "JCV" "$JIRA_ID" "1" "1"
+    BRANCH="`echo $JIRA_ID | tr ' ' '-'  | tr '[:upper:]' '[:lower:]'`"
+    git checkout develop 
+    git pull
+    git checkout -b "$BRANCH"
+  fi
+
 }
 
 jopen() {
