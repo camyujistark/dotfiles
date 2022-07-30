@@ -1,0 +1,4 @@
+---
+- name: update windows bash
+  command: "{{ ansible_env.PWD }}/roles/windows/files/install"
+  register: window_bash_update
