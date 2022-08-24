@@ -85,17 +85,17 @@ function scratch() {
   rm -rf "$SCRATCH"
 }
 
-function ssh() {
-  emulate -L zsh
-
-  if [[ -z "$@" ]]; then
-    # common case: getting to my workstation
-    command ssh sandbox-clipper
-  else
-    local LOCAL_TERM=$(echo -n "$TERM" | sed -e s/tmux/screen/)
-    env TERM=$LOCAL_TERM command ssh "$@"
-  fi
-}
+# function ssh() {
+#   emulate -L zsh
+#
+#   if [[ -z "$@" ]]; then
+#     # common case: getting to my workstation
+#     command ssh sandbox-clipper
+#   else
+#     local LOCAL_TERM=$(echo -n "$TERM" | sed -e s/tmux/screen/)
+#     env TERM=$LOCAL_TERM command ssh "$@"
+#   fi
+# }
 
 # function tmux() {
 #   emulate -L zsh
@@ -315,7 +315,7 @@ vack() {
     docs=$(ag --nobreak --nonumbers --noheading -l "$1") &&
     fi
   doc=$(echo "$docs" | fzf --multi --preview "head -$LINES {}" ) &&
-  ${EDITOR} $( echo "$doc" | tr '\r\n' ' ');
+  vim $( echo "$doc" | tr '\r\n' ' ');
 }
 
 #find
@@ -360,30 +360,36 @@ amazonmeta() {
   python $AMAZON_SCRAPER_PATH $1
 }
 
+if [[ "`uname -s`" = "Darwin" ]]; then
 openChrome() {
-  FLAGS=''; 
-  if [ -z "$3" ] ; then 
-    FLAGS="$3"; 
-  fi;
+  FLAGS=''; if [ -z "$3" ] ; then FLAGS="$3"; fi;
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' $1 \
   "$FLAGS" \
-  --profile-directory="$2" \
+  --profile-directory=PROFILE\ "$2" \
   &>/dev/null &
 }
+fi
+
+if [[ "`uname -s`" = "Linux" ]]; then
+  openChrome() {
+    FLAGS=''; if [ -z "$3" ] ; then FLAGS="$3"; fi;
+    /mnt/c/Program\ Files/Google/Chrome/Application/chrome.exe $1 "$FLAGS" --profile-directory="Profile $2"
+  }
+fi
 
 openChromeWork() {
-  openChrome "$1" "Profile 1"
+  openChrome "$1" "2"
 }
 
 openChromeHome() {
-  openChrome "$1" "Profile 4"
+  openChrome "$1" "1"
 }
 
 openChromeSide() {
-  openChrome "$1" "Profile 3"
+  openChrome "$1" "3"
 }
 
-source $HOME/.zsh/resource/bulknaming
+# source $HOME/.zsh/resource/bulknaming
 source $HOME/.zsh/resource/git
 source $HOME/.zsh/resource/jira
 # source $HOME/.zsh/resource/ohmyzsh-git

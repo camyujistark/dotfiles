@@ -1,6 +1,8 @@
 scriptencoding utf-8
 
 set autoindent                        " maintain indent of current line
+set clipboard=unnamedplus
+
 set backspace=indent,start,eol        " allow unrestricted backspacing in insert mode
 
 if exists('$SUDO_USER')

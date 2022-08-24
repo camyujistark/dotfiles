@@ -96,11 +96,13 @@ if has('gui')
   set guioptions-=r
 endif
 
-set rtp+=/usr/local/opt/fzf
+set rtp+=/home/cam/.fzf
 
 if &loadplugins
   if has('packages')
     packadd! coc.nvim
+    packadd! gruvbox
+    packadd! copilot.vim
     packadd! base16-vim
     packadd! fzf.vim
     packadd! ferret
@@ -115,7 +117,6 @@ if &loadplugins
     packadd! ultisnips
     packadd! vcs-jump
     packadd! vim-ansible-yaml
-    packadd! vim-clipper
     packadd! vim-dispatch
     packadd! vim-docvim
     packadd! vim-easydir
@@ -171,3 +172,16 @@ syntax on
 autocmd BufNewFile,BufRead *.tsx set filetype=typescriptreact
 
 autocmd BufNewFile,BufRead *.jsx set filetype=javascriptreact
+
+let g:clipboard = {
+      \   'name': 'win32yank-wsl',
+      \   'copy': {
+      \      '+': '/usr/local/bin/win32yank.exe -i --crlf',
+      \      '*': '/usr/local/bin/win32yank.exe -i --crlf',
+      \    },
+      \   'paste': {
+      \      '+': '/usr/local/bin/win32yank.exe -o --lf',
+      \      '*': '/usr/local/bin/win32yank.exe -o --lf',
+      \   },
+      \   'cache_enabled': 0,
+      \ }

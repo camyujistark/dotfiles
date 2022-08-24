@@ -9,12 +9,12 @@ PATH=$PATH:$HOME/.vim/pack/bundle/opt/vcs-jump/bin
 test -n "$N_PREFIX" && PATH=$PATH:$N_PREFIX/bin
 
 PATH=$PATH:$HOME/.cargo/bin
-PATH=$PATH:$GOPATH/bin
+export GOROOT=/usr/local/go-1.19
+export GOPATH=$HOME/projects/go
+export GOBIN=$GOPATH/bin
 
-if [ -d /usr/local/opt/mysql@5.7 ]; then
-  PATH=$PATH:/usr/local/opt/mysql@5.7/bin
-fi
-
+PATH=$PATH:$GOROOT/bin
+PATH=$PATH:$HOME/projects/go/bin
 PATH=$PATH:$HOME/.composer/vendor/bin/
 PATH=$PATH:$HOME/.rvm/rubies/ruby-2.7.0/bin/ruby
 PATH=$PATH:/usr/local/bin
@@ -24,4 +24,5 @@ PATH=$PATH:$SYSTEM_PATH
 PATH=$PATH:$EC2_HOME/bin
 PATH=$PATH:$HOME/.local/bin
 PATH=$PATH:$HOME/.cabal/bin
+PATH=$PATH:$NODE_PATH
 export PATH

@@ -291,14 +291,14 @@ fzf-down() {
 #   cut -c4- | sed 's/.* -> //'
 # }
 
-gb() {
-  is_in_git_repo || return
-  git branch -a --color=always | grep -v '/HEAD\s' | sort |
-  fzf-down --ansi --multi --tac --preview-window right:70% \
-    --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" $(sed s/^..// <<< {} | cut -d" " -f1) | head -'$LINES |
-  sed 's/^..//' | cut -d' ' -f1 |
-  sed 's#^remotes/##'
-}
+# gb() {
+#   is_in_git_repo || return
+#   git branch -a --color=always | grep -v '/HEAD\s' | sort |
+#   fzf-down --ansi --multi --tac --preview-window right:70% \
+#     --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" $(sed s/^..// <<< {} | cut -d" " -f1) | head -'$LINES |
+#   sed 's/^..//' | cut -d' ' -f1 |
+#   sed 's#^remotes/##'
+# }
 
 gt() {
   is_in_git_repo || return
@@ -395,14 +395,15 @@ gitpr() {
 
   # transition to Code Review
   JIRA_ID=$(git branch --show-current | awk -F'-' '{print $2;}')
-  jira transition "Peer Review" $JIRA_ID --noedit
+  jira transition "Dev Review" $JIRA_ID --noedit
 
   if [ -z $project ] ; then
     url=$(git config --local remote.origin.url);
     project=$(echo "${url#*/}");
   fi
   branchname=$( git branch | grep '*' | cut -d ' ' -f2)
-  gitpu && openChromeSide 'https://bitbucket.org/'$company'/'$project'/pull-requests/new?source='$branchname'&t=1'
+  gitpu
+  openChromeWork 'https://bitbucket.org/'$company'/'$project'/pull-requests/new?source='$branchname'&t=1'
 }
 
 todos() {
