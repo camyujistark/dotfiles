@@ -105,6 +105,7 @@ if &loadplugins
     packadd! fzf.vim
     packadd! ferret
     packadd! loupe
+    packadd! copilot.vim
     packadd! pinnacle
     packadd! replay
     packadd! scalpel

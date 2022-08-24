@@ -236,3 +236,6 @@
 [submodule "roles/dotfiles/files/.vim/pack/bundle/opt/twig.vim"]
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/twig.vim
 	url = https://github.com/nelsyeung/twig.vim
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/copilot.vim"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/copilot.vim
+	url = https://github.com/github/copilot.vim
