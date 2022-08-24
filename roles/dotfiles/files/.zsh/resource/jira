@@ -505,7 +505,10 @@ jopennotes_tmux() {
 jinit() {
   local JIRA_ID=$1
 
-  if [[ "$JIRA_ID" =~ ^[A-Z]{1,4}-[0-9]{1,3}$ ]]; then
+  if [[ "$JIRA_ID" =~ ^[A-Z]{1,4}-[0-9]{1,3}$ ]] || [[ "$JIRA_ID" =~ ^[0-9]{1,3}$ ]]; then
+    if [[ "$JIRA_ID" =~ ^[0-9]{1,3}$ ]]; then
+      JIRA_ID="JCV-$JIRA_ID"
+    fi
     SUMMARY="`jira summary $JIRA_ID`"
     echo "Summary: $SUMMARY";
     bash ~/Documents/Scripts/stream-deck/run.sh "action-start-work-portable" "JCV" "$JIRA_ID $SUMMARY" "1" "1"
@@ -523,10 +526,9 @@ jinit() {
 }
 
 jopen() {
-  return
   local JIRA_ID=$1
   if [ -z $JIRA_ID ]; then
-    JIRA_ID=$(grl | awk -F'-' '{print $2;}')
+    JIRA_ID=$(git branch --show-current | awk -F'-' '{print $2;}')
   fi
   JIRA_ID_TAB_EXISTS=$(chrome-cli list tabs | grep "$JIRA_ID")
   # Note need to enable chrome-cli in order for this to work
