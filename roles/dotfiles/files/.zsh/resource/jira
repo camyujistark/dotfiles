@@ -505,18 +505,18 @@ jopennotes_tmux() {
 jinit() {
   local JIRA_ID=$1
 
-  if [[ "$JIRA_ID" =~ ^[A-Z]{1,4}-[0-9]{1,3}$ ]] || [[ "$JIRA_ID" =~ ^[0-9]{1,3}$ ]]; then
+  if [[ "$JIRA_ID" ]]; then
     if [[ "$JIRA_ID" =~ ^[0-9]{1,3}$ ]]; then
-      JIRA_ID="JCV-$JIRA_ID"
+      JIRA_ID="VEOHRC-$JIRA_ID"
     fi
     SUMMARY="`jira summary $JIRA_ID`"
     echo "Summary: $SUMMARY";
-    bash ~/Documents/Scripts/stream-deck/run.sh "action-start-work-portable" "JCV" "$JIRA_ID $SUMMARY" "1" "1"
+    bash ~/Documents/Sites/Cam/stream-deck/run.sh "action-start-work-portable" "VEOHRC" "$SUMMARY"
     createJiraBranches $JIRA_ID
     jira transition "In Progress" $JIRA_ID --noedit
     jopen $JIRA_ID
   else
-    bash ~/Documents/Scripts/stream-deck/run.sh "action-start-work-portable" "JCV" "$JIRA_ID" "1" "1"
+    bash ~/Documents/Sites/Cam/stream-deck/run.sh "action-start-work-portable" "JCV" "$JIRA_ID" "1" "1"
     BRANCH="`echo $JIRA_ID | tr ' ' '-'  | tr '[:upper:]' '[:lower:]'`"
     git checkout develop 
     git pull
@@ -530,8 +530,11 @@ jopen() {
   if [ -z $JIRA_ID ]; then
     JIRA_ID=$(git branch --show-current | awk -F'-' '{print $2;}')
   fi
-  JIRA_ID_TAB_EXISTS=$(chrome-cli list tabs | grep "$JIRA_ID")
-  # Note need to enable chrome-cli in order for this to work
+
+  if [[ "`uname -s`" = "Darwin" ]]; then
+    # Note need to enable chrome-cli in order for this to work
+    JIRA_ID_TAB_EXISTS=$(chrome-cli list tabs | grep "$JIRA_ID")
+  fi
   if [ -z $JIRA_ID_TAB_EXISTS ] ; then
       openChromeSide https://portableaustralia.atlassian.net/browse/$( git branch | grep '*' | cut -d ' ' -f2 | awk -F'-' '{print $1_-$2}')
   else
