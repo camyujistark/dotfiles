@@ -1,9 +1,9 @@
 #!/bin/bash
 if [[ "$-" =~ "i" ]]; then
   bind '"\er": redraw-current-line'
-  bind '"\C-g\C-f": "$(gf)\e\C-e\er"'
-  bind '"\C-g\C-b": "$(gb)\e\C-e\er"'
-  bind '"\C-g\C-t": "$(gt)\e\C-e\er"'
-  bind '"\C-g\C-h": "$(gh)\e\C-e\er"'
-  bind '"\C-g\C-r": "$(gr)\e\C-e\er"'
+  bind '"\C-g\C-f": "$(gffzf)\e\C-e\er"'
+  bind '"\C-g\C-b": "$(gbfzf)\e\C-e\er"'
+  bind '"\C-g\C-t": "$(gtfzf)\e\C-e\er"'
+  bind '"\C-g\C-h": "$(ghfzf)\e\C-e\er"'
+  bind '"\C-g\C-r": "$(grfzf)\e\C-e\er"'
 fi
