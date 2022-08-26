@@ -536,7 +536,7 @@ jopen() {
     JIRA_ID_TAB_EXISTS=$(chrome-cli list tabs | grep "$JIRA_ID")
   fi
   if [ -z $JIRA_ID_TAB_EXISTS ] ; then
-      openChromeSide https://portableaustralia.atlassian.net/browse/$( git branch | grep '*' | cut -d ' ' -f2 | awk -F'-' '{print $1_-$2}')
+      openChromeWork https://portableaustralia.atlassian.net/browse/$( git branch | grep '*' | cut -d ' ' -f2 | awk -F'-' '{print $1_-$2}')
   else
     echo "Tob already open"
   fi
