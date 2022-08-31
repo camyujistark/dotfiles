@@ -525,6 +525,14 @@ jinit() {
 
 }
 
+jlog() {
+    JIRA_ID=$(git branch --show-current | awk -F'-' '{print $1 "-" $2;}')
+    SUMMARY="`jira summary $JIRA_ID`"
+    if [ "$SUMMARY" ]; then
+      bash ~/Documents/Sites/Cam/stream-deck/run.sh "action-start-work-portable" "VEOHRC" "$SUMMARY"
+    fi
+}
+
 jopen() {
   local JIRA_ID=$1
   if [ -z $JIRA_ID ]; then
