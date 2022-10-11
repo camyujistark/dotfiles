@@ -104,6 +104,7 @@ if &loadplugins
     packadd! gruvbox
     packadd! copilot.vim
     packadd! base16-vim
+    packadd! fzf
     packadd! fzf.vim
     packadd! ferret
     packadd! loupe
