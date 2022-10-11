@@ -812,11 +812,10 @@ return {
     hs.hotkey.bind(mash, 'l', turnOnVerticalMode, setGridLayoutInit)
 
     -- LAYOUTS --
-    hs.hotkey.bind(mash, '1', resetAllFormations, setGridLayoutInit)
-    hs.hotkey.bind(mash, '2', codingFormation, setGridLayoutInit)
-    hs.hotkey.bind(mash, '3', tutorialMode, setGridLayoutInit)
-    hs.hotkey.bind(mash, '4', fourSquareMode, setGridLayoutInit)
-
+    -- hs.hotkey.bind(mash, '1', resetAllFormations, setGridLayoutInit)
+    -- hs.hotkey.bind(mash, '2', codingFormation, setGridLayoutInit)
+    -- hs.hotkey.bind(mash, '3', tutorialMode, setGridLayoutInit)
+    -- hs.hotkey.bind(mash, '4', fourSquareMode, setGridLayoutInit)
     hs.hotkey.bind(mash, '9', turnOnWindowFocus, fullScreenInit)
     hs.hotkey.bind(mash, '0', (function() setGridLayoutInit('one') end))
     hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('two') end))
