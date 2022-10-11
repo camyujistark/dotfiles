@@ -17,29 +17,29 @@ fi
 
 # Global aliases
 # (work at any position within the command line)
-docs="$HOME/Documents"
+docs="cd $HOME/Documents"
 sites="$docs/Sites"
 alias _a="vim $HOME/.zsh/aliases"
 alias _ass="$docs/Assets"
 alias _b="vim $HOME/dotfiles/roles/homebrew/templates/Brewfile"
-alias _d="$HOME/Downloads"
-alias _dot="$HOME/dotfiles"
+alias _d="cd $HOME/Downloads"
+alias _dot="cd $HOME/dotfiles"
 alias _f="vim $HOME/.zsh/functions"
 alias _g="vim $HOME/.zsh/resource/git"
 alias _j="vim $HOME/.zsh/resource/jira"
 alias _gc="vim $HOME/.gitconfig"
 alias _h="sudo vim /etc/hosts"
-alias _hs="$HOME/.hammerspoon"
+alias _hs="cd $HOME/.hammerspoon"
 alias _i="$docs/Assets/images"
-alias _k="$HOME/.config/karabiner"
+alias _k="cd $HOME/.config/karabiner"
 alias _n="$docs/Notes"
 alias _s="$sites"
 alias _lsc="$sites/divi/lsc_odrs_app"
 alias _sa="$sites/site\ assets/"
-alias _sc=$SCRIPT_PATH
+alias _sc="cd ${SCRIPT_PATH}"
 alias _t="$docs/Tuts"
-alias _v="$HOME/.vim/plugin/mappings"
-alias _vb="$HOME/.vim/pack/bundle/opt"
+alias _v="cd $HOME/.vim/plugin/mappings"
+alias _vb="cd $HOME/.vim/pack/bundle/opt"
 alias _zshrc="vim $HOME/.zshrc"
 alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 alias reload="source $HOME/.zshrc"
@@ -52,7 +52,7 @@ fi
 alias groot='cd $(git rev-parse --show-toplevel 2> /dev/null || echo -n ".")'
 
 #Chrome Refresh
-alias cr="$SCRIPT_PATH/chromerefresh.sh"
+alias cr="${SCRIPT_PATH}/chromerefresh.sh"
 
 alias logseq="$docs/logseq/"
 alias bugn="vim /mnt/c/Users/cam/AppData/Roaming/bug.n/Config.ini"
