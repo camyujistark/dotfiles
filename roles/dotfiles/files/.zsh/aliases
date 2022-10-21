@@ -9,7 +9,7 @@ alias groot='cd $(git rev-parse --show-toplevel 2> /dev/null || echo -n ".")'
 alias f='find . -name'
 alias python='python3'
 alias prettyjson='python -m json.tool'
-alias serve='python -m SimpleHTTPServer' # optional arg: port (defaults to 8000)
+alias serve='python3 -m http.server' # optional arg: port (defaults to 8000)
 
 if command -v nvim &> /dev/null; then
   alias vim=nvim # Use `\vim` or `command vim` to get the real vim.
@@ -19,6 +19,7 @@ fi
 # (work at any position within the command line)
 docs="cd $HOME/Documents"
 sites="$docs/Sites"
+alias ls="ls --color"
 alias _a="vim $HOME/.zsh/aliases"
 alias _ass="$docs/Assets"
 alias _b="vim $HOME/dotfiles/roles/homebrew/templates/Brewfile"

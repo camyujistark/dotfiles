@@ -28,7 +28,17 @@ zinit light-mode for \
 
 ### End of Zinit's installer chunk
 
-zinit ice depth=1; zinit light romkatv/powerlevel10k
+zinit light-mode depth=1 for \
+	romkatv/powerlevel10k \
+	OMZL::history.zsh \
+	blockf OMZL::completion.zsh
+
+zinit wait lucid light-mode depth=1 for \
+	atinit"zicompinit; zicdreplay" \
+		zdharma/fast-syntax-highlighting \
+	atload"bindkey '^[[A' history-substring-search-up; \
+			bindkey '^[[B' history-substring-search-down" \
+		zsh-users/zsh-history-substring-search
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
