@@ -734,20 +734,19 @@ return {
     -- APP MASH --
     hs.hotkey.bind(mash, "'", function() hs.application.launchOrFocusByBundleID(bundleIDs.mail) end)
     hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocusByBundleID(bundleIDs.calendar) end)
-    hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocusByBundleID(bundleIDs.obsidian) end)
+    hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocusByBundleID(bundleIDs.finder) end)
     --left
-    hs.hotkey.bind(mash, "a", function() chrome_switch_to(chromeProfiles.work) end)
-    hs.hotkey.bind(mash, "o", function() hs.application.launchOrFocusByBundleID(bundleIDs.logseq) end)
-    hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocusByBundleID(bundleIDs.raindropio) end)
-    hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocusByBundleID(bundleIDs.iterm2) end)
+    hs.hotkey.bind(mash, "a", function() chrome_switch_to(chromeProfiles.side) end)
+    hs.hotkey.bind(mash, "o", function() hs.application.launchOrFocusByBundleID(bundleIDs.iterm2) end)
+    hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocusByBundleID(bundleIDs.obsidian) end)
+    hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocusByBundleID(bundleIDs.raindropio) end)
     hs.hotkey.bind(mash, "i", function() hs.application.launchOrFocusByBundleID(bundleIDs.todoist) end)
 
-    hs.hotkey.bind(mash, ";", function() chrome_switch_to(chromeProfiles.side) end)
-    hs.hotkey.bind(mash, "q", function() chrome_switch_to(chromeProfiles.home) end)
+    hs.hotkey.bind(mash, ";", function() chrome_switch_to(chromeProfiles.home) end)
+    hs.hotkey.bind(mash, "q", function() hs.application.launchOrFocus('Visual Studio Code') end)
     hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocusByBundleID(bundleIDs.slack) end)
     hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocusByBundleID(bundleIDs.spotify) end)
     hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocusByBundleID(bundleIDs.whatsapp) end)
-    -- hs.hotkey.bind(mash, "x", function() hs.application.launchOrFocus('Visual Studio Code') end)
 
     -- right
     -- hs.hotkey.bind(mash, 'f', function() hs.application.launchOrFocusByBundleID(bundleIDs.finder) end)
