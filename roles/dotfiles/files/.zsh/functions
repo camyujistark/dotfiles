@@ -40,12 +40,6 @@ function files() {
   find "$@" | xargs -o $EDITOR
 }
 
-
-# TODO: decide whether this is a reasonable idea
-function files() {
-  find "$@" | xargs -o $EDITOR
-}
-
 function history() {
   emulate -L zsh
 
@@ -305,8 +299,6 @@ fkill() {
   fi
 }
 
-# kall() {  osascript -e 'tell application "System Events" to get name of (processes where background only is false)' | sed "s/iTerm2//;s/Google\ Chrome//;s/Todoist//;s/Slack//;s/1pass//;s/Calendar//;s/Hammerspoon//;s/Karabiner-Elements//;s/Notion//;" | tr , "\n" | xargs -I {} osascript -e 'quit app "{}"' \; }
-
 #ack
 vack() {
   if [ -n "$2" ] ; then
@@ -330,11 +322,6 @@ vfind() {
 }
 
 
-todoistsync() {
-  todoist sync;
-  todoist list --filter "today" | grep "Linktree" | cut -f12- -d" " | awk '{$1=$1;print}' | pbcopy;
-}
-
 # Url decode / encode
 url_decode() { php -r "echo urldecode(\"$1\");" }
 url_encode() { php -r "echo urlencode(\"$1\");" }
@@ -342,14 +329,6 @@ url_encode() { php -r "echo urlencode(\"$1\");" }
 # alias urldecode='python -c "import sys, urllib as ul;  print ul.unquote_plus(sys.argv[1])"'
 # alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])"'
 
-notify() {
-  if [[ -z "$1" ]] then
-    TEXT="We made it!"
-  else
-    TEXT=$1
-  fi
-  osascript -e 'display notification "'$TEXT'" with title "Script Completed"' 
-}
 
 showcsv() {
   column -s, -t < $1 | less -#2 -N -S
@@ -361,13 +340,29 @@ amazonmeta() {
 }
 
 if [[ "`uname -s`" = "Darwin" ]]; then
-openChrome() {
-  FLAGS=''; if [ -z "$3" ] ; then FLAGS="$3"; fi;
-  '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' $1 \
-  "$FLAGS" \
-  --profile-directory=PROFILE\ "$2" \
-  &>/dev/null &
-}
+  openChrome() {
+    FLAGS=''; if [ -z "$3" ] ; then FLAGS="$3"; fi;
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' $1 \
+    "$FLAGS" \
+    --profile-directory=PROFILE\ "$2" \
+    &>/dev/null &
+  }
+  notify() {
+    if [[ -z "$1" ]] then
+      TEXT="We made it!"
+    else
+      TEXT=$1
+    fi
+    osascript -e 'display notification "'$TEXT'" with title "Script Completed"' 
+  }
+
+# kall() {  osascript -e 'tell application "System Events" to get name of (processes where background only is false)' | sed "s/iTerm2//;s/Google\ Chrome//;s/Todoist//;s/Slack//;s/1pass//;s/Calendar//;s/Hammerspoon//;s/Karabiner-Elements//;s/Notion//;" | tr , "\n" | xargs -I {} osascript -e 'quit app "{}"' \; }
+
+  todoistsync() {
+    todoist sync;
+    todoist list --filter "today" | grep "Linktree" | cut -f12- -d" " | awk '{$1=$1;print}' | pbcopy;
+  }
+
 fi
 
 if [[ "`uname -s`" = "Linux" ]]; then
