@@ -1,6 +1,101 @@
 
 # 
-# GIT
+# Using commands
+#
+alias groot='cd $(git rev-parse --show-toplevel 2> /dev/null || echo -n ".")'
+alias gs="git status"
+
+gitlog() {
+  git log --pretty=format:'# %ad %H %s' --date=short --first-parent
+}
+
+gitlogwork() {
+ BRANCH="${1}"
+ echo "|datetime|commit|comment|" && echo "|---|---|---|" && git log ${BRANCH}.. --pretty=format:"|%ad|%h|%s|" --date=local
+}
+
+gitpu() {
+  BRANCHNAME=$(git branch --show-current)
+  if [ "${BRANCHNAME}" != 'develop' ] && [ "${BRANCHNAME}" != 'master' ] ; then
+    git push -u origin "${BRANCHNAME}";
+  fi
+}
+
+# Bitbucket
+gitpr() {
+  company=$(getProjectValue company)
+  project=$( git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p')
+
+  # transition to Code Review
+  JIRA_ID=$(git branch --show-current | awk -F'-' '{print $2;}')
+  jira transition "Dev Review" $JIRA_ID --noedit
+
+  if [ -z $project ] ; then
+    url=$(git config --local remote.origin.url);
+    project=$(echo "${url#*/}");
+  fi
+  branchname=$( git branch | grep '*' | cut -d ' ' -f2)
+  gitpu
+  openChromeWork 'https://bitbucket.org/'$company'/'$project'/pull-requests/new?source='$branchname'&t=1'
+}
+
+# Bitbucket
+gitprs() {
+  company=$(getProjectValue company)
+  project=$( git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p')
+  if [ -z $project ] ; then
+    url=$(git config --local remote.origin.url);
+    project=$(echo "${url#*/}");
+  fi
+  open 'https://bitbucket.org/'$company'/'$project'/pull-requests/'
+}
+
+gmc() {
+  merge_conflicts | fzf --multi --preview "head -$LINES {}" |  sed 's/ /\\ /g' | tr '\r\n' ' '
+}
+
+fmi() {
+  # Not 100% about eval but works
+  # Was having issues with pathnames with spaces
+  eval ${EDITOR} -p "$( gmc )";
+  # git mergetool $( echo "$doc" | tr '\r\n' ' ');
+}
+
+gall() {
+  if [[ -z "$1" ]] ; then
+    git add --all && git commit;
+  elif [[ -z "$2" ]] ; then
+    git add --all && git commit -m $1;
+  else
+    git add --all && git commit -m $1 -m $2;
+  fi;
+}
+
+ggrep() { git rev-list --all | xargs git grep "$1" }
+
+gbranch() {
+  branches=$(git branch -vv) &&
+  branch=$(echo "$branches" | fzf +m) &&
+  select=$(echo "$branch" | awk '{print $1}' | sed "s/.* //");
+  echo $select;
+}
+
+gchanges() {
+  #In Linux an M is placed before each change
+  changes=$(git status -s | sed -e "s/M *//" -e "s/?? //") &&
+  select=$(echo "$changes" | fzf -m)
+  echo "$select"
+}
+
+g--() {
+  CHANGES="$(gchanges)"
+  if [ "${CHANGES}" ]; then
+    git checkout -- ${CHANGES}
+  fi
+}
+
+#
+# Not used
 #
 
 gqc() {
@@ -10,8 +105,6 @@ gqc() {
   fi
   git add --all && git commit -m $temp --no-verify
 }
-
-
 
 gvmod() { _s $1; vim `git status --porcelain | sed -ne 's/^ M //p'` }
 # TODO: Make so if not in git root then go to correct location
@@ -24,16 +117,6 @@ gmcb() { #Git merge current branch
   git merge $current;
 }
 
-gstatus() {
-  #In Linux an M is placed before each change
-  changes=$(git status -s | sed -e "s/M *//" -e "s/?? //") &&
-  select=$(echo "$changes" | fzf -m)
-  echo "$select"
-}
-
-g--() {
-  git checkout -- $(gstatus)
-}
 
 gdiff() {
   if [ "$1" == "-h" ]; then
@@ -48,9 +131,6 @@ gdiff() {
     diff=$(git diff master...HEAD --name-only)
   else
     diff=$(git diff @{u}...HEAD --name-only)
-    # equal
-    # @{u}...HEAD
-    # git rev-parse --abbrev-ref --symbolic-full-name @{u}
   fi
   echo $diff
 }
@@ -88,32 +168,12 @@ merge_conflicts() {
   echo "$docs" 
 }
 
-gmc() {
-  merge_conflicts | fzf --multi --preview "head -$LINES {}" |  sed 's/ /\\ /g' | tr '\r\n' ' '
-}
-
-fmi() {
-  # Not 100% about eval but works
-  # Was having issues with pathnames with spaces
-  eval ${EDITOR} -p "$( gmc )";
-  # git mergetool $( echo "$doc" | tr '\r\n' ' ');
-}
 
 branch() {
   branches=$(git branch -vv) &&
   branch=$(echo "$branches" | fzf +m) &&
   b=$(echo "$branch" | sed "s/\* //" | awk '{print $1}' | sed "s/.* //")
   echo $b;
-}
-
-gall() {
-  if [[ -z "$1" ]] ; then
-    git add --all && git commit;
-  elif [[ -z "$2" ]] ; then
-    git add --all && git commit -m $1;
-  else
-    git add --all && git commit -m $1 -m $2;
-  fi;
 }
 
 gallup() {
@@ -132,19 +192,11 @@ gallup() {
 #   fi;
 # }
 
-ghistory() { git rev-list --all | xargs git grep "$1" }
-
-select_branch() {
-  branches=$(git branch -vv) &&
-  branch=$(echo "$branches" | fzf +m) &&
-  select=$(echo "$branch" | awk '{print $1}' | sed "s/.* //");
-  echo $select;
-}
 
 clean_branches() {
   select=$1
   if [ -z "$select" ]; then
-    select=$(select_branch)
+    select=$(gbranch)
   fi
 
   if [ "$select" == 'develop' ] || [ "$select" == 'master' ]; then
@@ -253,7 +305,7 @@ gsync() {
 
 # if gsync goes well - run to merge into branch of choice
 gtempmerge() {
-  select=$(select_branch);
+  select=$(gbranch);
   git branch temp;
   git checkout $select;
   git merge temp;
@@ -265,12 +317,6 @@ findtodos() {
   ag -R 'TODO|FIXME' --ignore-dir={vendor,node_modules,dist} $GROOT;
 }
 
-gpush() {
-# with ci
-if todos 2>&1 > /dev/null; then
-  echo 'TODOS EXIST'; 
-fi
-}
 
 # GIT heart FZF
 # -------------
@@ -367,60 +413,22 @@ unset -f bind-git-helper
 # Make key bindings
 bash $HOME/.zsh/bindkey
 
-# Bitbucket
-gitprs() {
-  company=$(getProjectValue company)
-  project=$( git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p')
-  if [ -z $project ] ; then
-    url=$(git config --local remote.origin.url);
-    project=$(echo "${url#*/}");
-  fi
-  open 'https://bitbucket.org/'$company'/'$project'/pull-requests/'
-}
 
-gitp() {
-  git push
-}
-
-gitpu() {
-  branchname=$(git branch | grep '*' | cut -d ' ' -f2)
-  if [ $branchname != 'develop' ] && [ $branchname != 'master' ] ; then
-    git push -u origin $branchname;
-  fi
-}
-
-gitpr() {
-  company=$(getProjectValue company)
-  project=$( git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p')
-
-  # transition to Code Review
-  JIRA_ID=$(git branch --show-current | awk -F'-' '{print $2;}')
-  jira transition "Dev Review" $JIRA_ID --noedit
-
-  if [ -z $project ] ; then
-    url=$(git config --local remote.origin.url);
-    project=$(echo "${url#*/}");
-  fi
-  branchname=$( git branch | grep '*' | cut -d ' ' -f2)
-  gitpu
-  openChromeWork 'https://bitbucket.org/'$company'/'$project'/pull-requests/new?source='$branchname'&t=1'
-}
-
-todos() {
-	PROJECT='divi'
-	PATH='$HOME/Documents/Notes/Work/$PROJECT'
-  TODOSELECT=$(awk 'function branchname(file) {
-    sub(".*/", "", file)
-    sub("\.md", "", file)
-    return file
-  }
-  /\- \[ \]/{print $0, "-------", branchname(FILENAME)}' $PATH/* | fzf)
-
-  BRANCHNAME=${TODOSELECT##*------- };
-
-  echo "git checkout $BRANCHNAME";
-  tvim "$BRANCHNAME";
-}
+# todos() {
+# 	PROJECT='divi'
+# 	PATH='$HOME/Documents/Notes/Work/$PROJECT'
+#   TODOSELECT=$(awk 'function branchname(file) {
+#     sub(".*/", "", file)
+#     sub("\.md", "", file)
+#     return file
+#   }
+#   /\- \[ \]/{print $0, "-------", branchname(FILENAME)}' $PATH/* | fzf)
+#
+#   BRANCHNAME=${TODOSELECT##*------- };
+#
+#   echo "git checkout $BRANCHNAME";
+#   tvim "$BRANCHNAME";
+# }
 
 tvim() {
   if [ "$1" ]; then
@@ -454,6 +462,3 @@ gitco() {
   git checkout $(grl);
 }
 
-gitlog() {
-  git log --pretty=format:'# %ad %H %s' --date=short --first-parent
-}
