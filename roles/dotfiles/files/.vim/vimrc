@@ -175,21 +175,21 @@ autocmd BufNewFile,BufRead *.tsx set filetype=typescriptreact
 autocmd BufNewFile,BufRead *.jsx set filetype=javascriptreact
 
 let s:uname = system("echo -n \"$(uname)\"")
+
 if !v:shell_error && s:uname == "Linux"
 
-  let g:clipboard = {
-        \   'name': 'win32yank-wsl',
-        \   'copy': {
-        \      '+': '/usr/local/bin/win32yank.exe -i --crlf',
-        \      '*': '/usr/local/bin/win32yank.exe -i --crlf',
-        \    },
-        \   'paste': {
-        \      '+': '/usr/local/bin/win32yank.exe -o --lf',
-        \      '*': '/usr/local/bin/win32yank.exe -o --lf',
-        \   },
-        \   'cache_enabled': 0,
-        \ }
+  " let g:clipboard = {
+  "       \   'name': 'win32yank-wsl',
+  "       \   'copy': {
+  "       \      '+': '/usr/local/bin/win32yank.exe -i --crlf',
+  "       \      '*': '/usr/local/bin/win32yank.exe -i --crlf',
+  "       \    },
+  "       \   'paste': {
+  "       \      '+': '/usr/local/bin/win32yank.exe -o --lf',
+  "       \      '*': '/usr/local/bin/win32yank.exe -o --lf',
+  "       \   },
+  "       \   'cache_enabled': 0,
+  "       \ }
 
 elseif !v:shell_error && s:uname == "Darwin"
-
 endif
