@@ -473,7 +473,7 @@ gitlog() {
 }
 
 gitlogwork() {
- BRANCH="$1"
- echo "|datetime|commit|name|comment|" && git log ${BRANCH}.. --pretty=format:"|%ad|%h|%an|%s|" --date=local
+ BRANCH="${1}"
+ echo "|datetime|commit|comment|" && echo "|---|---|---|" && git log ${BRANCH}.. --pretty=format:"|%ad|%h|%s|" --date=local
 }
 >>>>>>> e42f233e (feat: gitlogwork)
