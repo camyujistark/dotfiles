@@ -17,7 +17,10 @@
   "eslint.autoFixOnSave": true,
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true,
-  "snippets.ultisnips.directories": ["ultisnips", "~/.config/nvim/utils/snips"],
+  "snippets.ultisnips.directories": [
+    "ultisnips",
+    "~/.config/nvim/utils/snips"
+  ],
   "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": true,
   "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": true,
   "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": true,
