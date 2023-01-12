@@ -462,12 +462,6 @@ gitco() {
   git checkout $(grl);
 }
 
-<<<<<<< HEAD
-||||||| parent of e42f233e (feat: gitlogwork)
-gitlog() {
-  git log --pretty=format:'# %ad %H %s' --date=short --first-parent
-}
-=======
 gitlog() {
   git log --pretty=format:'# %ad %H %s' --date=short --first-parent
 }
@@ -476,4 +470,3 @@ gitlogwork() {
  BRANCH="${1}"
  echo "|datetime|commit|comment|" && echo "|---|---|---|" && git log ${BRANCH}.. --pretty=format:"|%ad|%h|%s|" --date=local
 }
->>>>>>> e42f233e (feat: gitlogwork)
