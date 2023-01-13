@@ -229,6 +229,10 @@ sudo snap install signal-desktop
 # FLATPAK
 ##
 
+# flameshot having issues on flathub. screen goes black
+# turns out the issue stil there for this install
+# sudo apt install flameshot
+
 flatpak install --assumeyes flathub \
   flathub org.flameshot.Flameshot \
   flathub com.spotify.Client \
