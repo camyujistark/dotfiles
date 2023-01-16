@@ -35,13 +35,15 @@ alias _k="cd ${HOME}/.config/karabiner"
 alias _n="${DOCS}/Notes"
 alias _s="${SITES}"
 alias _lsc="${SITES}/divi/lsc_odrs_app"
-alias _sa="${SITES}/site\ assets/"
 alias _sc="cd ${SCRIPT_PATH}"
 alias _t="${DOCS}/Tuts"
 alias _v="cd ${HOME}/.vim/plugin/mappings"
 alias _vb="cd ${HOME}/.vim/pack/bundle/opt"
 alias _zshrc="vim ${HOME}/.zshrc"
 alias reload="source ${HOME}/.zshrc"
+alias _es="vim ${HOME}/.config/espanso/match/base.yml"
+alias _km="vim ${HOME}/.config/kmonad/keyboard.kbd"
+
 #Chrome Refresh
 alias cr="${SCRIPT_PATH}/chromerefresh.sh"
 
