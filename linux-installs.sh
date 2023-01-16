@@ -93,6 +93,14 @@ sudo apt install docker-ce docker-ce-cli containerd.io -y
 #sudo systemctl status docker
 
 
+# Docker compose
+# https://devimalplanet.com/how-to-install-docker-compose-on-linux-pop-_os-19-04
+sudo curl \
+   -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" \
+   -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+
 ##
 # VIRTUALBOX
 ##
@@ -209,6 +217,9 @@ sudo dpkg -i splatmoji_1.2.0_all.deb
 
 # color picker
 sudo apt -y install gpick
+
+# screen record
+sudo apt install kazam
 
 # Normcap OCR dependencies
 sudo apt -y install build-essential tesseract-ocr tesseract-ocr-eng libtesseract-dev libleptonica-dev wl-clipboard
