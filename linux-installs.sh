@@ -195,6 +195,8 @@ sudo apt -y install silversearcher-ag
 sudo apt -y install trash-cli
 
 # espanso
+# https://github.com/espanso/espanso/
+# text expander
 if [ $XDG_SESSION_TYPE = "x11" ]; then
  wget https://github.com/federico-terzi/espanso/releases/download/v2.1.8/espanso-debian-wayland-amd64.deb
  sudo apt install ./espanso-debian-x11-amd64.deb
@@ -204,6 +206,8 @@ else
 fi
 
 # kmonad
+# keybroad layout modifier
+# https://github.com/kmonad/kmonad
 # wget -qO- https://get.haskellstack.org/ | sh - # do not need. download binaries
 # instead below. Update with neweset kmonad version
 wget https://github.com/kmonad/kmonad/releases/download/0.4.1/kmonad-0.4.1-linux kmonad
@@ -211,6 +215,8 @@ chmod +x kmonad
 sudo mv kmonad /usr/bin/local
 
 # splatmoji
+# emoji picker
+# https://github.com/cspeterson/splatmoji
 # https://hsps.in/post/amazing-emoji-keyboard-in-linux/
 wget https://github.com/cspeterson/splatmoji/releases/download/v1.2.0/splatmoji_1.2.0_all.deb
 sudo dpkg -i splatmoji_1.2.0_all.deb
@@ -219,9 +225,11 @@ sudo dpkg -i splatmoji_1.2.0_all.deb
 sudo apt -y install gpick
 
 # screen record
+# https://github.com/hzbd/kazam
 sudo apt install kazam
 
 # Normcap OCR dependencies
+# https://github.com/dynobo/normcap
 sudo apt -y install build-essential tesseract-ocr tesseract-ocr-eng libtesseract-dev libleptonica-dev wl-clipboard
 pip install normcap
 
@@ -239,10 +247,6 @@ sudo snap install signal-desktop
 ##
 # FLATPAK
 ##
-
-# flameshot having issues on flathub. screen goes black
-# turns out the issue stil there for this install
-# sudo apt install flameshot
 
 flatpak install --assumeyes flathub \
   flathub org.flameshot.Flameshot \
