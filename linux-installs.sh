@@ -251,7 +251,8 @@ sudo snap install signal-desktop
 flatpak install --assumeyes flathub \
   flathub org.flameshot.Flameshot \
   flathub com.spotify.Client \
-  flathub com.github.hluk.copyq \
+  # pop os comes with this already
+  # flathub com.github.hluk.copyq \
   flathub md.obsidian.Obsidian \
   flathub net.ankiweb.Anki \
   flathub com.calibre_ebook.calibre \
