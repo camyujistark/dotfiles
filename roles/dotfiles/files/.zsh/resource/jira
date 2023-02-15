@@ -88,7 +88,7 @@ getConfigKeys() {
   cat ~/.jira.d/config.yml | shyaml keys $1
 }
 
-JIRA_USERNAMES=$(getConfigKeys users)
+# JIRA_USERNAMES=$(getConfigKeys users)
 
 getWorkflowStatus() {
   LIST=$1
@@ -178,7 +178,7 @@ jr () {
 jassign() {
   local JIRA_ID=$1
   if [[ $JIRA_ID ]]; then
-    local ASSIGNEE="users.$(echo $JIRA_USERNAMES | fzf)"
+    # local ASSIGNEE="users.$(echo $JIRA_USERNAMES | fzf)"
     local ASSIGNEE_ID=$(getConfigValue $ASSIGNEE)
     jira edit --noedit "$JIRA_ID" -o assigneeid="$ASSIGNEE_ID"
   else
