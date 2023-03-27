@@ -43,6 +43,8 @@ alias _zshrc="vim ${HOME}/.zshrc"
 alias reload="source ${HOME}/.zshrc"
 alias _es="vim ${HOME}/.config/espanso/match/base.yml"
 alias _km="vim ${HOME}/.config/kmonad/keyboard.kbd"
+alias _htpc="cd ${HOME}/Docker/htpc-download-box"
+alias _media="cd /media/camstark/Expansion"
 
 #Chrome Refresh
 alias cr="${SCRIPT_PATH}/chromerefresh.sh"
