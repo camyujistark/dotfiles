@@ -76,3 +76,5 @@ fi
 
 # 1pass
 export SSH_AUTH_SOCK=~/.1password/agent.sock
+
+EDITOR=vim
