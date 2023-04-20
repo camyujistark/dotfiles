@@ -100,6 +100,9 @@ set rtp+=/home/cam/.fzf
 
 if &loadplugins
   if has('packages')
+    packadd! plenary.nvim
+    packadd! diffview.nvim
+    packadd! nvim-web-devicons
     packadd! coc.nvim
     packadd! gruvbox
     packadd! copilot.vim
@@ -157,7 +160,6 @@ endif
 " package "ftdetect" directories won't be evaluated.
 filetype indent plugin on
 let g:jsx_ext_required = 0
-syntax on
 
 " After this file is sourced, plugin code will be evaluated.
 " See ~/.vim/after for files evaluated after that.

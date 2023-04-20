@@ -239,3 +239,12 @@
 [submodule "roles/dotfiles/files/.vim/pack/bundle/opt/copilot.vim"]
 	path = roles/dotfiles/files/.vim/pack/bundle/opt/copilot.vim
 	url = https://github.com/github/copilot.vim
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/diffview.nvim"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/diffview.nvim
+	url = https://github.com/sindrets/diffview.nvim
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/nvim-web-devicons"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/nvim-web-devicons
+	url = https://github.com/nvim-tree/nvim-web-devicons
+[submodule "roles/dotfiles/files/.vim/pack/bundle/opt/plenary.nvim"]
+	path = roles/dotfiles/files/.vim/pack/bundle/opt/plenary.nvim
+	url = https://github.com/nvim-lua/plenary.nvim
