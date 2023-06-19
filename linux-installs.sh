@@ -26,7 +26,10 @@ sudo apt -y install zsh
 
 # vim
 sudo apt -y install vim
-sudo apt -y install neovim
+# Need this to get the latest neovim
+sudo add-apt-repository ppa:neovim-ppa/stable
+sudo apt-get update
+sudo apt-get install neovim
 npm install -g neovim
 
 
@@ -235,6 +238,20 @@ pip install normcap
 
 
 ##
+# VSCODE
+##
+
+sudo apt-get install wget gpg
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+rm -f packages.microsoft.gpg
+
+sudo apt install apt-transport-https
+sudo apt update
+sudo apt install code
+
+##
 # SNAP
 # - not sure if I want to use snap.. but some programs dont have deb packages
 ##
@@ -259,7 +276,7 @@ flatpak install --assumeyes flathub \
   flathub org.mozilla.firefox \
   flathub com.usebottles.bottles \
   flathub com.valvesoftware.Steam \
-  flathub com.visualstudio.code \
+  # flathub com.visualstudio.code \ -- Did not install correctly
   flathub org.blender.Blender \
   flathub org.godotengine.Godot \
   flathub org.libretro.RetroArch \
