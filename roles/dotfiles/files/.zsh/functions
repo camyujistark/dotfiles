@@ -59,17 +59,6 @@ function mosh() {
   fi
 }
 
-function mvim() {
-  emulate -L zsh
-
-  # Makes user-installed fonts visible to MacVim.
-  if which reattach-to-user-namespace &> /dev/null ; then
-    reattach-to-user-namespace mvim
-  else
-    command mvim
-  fi
-}
-
 function scratch() {
   local SCRATCH=$(mktemp -d)
   echo 'Spawing subshell in scratch directory:'
@@ -392,3 +381,11 @@ source $HOME/.zsh/resource/jira
 # source $HOME/.zsh/resource/ubuntu
 # source $HOME/.zsh/resource/twenty4
 
+
+sync() {
+  rsync -avhr --exclude="node_modules" --exclude=".vagrant" cam@alexander-street.local:~/data/sites ~/Documents
+}
+
+sync_up() {
+  rsync -avhr --exclude="node_modules" --exclude=".vagrant" ~/Documents/sites cam@alexander-street.local:~/data
+}
