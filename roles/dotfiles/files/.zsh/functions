@@ -291,9 +291,9 @@ fkill() {
 #ack
 vack() {
   if [ -n "$2" ] ; then
-    docs=$(ag --nobreak --nonumbers --noheading -l $2 "$1" )
+    docs=$(ag --nobreak --nonumbers --noheading --hidden --ignore .git --ignore node_modules -l $2 "$1" )
   else
-    docs=$(ag --nobreak --nonumbers --noheading -l "$1") &&
+    docs=$(ag --nobreak --nonumbers --noheading --hidden --ignore .git --ignore node_modules -l "$1") &&
     fi
   doc=$(echo "$docs" | fzf --multi --preview "head -$LINES {}" ) &&
   vim $( echo "$doc" | tr '\r\n' ' ');
