@@ -2,7 +2,7 @@
 # Command aliases
 #
 
-SCRIPT_PATH="$HOME/Documents/Scripts"
+SCRIPT_PATH="${HOME}/Documents/scripts"
 
 alias vim=nvim
 alias groot='cd $(git rev-parse --show-toplevel 2> /dev/null || echo -n ".")'
@@ -18,7 +18,7 @@ fi
 # Global aliases
 # (work at any position within the command line)
 DOCS="cd ${HOME}/Documents"
-SITES="${DOCS}/Sites"
+SITES="${DOCS}/sites"
 alias ls="ls --color"
 alias _a="vim ${HOME}/.zsh/aliases"
 alias _ass="${DOCS}/Assets"
@@ -43,7 +43,6 @@ alias _zshrc="vim ${HOME}/.zshrc"
 alias reload="source ${HOME}/.zshrc"
 alias _es="vim ${HOME}/.config/espanso/match/base.yml"
 alias _km="vim ${HOME}/.config/kmonad/keyboard.kbd"
-alias _htpc="cd ${HOME}/Docker/htpc-download-box"
 alias _media="cd /media/camstark/Expansion"
 
 #Chrome Refresh
@@ -55,9 +54,7 @@ if [[ "`uname -a`" == *"Darwin"* ]]; then
 elif [[ "`uname -a`" == *"microsoft"* ]]; then
   # https://ostechnix.com/how-to-use-pbcopy-and-pbpaste-commands-on-linux/
   alias open='explorer.exe'
-  alias ahkconfig="cd /home/cam/Documents/Scripts/windows-hotkeys"
+  alias ahkconfig="cd /home/cam/Documents/scripts/windows-hotkeys"
 elif [[ "`uname -a`" == *"Linux"* ]]; then
   alias copy="xclip -i -selection clibpboard"
 fi
-
-
