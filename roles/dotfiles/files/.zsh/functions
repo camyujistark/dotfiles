@@ -391,5 +391,5 @@ sync_up() {
 }
 
 rr() {
-  bash "/Users/camstark/Library/CloudStorage/GoogleDrive-cam@cystark.com.au/My Drive/Coding Files/Scripts/stream-deck/linux/rr.sh" "$@"
+  bash "$HOME/Documents/Scripts/stream-deck/linux/rr.sh" "$@"
 }

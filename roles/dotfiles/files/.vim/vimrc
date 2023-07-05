@@ -104,9 +104,6 @@ if &loadplugins
     packadd! diffview.nvim
     packadd! nvim-web-devicons
     packadd! coc.nvim
-    packadd! gruvbox
-    packadd! copilot.vim
-    packadd! base16-vim
     packadd! fzf
     packadd! fzf.vim
     packadd! ferret
