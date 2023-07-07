@@ -736,14 +736,14 @@ return {
     hs.hotkey.bind(mash, ",", function() hs.application.launchOrFocusByBundleID(bundleIDs.calendar) end)
     hs.hotkey.bind(mash, ".", function() hs.application.launchOrFocusByBundleID(bundleIDs.finder) end)
     --left
-    hs.hotkey.bind(mash, "a", function() chrome_switch_to(chromeProfiles.side) end)
+    hs.hotkey.bind(mash, "a", function() chrome_switch_to(chromeProfiles.home) end)
     hs.hotkey.bind(mash, "o", function() hs.application.launchOrFocusByBundleID(bundleIDs.iterm2) end)
     hs.hotkey.bind(mash, "e", function() hs.application.launchOrFocusByBundleID(bundleIDs.obsidian) end)
-    hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocusByBundleID(bundleIDs.raindropio) end)
+    hs.hotkey.bind(mash, "q", function() hs.application.launchOrFocus('Visual Studio Code') end)
     hs.hotkey.bind(mash, "i", function() hs.application.launchOrFocusByBundleID(bundleIDs.todoist) end)
 
     hs.hotkey.bind(mash, ";", function() chrome_switch_to(chromeProfiles.home) end)
-    hs.hotkey.bind(mash, "q", function() hs.application.launchOrFocus('Visual Studio Code') end)
+    hs.hotkey.bind(mash, "u", function() hs.application.launchOrFocusByBundleID(bundleIDs.raindropio) end)
     hs.hotkey.bind(mash, 'j', function() hs.application.launchOrFocusByBundleID(bundleIDs.slack) end)
     hs.hotkey.bind(mash, 'k', function() hs.application.launchOrFocusByBundleID(bundleIDs.spotify) end)
     hs.hotkey.bind(mash, 'x', function() hs.application.launchOrFocusByBundleID(bundleIDs.whatsapp) end)
@@ -811,6 +811,7 @@ return {
     hs.hotkey.bind(mash, 'l', turnOnVerticalMode, setGridLayoutInit)
 
     -- LAYOUTS --
+    hs.hotkey.bind(mash, "1", function()  hs.execute("bash $HOME/Documents/Scripts/stream-deck/linux/rr.sh current end") end)
     -- hs.hotkey.bind(mash, '1', resetAllFormations, setGridLayoutInit)
     -- hs.hotkey.bind(mash, '2', codingFormation, setGridLayoutInit)
     -- hs.hotkey.bind(mash, '3', tutorialMode, setGridLayoutInit)

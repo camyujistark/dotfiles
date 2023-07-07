@@ -468,12 +468,15 @@ gitlog() {
 
 gitlogwork() {
  BRANCH="${1}"
- echo "|datetime|commit|comment|" && echo "|---|---|---|" && git log ${BRANCH}.. --pretty=format:"|%ad|%h|%s|" --date=local
-}
-
-gitlogworknodate() {
- BRANCH="${1}"
- echo "|commit|comment|" && echo "|---|---|" && git log ${BRANCH}.. --pretty=format:"|%h|%s|" --date=local
+ TIME="`date +"%H:%M"`"
+ CURRENT_FILE="$(cat "$HOME/Documents/scripts/stream-deck/.current-file")"
+ echo "#### ${TIME}" >> "$CURRENT_FILE";
+ echo "" >> "$CURRENT_FILE";
+ echo "##### PR Request" >> "$CURRENT_FILE";
+ echo "" >> "$CURRENT_FILE";
+ echo "|commit|comment|" >> "$CURRENT_FILE";
+ echo "|---|---|"  >> "$CURRENT_FILE";
+ git log ${BRANCH}.. --pretty=format:"|%h|%s|" --date=local >> "$CURRENT_FILE";
 }
 
 gfetchmain() {
