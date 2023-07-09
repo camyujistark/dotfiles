@@ -103,6 +103,7 @@ if &loadplugins
     packadd! plenary.nvim
     packadd! diffview.nvim
     packadd! nvim-web-devicons
+    packadd! catpuccin-vim
     packadd! coc.nvim
     packadd! fzf
     packadd! fzf.vim

@@ -391,5 +391,5 @@ sync_up() {
 }
 
 rr() {
-  bash "$HOME/Documents/Scripts/stream-deck/linux/rr.sh" "$@"
+  bash "$HOME/Documents/scripts/stream-deck/linux/rr.sh" "$@"
 }
