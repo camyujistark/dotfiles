@@ -78,3 +78,8 @@ fi
 export SSH_AUTH_SOCK=~/.1password/agent.sock
 
 EDITOR=vim
+
+if [ -f "${HOME}/dotfiles/.env" ]
+then
+  export $(cat "${HOME}/dotfiles/.env" | xargs)
+fi
