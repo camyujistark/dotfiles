@@ -1,6 +1,7 @@
 *.pyc
 /media
 /python
+.env
 /roles/dotfiles/files/.gh.json
 /roles/dotfiles/files/.hammerspoon/iterm.lua
 /roles/dotfiles/files/.imapfilter/private.lua
