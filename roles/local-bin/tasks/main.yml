@@ -1,0 +1,7 @@
+---
+- name: local bin | symlink local bin files
+  file: src={{ ansible_env.PWD }}/roles/local-bin/files/{{ item }}
+        path=~/.local/bin/{{ item }}
+        state=link
+        force=yes
+loop: '{{ local_bin_files }}'

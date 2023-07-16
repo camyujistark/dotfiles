@@ -1,0 +1,4 @@
+---
+local_bin_files:
+  - tmux-sesionizer.sh
+  - k2-switch-to-bluetooth.sh
