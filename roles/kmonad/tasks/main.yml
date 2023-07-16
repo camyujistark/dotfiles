@@ -1,0 +1,7 @@
+---
+- name: kmonad | symlink kmonad files
+  file: src={{ ansible_env.PWD }}/roles/kmonad/files/{{ item }}
+        path=~/.config/kmonad/{{ item }}
+        state=link
+        force=yes
+loop: '{{ kmonad_files }}'

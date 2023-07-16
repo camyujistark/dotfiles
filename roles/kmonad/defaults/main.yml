@@ -1,0 +1,4 @@
+---
+kmonad_files:
+  - keyboard.kbd
+  - kmonad.service
