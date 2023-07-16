@@ -3,12 +3,18 @@
 " <Leader><Leader> -- Open last buffer.
 nnoremap <Leader><Leader> <C-^>
 
-noremap <Leader>1  :silent !npx prettier --write %<CR>
-noremap <Leader>2  :silent !bash ./main.sh -x -m %<CR>
+noremap <Leader>9  :lua require("harpoon.ui").toggle_quick_menu()<CR>
+noremap <Leader>0  :lua require("harpoon.mark").add_file()<CR>
+noremap <Leader>1  :lua require("harpoon.ui").nav_file(1)<CR>
+noremap <Leader>2  :lua require("harpoon.ui").nav_file(2)<CR>
+noremap <Leader>3  :lua require("harpoon.ui").nav_file(3)<CR>
+noremap <Leader>4  :lua require("harpoon.ui").nav_file(4)<CR>
+noremap <Leader>5  :lua require("harpoon.ui").nav_file(5)<CR>
 
 nnoremap <Leader>t :Files<CR>
 nnoremap <Leader>b :Buffers<CR>
 nnoremap <Leader>o :only<CR>
+noremap <Leader>p  :silent !npx prettier --write %<CR>
 
 " <Leader>p -- Show the path of the current file (mnemonic: path; useful when
 " you have a lot of splits and the status line gets truncated).

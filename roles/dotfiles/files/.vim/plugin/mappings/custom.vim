@@ -60,4 +60,6 @@ let g:mkdx#settings     = { 'highlight': { 'enable': 1 },
                         \ 'fold': { 'enable': 1 } }
 let g:polyglot_disabled = ['markdown'] " for vim-polyglot users, it loads Plasticboy's markdown
                                        " plugin which unfortunately interferes with mkdx list indentation.
-                                       "
+
+let g:javascript_plugin_jsdoc = 1
+let g:doge_mapping_comment_jump_forward = "<c-y>"
