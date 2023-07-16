@@ -100,6 +100,9 @@ set rtp+=/home/cam/.fzf
 
 if &loadplugins
   if has('packages')
+    packadd! harpoon
+    packadd! vim-doge
+    packadd! vim-jsdoc
     packadd! plenary.nvim
     packadd! diffview.nvim
     packadd! nvim-web-devicons
