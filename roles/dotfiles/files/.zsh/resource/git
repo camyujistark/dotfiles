@@ -474,6 +474,8 @@ gitlogwork() {
  echo "" >> "$CURRENT_FILE";
  echo "##### PR Request" >> "$CURRENT_FILE";
  echo "" >> "$CURRENT_FILE";
+ echo "Branch: $(git branch --show-current)" >> "$CURRENT_FILE";
+ echo "" >> "$CURRENT_FILE";
  echo "|commit|comment|" >> "$CURRENT_FILE";
  echo "|---|---|"  >> "$CURRENT_FILE";
  git log ${BRANCH}.. --pretty=format:"|%h|%s|" --date=local >> "$CURRENT_FILE";
