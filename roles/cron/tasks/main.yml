@@ -3,3 +3,6 @@
   cron: name="morning-routine" hour="8" minute="30" job="$HOME/Documents/scripts/stream-deck/run.sh "action-checklist" "morning-checklist"
 - name: cron | schedule streamlink evening checklist 
   cron: name="morning-routine" hour="18" minute="30" job="$HOME/Documents/scripts/stream-deck/run.sh "action-checklist" "evening-checklist"
+- name: cron | schedule streamlink weekly checklist 
+  cron: name="weekly-routine" hour="8" minute="00" day="MON" job="$HOME/Documents/scripts/stream-deck/run.sh "action-checklist" "weekly-checklist"
+
