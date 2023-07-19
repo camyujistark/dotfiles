@@ -79,8 +79,21 @@ fi
 export SSH_AUTH_SOCK=~/.1password/agent.sock
 
 EDITOR=vim
+<<<<<<< HEAD
 
 if [ -f "${HOME}/dotfiles/.env" ]
+||||||| parent of 331955fc (fix: update path to .env)
+if [ ! -f .env ]
+=======
+
+if [ -f ~/dotfiles/.env ]
+>>>>>>> 331955fc (fix: update path to .env)
 then
+<<<<<<< HEAD
   export $(cat "${HOME}/dotfiles/.env" | xargs)
+||||||| parent of 331955fc (fix: update path to .env)
+  export $(cat .env | xargs)
+=======
+  export $(cat ~/dotfiles/.env | xargs)
+>>>>>>> 331955fc (fix: update path to .env)
 fi
