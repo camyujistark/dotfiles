@@ -52,6 +52,7 @@ export NVM_DIR="$HOME/.nvm"
 
 source $HOME/.zsh/aliases
 source $HOME/.zsh/functions
+source $HOME/.zsh/fzf
 source $HOME/.zsh/path
 
 # FZF
