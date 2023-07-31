@@ -393,3 +393,11 @@ sync_up() {
 rr() {
   bash "$HOME/Documents/scripts/stream-deck/linux/rr.sh" "$@"
 }
+
+slugify() {
+  if [[ "`uname -s`" = "Darwin" ]]; then
+    echo "$1" | iconv -t ascii//TRANSLIT | sed -E -e 's/[^[:alnum:]]+/-/g' -e 's/^-+|-+$//g' | tr '[:upper:]' '[:lower:]'
+  else
+    echo "$1" | iconv -t ascii//TRANSLIT | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z
+  fi
+}
