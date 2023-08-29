@@ -57,4 +57,5 @@ elif [[ "`uname -a`" == *"microsoft"* ]]; then
   alias ahkconfig="cd /home/cam/Documents/scripts/windows-hotkeys"
 elif [[ "`uname -a`" == *"Linux"* ]]; then
   alias copy="xclip -i -selection clibpboard"
+  alias google-chrome="flatpak run com.google.Chrome"
 fi
