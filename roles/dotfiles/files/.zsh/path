@@ -9,10 +9,9 @@ PATH=$PATH:$HOME/.vim/pack/bundle/opt/vcs-jump/bin
 test -n "$N_PREFIX" && PATH=$PATH:$N_PREFIX/bin
 
 PATH=$PATH:$HOME/.cargo/bin
-export GOROOT=/usr/local/go-1.19
+export GOROOT=/usr/local/go
 export GOPATH=$HOME/projects/go
 export GOBIN=$GOPATH/bin
-
 PATH=$PATH:$GOROOT/bin
 PATH=$PATH:$HOME/projects/go/bin
 PATH=$PATH:$HOME/.composer/vendor/bin/
