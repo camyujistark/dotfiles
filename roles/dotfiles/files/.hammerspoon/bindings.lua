@@ -811,15 +811,18 @@ return {
     hs.hotkey.bind(mash, 'l', turnOnVerticalMode, setGridLayoutInit)
 
     -- LAYOUTS --
-    hs.hotkey.bind(mash, "1", function()  hs.execute("bash $HOME/Documents/Scripts/stream-deck/linux/rr.sh current end") end)
+    -- hs.hotkey.bind(mash, "`", function()  hs.execute("bash $HOME/Documents/Scripts/stream-deck/linux/rr.sh thought", true) end)
+    -- hs.hotkey.bind(mash, "1", function()  hs.execute("bash $HOME/Documents/Scripts/stream-deck/linux/rr.sh seedbox", true) end)
+    -- hs.hotkey.bind(mash, "2", function()  hs.execute("bash $HOME/Documents/Scripts/stream-deck/linux/rr.sh", true) end)
+    -- hs.hotkey.bind(mash, "3", function()  hs.execute("/usr/local/bin/bash $HOME/Documents/Scripts/stream-deck/linux/rr.sh current end >> $HOME/Documents/Scripts/stream-deck/run.log") end)
     -- hs.hotkey.bind(mash, '1', resetAllFormations, setGridLayoutInit)
     -- hs.hotkey.bind(mash, '2', codingFormation, setGridLayoutInit)
     -- hs.hotkey.bind(mash, '3', tutorialMode, setGridLayoutInit)
     -- hs.hotkey.bind(mash, '4', fourSquareMode, setGridLayoutInit)
-    hs.hotkey.bind(mash, '9', turnOnWindowFocus, fullScreenInit)
-    hs.hotkey.bind(mash, '0', (function() setGridLayoutInit('one') end))
-    hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('two') end))
-    hs.hotkey.bind(mash, ']', (function() setGridLayoutInit('three') end))
+    -- hs.hotkey.bind(mash, '9', turnOnWindowFocus, fullScreenInit)
+    -- hs.hotkey.bind(mash, '0', (function() setGridLayoutInit('one') end))
+    -- hs.hotkey.bind(mash, '[', (function() setGridLayoutInit('two') end))
+    -- hs.hotkey.bind(mash, ']', (function() setGridLayoutInit('three') end))
 
     -- hs.hotkey.bind(mash, '-', function()
     --   local layout
