@@ -451,7 +451,7 @@ gitlog() {
 gitlogwork() {
  BRANCH="${1}"
  TIME="`date +"%H:%M"`"
- CURRENT_FILE="$(cat "$HOME/Documents/scripts/stream-deck/.current-file")"
+ CURRENT_FILE="${HOME}/Documents/Notes/$(cat "$HOME/Documents/scripts/stream-deck/.current-file")"
  echo "#### ${TIME}" >> "$CURRENT_FILE";
  echo "" >> "$CURRENT_FILE";
  echo "##### PR Request" >> "$CURRENT_FILE";
