@@ -1,0 +1,133 @@
+# espanso match file
+
+# For a complete introduction, visit the official docs at: https://espanso.org/docs/
+
+# You can use this file to define the base matches (aka snippets)
+# that will be available in every application when using espanso.
+
+# Matches are substitution rules: when you type the "trigger" string
+# it gets replaced by the "replace" string.
+matches:
+  # Simple text replacement
+  - trigger: ":espanso"
+    replace: "Hi there!"
+
+  # NOTE: espanso uses YAML to define matches, so pay attention to the indentation!
+
+  # But matches can also be dynamic:
+
+  # Print the current date
+  - trigger: ":today"
+    replace: "{{mydate}}"
+    vars:
+      - name: mydate
+        type: date
+        params:
+            format: "%Y-%m-%d"
+
+  - trigger: ":tomorrow"
+    replace: "{{mytime}}"
+    vars:
+      - name: mytime
+        type: date
+        params:
+          format: "%Y-%m-%d"
+          offset: 86400
+
+  - trigger: ":yesterday"
+    replace: "{{mytime}}"
+    vars:
+      - name: mytime
+        type: date
+        params:
+          format: "%Y-%m-%d"
+          offset: -86400
+
+  # Print current time
+  - trigger: ":time"
+    replace: "{{mytime}}"
+    vars:
+      - name: mytime
+        type: date
+        params:
+          format: "%H:%M"
+  
+  # Print current time
+  - trigger: ":#time"
+    replace: "#### {{mytime}}"
+    vars:
+      - name: mytime
+        type: date
+        params:
+          format: "%H:%M"
+
+  # Print the output of a shell command
+  - trigger: ":~time"
+    replace: "{{output}}"
+    vars:
+      - name: output
+        type: shell
+        params:
+          cmd: "echo $(date +\"%H\"):$(printf \"%0.2d\" $(( (10#$(date +'%M') / 15) * 15 )))"
+
+  # Standup
+  - trigger: ":standup"
+    replace: "###$|$\n#### {{time}}\n\n##### Yesterday\n- a \n\n##### Doing today\n- b\n\n##### Dinner\n- c\n\n"
+    vars:
+      - name: time
+        type: date
+        params:
+          format: "%H:%M"
+
+  # todo
+  - trigger: ":Todo"
+    replace: " $|$ [☑️:: {{mydate}}]"
+    vars:
+      - name: mydate
+        type: date
+        params:
+            format: "%Y-%m-%d"
+
+  - trigger: ":todo"
+    replace: "- [ ] $|$ [☑️:: {{mydate}}]"
+    vars:
+      - name: mydate
+        type: date
+        params:
+            format: "%Y-%m-%d"
+
+  - trigger: ":complete"
+    replace: "[✅: {{mydate}}]"
+    vars:
+      - name: mydate
+        type: date
+        params:
+            format: "%Y-%m-%d"
+
+  # Print the output of a shell command
+  - trigger: ":dow"
+    replace: "{{output}}"
+    vars:
+      - name: output
+        type: shell
+        params:
+          cmd: "date +%A"
+
+  # Emoji
+  - trigger: ":cross"
+    replace: "❌"
+
+  - trigger: ":tick"
+    replace: "✔️"
+
+  - trigger: ":green"
+    replace: "🟩"
+
+  - trigger: ":orange"
+    replace: "🟧"
+
+  - trigger: ":red"
+    replace: "🟥"
+
+
+  # And much more! For more information, visit the docs: https://espanso.org/docs/
