@@ -1,6 +1,6 @@
 
 (defcfg
-  input  (device-file "/dev/input/event2")
+  input  (device-file "/dev/input/by-id/usb-Keychron_Keychron_K2-event-kbd")
   output (uinput-sink "My KMonad output")
 	fallthrough true
   allow-cmd true
@@ -17,13 +17,15 @@
 )
 
 (defalias 
-  arrows  (tap-hold 300 spc (layer-toggle arrowslayer))
+  arrows  (tap-next-release spc (layer-toggle arrowslayer))
   super  (layer-toggle superlayer)
   cpy C-i
   cut C-b
-  pst C-.
+  pst C->
   close C-,
   all C-a
+  open C-s
+  ctrlp C-r
   mup M-up
   mdown M-down
   mleft M-left
@@ -65,6 +67,7 @@
   mr M-r
   mt M-t
   my M-y
+  cy C-y
   mu M-u
   mi M-i
   co C-o
@@ -79,7 +82,7 @@
   mg M-g
   mh M-h
   mj M-j
-  mk M-k
+  mk C-k
   ml M-l
   m; M-;
   m' M-'
@@ -116,8 +119,8 @@
 (deflayer superlayer
   _ @mf1  @mf2  @mf3  @mf4  @mf5  @mf6  previoussong nextsong mute playpause vold volu  _  _  _
   @mgrv  @m1  @m2  @m3  @m4  @m5  @m6  @m7  @m8  @m9  @m0  @m-  @m=  @cbspc             _  _  _
-  @mtab  @mq  @mw  @me  @mr  @mt  @my  @mu  @cpy  @co  @cp  @m[  @m]  @m\\              _  _  caps
-  _  @all  @ms  @md  @mf  @mg  @mh  @mj  @mk  @ml  @m;  @m' @menter
+  @mtab  @mq  @mw  @me  @ctrlp  @mt  @cy  @mu  @cpy  @co  @cp  @m[  @m]  @m\\              _  _  caps
+  _  @all  @open  @md  @mf  @mg  @mh  @mj  @mk  @ml  @m;  @m' @menter
   _  @mz  @mx  @mc  @cv  @cut  @mn  @mm  @close  @pst  @c/ _                                 @mup 
   @mctl  @malt  _     @launcher      _  @malt  @mctl  _                           @mleft @mdown  @mright 
 )
