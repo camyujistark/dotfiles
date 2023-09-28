@@ -105,14 +105,20 @@ sudo curl \
 sudo chmod +x /usr/local/bin/docker-compose
 
 ##
-# VIRTUALBOX
+# VIRTUALBOX 6.1
 ##
 
-# virtualbox
-sudo apt -y install virtualbox 
-sudo apt -y install virtualbox—ext–pack 
+sudo echo "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle-virtualbox-2016.gpg] https://download.virtualbox.org/virtualbox/debian jammy contrib" >> /etc/apt/sources.list
 
-# vagrant
+wget -O- https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo gpg --dearmor --yes --output /usr/share/keyrings/oracle-virtualbox-2016.gpg
+
+sudo apt-get update
+sudo apt-get install virtualbox-6.1
+
+##
+# Vagrant 2.2.9
+##
+
 curl -O https://releases.hashicorp.com/vagrant/2.2.9/vagrant_2.2.9_x86_64.deb
 sudo apt -y install ./vagrant_2.2.9_x86_64.deb 
 sudo mkdir /etc/vbox;
@@ -256,9 +262,9 @@ sudo apt install code
 # - not sure if I want to use snap.. but some programs dont have deb packages
 ##
 
-sudo apt-get install snap
-sudo snap install rambox
-sudo snap install signal-desktop
+# ditch this
+# sudo apt-get install snap
+# sudo snap install rambox
 
 
 ##
@@ -269,7 +275,7 @@ flatpak install --assumeyes flathub \
   flathub org.flameshot.Flameshot \
   flathub com.spotify.Client \
   # pop os comes with this already
-  # flathub com.github.hluk.copyq \
+  flathub com.github.hluk.copyq \ # -- need to check
   flathub md.obsidian.Obsidian \
   flathub net.ankiweb.Anki \
   flathub com.calibre_ebook.calibre \
@@ -277,13 +283,19 @@ flatpak install --assumeyes flathub \
   flathub com.usebottles.bottles \
   flathub com.valvesoftware.Steam \
   # flathub com.visualstudio.code \ -- Did not install correctly
-  flathub org.blender.Blender \
+  flathub org.blender.Blender \ # -- need to check
   flathub org.godotengine.Godot \
   flathub org.libretro.RetroArch \
   flathub org.videolan.VLC\
-  flathub dbeaver.DBeaverCommunity \
-  flathub org.gnome.DejaDup \
-  flathub com.getpostman.Postman
+  # flathub dbeaver.DBeaverCommunity \
+  # flathub org.gnome.DejaDup \
+  flathub com.getpostman.Postman #-- need to check
+ # signal
+ # whats app
+ # obsidian
+ # Todoist
+ # https://www.insynchq.com/downloads/linux
+ # zoom
 
 ##
 # Might come back to
@@ -291,4 +303,19 @@ flatpak install --assumeyes flathub \
 
 # Guake. like the F12 drop down terminal
 # sudo apt -y install pinstall guake 
+
+# setting updates
+# gsettings set org.gnome.desktop.interface enable-animations false
+
+# updates
+# catpuccin https://github.com/catppuccin/gnome-terminal
+curl -L https://raw.githubusercontent.com/catppuccin/gnome-terminal/v0.2.0/install.py | python3 -
+# Jetbrains mono
+https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip
+
+# Linux installs
+
+
+
+
 

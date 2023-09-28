@@ -1,0 +1,147 @@
+
+(defcfg
+  input  (device-file "/dev/input/by-id/usb-Apple_Inc._Apple_Internal_Keyboard___Trackpad_FM71454008ZHYYMAA+EBZ-if01-event-kbd")
+  output (uinput-sink "My KMonad output")
+	fallthrough true
+  allow-cmd true
+  cmp-seq ralt    ;; Set the compose key to `RightAlt'
+)
+
+(defsrc
+  esc  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12        print scrolldown pause
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc  insert  home     pgup
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \     delete  end      pgdn
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft                 up
+  lctl lalt lmet           spc            ralt rmet cmp  rctl            left down right
+)
+
+(defalias 
+  arrows  (tap-next-release spc (layer-toggle arrowslayer))
+  super  (layer-toggle superlayer)
+  cpy C-i
+  cut C-b
+  pst C->
+  close C-,
+  all C-a
+  open C-s
+  ctrlp C-r
+  mup M-up
+  mdown M-down
+  mleft M-left
+  mright M-right
+  launcher lmet
+  mesc M-esc
+  cbspc C-bspc
+  mf1 M-f1
+  mf2 M-f2
+  mf3 M-f3
+  mf4 M-f4
+  mf5 M-f5
+  mf6 M-f6
+  mf7 M-f7
+  mf8 M-f8
+  mf9 M-f9
+  mf10 M-f10
+  mf11 M-f11
+  mf12 M-f12
+  mgrv M-grv
+  mtab M-tab
+  menter M-enter
+  m1 M-1
+  m2 M-2
+  m3 M-3
+  m4 M-4
+  m5 M-5
+  m6 M-6
+  m7 M-7
+  m8 M-8
+  m9 M-9
+  m0 M-0
+  m- M--
+  m= M-=
+  mq M-q
+  mw M-w
+  c, C-,
+  me M-e
+  mr M-r
+  mt M-t
+  my M-y
+  cy C-y
+  mu M-u
+  mi M-i
+  co C-o
+  cp C-p
+  m[ M-[
+  m] M-]
+  m\\ M-\\
+  ma M-a
+  ms M-s
+  md M-d
+  mf M-f
+  mg M-g
+  mh M-h
+  mj M-j
+  mk C-k
+  ml M-l
+  m; M-;
+  m' M-'
+  mz M-z
+  mx M-x
+  mc M-c
+  cv C-v
+  mb M-b
+  mn M-n
+  mm M-m
+  m, M-,
+  m. M-.
+  c/ C-/
+  mctl M-C
+  malt M-A
+
+  esc  (tap-next esc lctl)
+  enter  (tap-hold-next-release 200 enter (tap-next enter C-A-M-S))
+  num  (tap-hold 500 tab (layer-toggle numbers))
+)
+
+;; would like to try out command buttons eventually
+;;lWebLog       (cmd-button "/home/maze/.bun/bin/bun /home/maze/.config/kmonad/kmonad-layer-log/index.js set web")
+
+(deflayer qwerty
+  esc  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12        print scrolldown pause
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc  insert  home     pgup 
+  @num  q    w    e    r    t    y    u    i    o    p    [    ]    \     delete  end      pgdn 
+  @esc a    s    d    f    g    h    j    k    l    ;    '    @enter
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft                 up
+  lctl lalt @super           @arrows            ralt rmet cmp  rctl        left down right
+)
+
+(deflayer superlayer
+  _ @mf1  @mf2  @mf3  @mf4  @mf5  @mf6  previoussong nextsong mute playpause vold volu  _  _  _
+  @mgrv  @m1  @m2  @m3  @m4  @m5  @m6  @m7  @m8  @m9  @m0  @m-  @m=  @cbspc             _  _  _
+  @mtab  @mq  @mw  @me  @ctrlp  @mt  @cy  @mu  @cpy  @co  @cp  @m[  @m]  @m\\              _  _  caps
+  _  @all  @open  @md  @mf  @mg  @mh  @mj  @mk  @ml  @m;  @m' @menter
+  _  @mz  @mx  @mc  @cv  @cut  @mn  @mm  @close  @pst  @c/ _                                 @mup 
+  @mctl  @malt  _     @launcher      _  @malt  @mctl  _                           @mleft @mdown  @mright 
+)
+
+
+(deflayer arrowslayer
+  _  _  _  _  _  _  _  _  _ _ _ _ _ _  _  _
+  _  _  _  _  _  _  _  _  _  _  _  _  _  _                            _  _  _
+  _  _  _  _  _  _  _  _  _  _  right _  _  _                         _  _  _
+  _  _  _  _  _  _  _  left  _  _  _  _  _
+  _  _  _  down up  _  _  _  _  _  _  _                                  _
+  _  _  _              _  _  _  _  _                                  _  _  _
+)
+
+
+(deflayer numbers
+  _  _  _  _  _  _   _  _  _  _  _  _  _  _  _  _
+  _  _  _  _  _  _   _  _  _  _  _  _  _  _                         _  _  _
+  _  _  _  _  _  XX  /  7  8  9  -  _  _  _                         _  _  _
+  _  _  _  _  _  XX  *  4  5  6  +  _  _
+  _  _  \( \) .  XX  0  1  2  3  _  _                                  _
+  _  _  _            _  _  _  _  _                                  _  _  _
+)
+
