@@ -296,6 +296,9 @@ flatpak install --assumeyes flathub \
  # Todoist
  # https://www.insynchq.com/downloads/linux
  # zoom
+ # gimp
+ # nvm - did not install latest
+ # vim - install but didnt install the LSPs
 
 ##
 # Might come back to
@@ -315,6 +318,7 @@ https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip
 
 # Linux installs
 
+wmctrl -xa todoist && sleep 0.4 && xdotool key q
 
 
 
