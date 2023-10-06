@@ -1,6 +1,6 @@
 
 (defcfg
-  input  (device-file "/dev/input/by-id/usb-Keychron_Keychron_K2-event-kbd")
+  input  (device-file "/dev/input/event15")
   output (uinput-sink "My KMonad output")
 	fallthrough true
   allow-cmd true
