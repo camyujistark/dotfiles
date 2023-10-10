@@ -1,6 +1,6 @@
 
 (defcfg
-  input  (device-file "/dev/input/event15")
+  input  (device-file "/dev/input/event19")
   output (uinput-sink "My KMonad output")
 	fallthrough true
   allow-cmd true
@@ -32,7 +32,7 @@
   mright M-right
   launcher lmet
   mesc M-esc
-  cbspc C-bspc
+  cbspc delete
   mf1 M-f1
   mf2 M-f2
   mf3 M-f3

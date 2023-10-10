@@ -32,7 +32,7 @@
   mright M-right
   launcher lmet
   mesc M-esc
-  cbspc C-bspc
+  cbspc delete
   mf1 M-f1
   mf2 M-f2
   mf3 M-f3
