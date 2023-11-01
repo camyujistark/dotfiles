@@ -1,0 +1,13 @@
+[Unit]
+Description=mylaptop keyboard kmonad
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=kmonad /home/camstark/.config/kmonad/laptop.kbd
+Restart=always
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
