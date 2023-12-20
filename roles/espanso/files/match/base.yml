@@ -52,6 +52,15 @@ matches:
         params:
           format: "%H:%M"
   
+  # Print current time with heading
+  - trigger: ":#heading"
+    replace: "### $|$ \n#### {{mytime}}"
+    vars:
+      - name: mytime
+        type: date
+        params:
+          format: "%H:%M"
+
   # Print current time
   - trigger: ":#time"
     replace: "#### {{mytime}}"
