@@ -1,6 +1,6 @@
 
 (defcfg
-  input  (device-file "/dev/input/event19")
+  input  (device-file "/dev/input/event10")
   output (uinput-sink "My KMonad output")
 	fallthrough true
   allow-cmd true
@@ -113,7 +113,7 @@
   @num  q    w    e    r    t    y    u    i    o    p    [    ]    \     delete  end      pgdn 
   @esc a    s    d    f    g    h    j    k    l    ;    '    @enter
   lsft z    x    c    v    b    n    m    ,    .    /    rsft                 up
-  lctl lalt @super           @arrows            ralt rmet cmp  rctl        left down right
+  lctl lalt lmet           @arrows            rmet ralt cmp  rctl        left down right
 )
 
 (deflayer superlayer
