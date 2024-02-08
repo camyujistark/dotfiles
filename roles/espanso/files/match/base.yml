@@ -53,7 +53,7 @@ matches:
           format: "%H:%M"
   
   # Print current time with heading
-  - trigger: ":#heading"
+  - trigger: ":#h"
     replace: "### $|$ \n#### {{mytime}}"
     vars:
       - name: mytime
@@ -62,7 +62,7 @@ matches:
           format: "%H:%M"
 
   # Print current time
-  - trigger: ":#time"
+  - trigger: ":#t"
     replace: "#### {{mytime}}"
     vars:
       - name: mytime
@@ -71,7 +71,7 @@ matches:
           format: "%H:%M"
 
   # Print the output of a shell command
-  - trigger: ":~time"
+  - trigger: ":~t"
     replace: "{{output}}"
     vars:
       - name: output
