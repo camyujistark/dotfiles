@@ -88,30 +88,8 @@ matches:
         params:
           format: "%H:%M"
 
-  # todo
-  - trigger: ":Todo"
-    replace: " $|$ [☑️:: {{mydate}}]"
-    vars:
-      - name: mydate
-        type: date
-        params:
-            format: "%Y-%m-%d"
-
-  - trigger: ":todo"
-    replace: "- [ ] $|$ [☑️:: {{mydate}}]"
-    vars:
-      - name: mydate
-        type: date
-        params:
-            format: "%Y-%m-%d"
-
-  - trigger: ":complete"
-    replace: "[✅: {{mydate}}]"
-    vars:
-      - name: mydate
-        type: date
-        params:
-            format: "%Y-%m-%d"
+  - trigger: ":-"
+    replace: "- [ ] "
 
   # Print the output of a shell command
   - trigger: ":dow"
