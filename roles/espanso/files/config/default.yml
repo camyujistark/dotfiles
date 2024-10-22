@@ -39,3 +39,10 @@
 
 # For a list of all the available options, visit the official docs at: https://espanso.org/docs/
 search_shortcut: CMD+ALT+SPACE
+
+keyboard_layout:
+  rules: "evdev"
+  model: pc105
+  layout: us
+  variant: "dvorak"
+  options: "terminate:ctrl_alt_bksp"

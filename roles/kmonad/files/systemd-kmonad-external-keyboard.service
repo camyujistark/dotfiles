@@ -1,0 +1,11 @@
+[Unit]
+Description=external keyboard kmonad
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/kmonad /home/camstark/.config/kmonad/cable-k2-keyboard.kbd
+RestartSec=3
+
+[Install]
+WantedBy=default.target

@@ -27,9 +27,9 @@ sudo apt -y install zsh
 # vim
 sudo apt -y install vim
 # Need this to get the latest neovim
-sudo add-apt-repository ppa:neovim-ppa/stable
-sudo apt-get update
-sudo apt-get install neovim
+# sudo add-apt-repository ppa:neovim-ppa/stable
+# sudo apt-get update
+# sudo apt-get install neovim
 npm install -g neovim
 
 
@@ -59,6 +59,8 @@ sudo apt -y install default-jre
 sudo add-apt-repository ppa:webupd8team/java
 sudo apt update
 sudo apt -y install oracle-java11-installer
+
+## jq
 sudo apt -y install jq
 
 # perl
@@ -113,7 +115,7 @@ sudo echo "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle-virtualbox-2016.
 wget -O- https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo gpg --dearmor --yes --output /usr/share/keyrings/oracle-virtualbox-2016.gpg
 
 sudo apt-get update
-sudo apt-get install virtualbox-6.1
+sudo apt-get install virtualbox-7.0
 
 ##
 # Vagrant 2.2.9
@@ -321,5 +323,6 @@ https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip
 wmctrl -xa todoist && sleep 0.4 && xdotool key q
 
 
-
+# install zoxide. apt version does not work properly. ref https://github.com/ajeetdsouza/zoxide/issues/694
+curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 

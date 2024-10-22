@@ -19,7 +19,7 @@ if [[ "${BT_KB_EVENT_ID}" ]]; then
   # If /dev/input/ exists then update to new bt input path
   sed -i 's%"/dev/input/"%'"\"${BT_INPUT_PATH}\""'%g' "${KB_KMONAD_PATH}"
 
-  sudo kmonad "${KB_KMONAD_PATH}"
+  sudo kmonad "${KB_KMONAD_PATH}" &
 
 elif [[ -e "${KEYCHRON_INPUT_PATH}" ]]; then
 
@@ -29,8 +29,8 @@ elif [[ -e "${KEYCHRON_INPUT_PATH}" ]]; then
   # If /dev/input/ exists then update to new bt input path
   sed -i 's%"/dev/input/"%'"\"${KEYCHRON_INPUT_PATH}\""'%g' "${KB_KMONAD_PATH}"
 
-  sudo kmonad "${KB_KMONAD_PATH}"
+  sudo kmonad "${KB_KMONAD_PATH}" &
 else 
 
-  sudo kmonad "${LATOP_KMONAD_PATH}"
+  sudo kmonad "${LATOP_KMONAD_PATH}"&
 fi

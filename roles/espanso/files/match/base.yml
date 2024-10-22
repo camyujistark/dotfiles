@@ -7,6 +7,7 @@
 
 # Matches are substitution rules: when you type the "trigger" string
 # it gets replaced by the "replace" string.
+
 matches:
   # Simple text replacement
   - trigger: ":espanso"
