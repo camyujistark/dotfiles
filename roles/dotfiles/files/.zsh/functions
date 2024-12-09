@@ -19,15 +19,6 @@ function ag() {
 #   fi
 # }
 
-# Marked 2 start
-function mark() {
-  if [ $1 ]; then
-    open -a "Marked 2" $1;
-  else
-    open -a "Marked 2";
-  fi
-}
-
 # fh - "find [in] history"
 # From: https://github.com/junegunn/fzf/wiki/examples#command-history
 function fh() {
@@ -329,13 +320,6 @@ amazonmeta() {
 }
 
 if [[ "`uname -s`" = "Darwin" ]]; then
-  openChrome() {
-    FLAGS=''; if [ -z "$3" ] ; then FLAGS="$3"; fi;
-    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' $1 \
-    "$FLAGS" \
-    --profile-directory=PROFILE\ "$2" \
-    &>/dev/null &
-  }
   notify() {
     if [[ -z "$1" ]] then
       TEXT="We made it!"
@@ -354,23 +338,59 @@ if [[ "`uname -s`" = "Darwin" ]]; then
 
 fi
 
-if [[ "`uname -s`" = "Linux" ]]; then
-  openChrome() {
-    FLAGS=''; if [ -z "$3" ] ; then FLAGS="$3"; fi;
-    /mnt/c/Program\ Files/Google/Chrome/Application/chrome.exe $1 "$FLAGS" --profile-directory="Profile $2"
-  }
-fi
+openChrome() {
+    LOCATION="$1"
+    if [ -z "$LOCATION" ]; then
+      echo "file does not exist or empty"
+      exit 1
+    fi
+
+    # Need to name Profile Number
+    PROFILE="$2"
+    if [ ! "$PROFILE" ]; then
+        PROFILE="Default"
+    fi
+
+    FLAGS="$3"
+    if [ -z "$FLAGS" ] ; then 
+      FLAGS=""
+    fi;
+
+    LIST=""
+    while read line; do
+      LIST+=" $line"
+    done < "$LOCATION"
+
+
+    #FLAGS
+    #DEV_TOOLS='--auto-open-devtools-for-tabs'
+
+    if [ -z "$LIST" ]; then
+      exit 0
+    fi
+
+    if [[ "`uname -s`" = "Darwin" ]]; then
+      '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
+      $LIST "$FLAGS" \
+      --profile-directory="$PROFILE" &>/dev/null &
+    elif [[ "`uname -a`" == *"microsoft"* ]]; then
+      '/mnt/c/Program Files/Google/Chrome/Application/chrome.exe' \
+      $LIST "$FLAGS" \
+      --profile-directory="$PROFILE" &>/dev/null &
+    elif [[ "`uname -s`" = "Linux" ]]; then
+      # with flatpak
+      #Profile - Default
+     google-chrome-stable $LIST "$FLAGS" \
+      --profile-directory="$PROFILE" &>/dev/null &
+    fi
+}
 
 openChromeWork() {
-  openChrome "$1" "2"
+  openChrome "$1" "Profile 4"
 }
 
 openChromeHome() {
-  openChrome "$1" "1"
-}
-
-openChromeSide() {
-  openChrome "$1" "3"
+  openChrome "$1" "Default"
 }
 
 # source $HOME/.zsh/resource/bulknaming
@@ -396,8 +416,34 @@ rr() {
 
 slugify() {
   if [[ "`uname -s`" = "Darwin" ]]; then
-    echo "$1" | iconv -t ascii//TRANSLIT | sed -E -e 's/[^[:alnum:]]+/-/g' -e 's/^-+|-+$//g' | tr '[:upper:]' '[:lower:]'
+    echo "$1" | iconv -t ascii//TRANSLIT | sed -E -e 's/[^[:alnum:]]+/-/g' -e 's/^-+|-+$//g'
   else
-    echo "$1" | iconv -t ascii//TRANSLIT | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z
+    echo "$1" | sed -e "s/ /-/g" | tr A-Z a-z
   fi
 }
+
+branchify() {
+   local SLUG=$(slugify "$1")
+   echo "feature/${SLUG}"
+}
+
+
+# tree() {
+#
+#   DEPTH=100
+#   FILE="."
+#   # if -depth flag is passed use that
+#   while getopts "-:" opt; do
+#     case $opt in
+#       -) 
+#         case "${OPTARG}" in
+#           depth=*) DEPTH=${OPTARG#*=} ;; 
+#           depth) DEPTH="${2}"; shift ;;
+#         esac
+#         ;;
+#         # default
+#         *) FILE=${1}; shift  ;;
+#       esac
+#     done
+#  # find ${FILE} -maxdepth ${DEPTH} -type d | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
+# }

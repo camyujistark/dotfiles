@@ -5,17 +5,34 @@
 alias groot='cd $(git rev-parse --show-toplevel 2> /dev/null || echo -n ".")'
 alias gs="git status"
 
+commit() {
+  TYPE=$(gum filter "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert" "data")
+
+  if [ -z "$TYPE" ]; then
+    echo "exited"
+    return
+  fi
+
+  SCOPE=$(gum input --placeholder "scope")
+
+  # Since the scope is optional, wrap it in parentheses if it has a value.
+  test -n "$SCOPE" && SCOPE="($SCOPE)"
+
+  # Pre-populate the input with the type(scope): so that the user may change it
+  SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
+  DESCRIPTION=$(gum write --placeholder "Details of this change")
+
+  # Commit these changes if user confirms
+  gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
+}
+
 gitlog() {
   git log --pretty=format:'# %ad %H %s' --date=short --first-parent
 }
 
-gitlogwork() {
- BRANCH="${1}"
- echo "|datetime|commit|comment|" && echo "|---|---|---|" && git log ${BRANCH}.. --pretty=format:"|%ad|%h|%s|" --date=local
-}
-
 gitpu() {
-  BRANCHNAME=$(git branch --show-current)
+  BRANCHNAME=$(git branch --show-current);
+  npm run lint
   if [ "${BRANCHNAME}" != 'develop' ] && [ "${BRANCHNAME}" != 'master' ] ; then
     git push -u origin "${BRANCHNAME}";
   fi
@@ -50,14 +67,13 @@ gitprs() {
   open 'https://bitbucket.org/'$company'/'$project'/pull-requests/'
 }
 
-gmc() {
-  merge_conflicts | fzf --multi --preview "head -$LINES {}" |  sed 's/ /\\ /g' | tr '\r\n' ' '
-}
+# gmc() {
+# }
 
 fmi() {
   # Not 100% about eval but works
   # Was having issues with pathnames with spaces
-  eval ${EDITOR} -p "$( gmc )";
+   merge_conflicts | fzf --multi --preview "head -$LINES {}" |  sed 's/ /\\ /g' | tr '\r\n' ' '
   # git mergetool $( echo "$doc" | tr '\r\n' ' ');
 }
 
@@ -449,19 +465,16 @@ gitlog() {
 }
 
 gitlogwork() {
- BRANCH="${1}"
- TIME="`date +"%H:%M"`"
- CURRENT_FILE="${HOME}/Documents/Notes/$(cat "$HOME/Documents/scripts/stream-deck/.current-file")"
- echo "#### ${TIME}" >> "$CURRENT_FILE";
- echo "" >> "$CURRENT_FILE";
- echo "##### PR Request" >> "$CURRENT_FILE";
- echo "" >> "$CURRENT_FILE";
- echo "Branch: $(git branch --show-current)" >> "$CURRENT_FILE";
- echo "" >> "$CURRENT_FILE";
- echo "|commit|comment|" >> "$CURRENT_FILE";
- echo "|---|---|"  >> "$CURRENT_FILE";
- git log ${BRANCH}.. --pretty=format:"|%h|%s|" --date=local >> "$CURRENT_FILE";
+    TIME="$(date +"%H:%M")"
+    CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+    LOG_TABLE="$(git log "$(git rev-parse --symbolic-full-name --abbrev-ref=loose @{-1})".. --pretty=format:"|%h|%s|" --date=local)"
+    echo "#### ${TIME}\n\nBranch: ${CURRENT_BRANCH}\n\n|commit|comment|\n|---|---|\n${LOG_TABLE}"
 }
+
+grebase() {
+    git rebase -i $(git rev-parse --symbolic-full-name --abbrev-ref=loose @{-1})
+}
+
 
 gfetchmain() {
   git fetch origin main:main

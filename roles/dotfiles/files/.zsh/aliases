@@ -7,7 +7,6 @@ SCRIPT_PATH="${HOME}/Documents/scripts"
 alias vim=nvim
 alias groot='cd $(git rev-parse --show-toplevel 2> /dev/null || echo -n ".")'
 alias f='find . -name'
-alias python='python3'
 alias prettyjson='python -m json.tool'
 alias serve='python3 -m http.server' # optional arg: port (defaults to 8000)
 
@@ -17,11 +16,11 @@ fi
 
 # Global aliases
 # (work at any position within the command line)
-DOCS="cd ${HOME}/Documents"
-SITES="${DOCS}/sites"
+DOCS="${HOME}/Documents"
+SITES="${DOCS}/Sites"
 alias ls="ls --color"
 alias _a="vim ${HOME}/.zsh/aliases"
-alias _ass="${DOCS}/Assets"
+# alias _ass="cd ${DOCS}/Assets"
 alias _d="cd ${HOME}/Downloads"
 alias _dot="cd ${HOME}/dotfiles"
 alias _f="vim ${HOME}/.zsh/functions"
@@ -30,15 +29,13 @@ alias _j="vim ${HOME}/.zsh/resource/jira"
 alias _gc="vim ${HOME}/.gitconfig"
 alias _h="sudo vim /etc/hosts"
 alias _hs="cd ${HOME}/.hammerspoon"
-alias _i="${DOCS}/Assets/images"
-alias _k="cd ${HOME}/.config/karabiner"
-alias _n="${DOCS}/notes"
-alias _s="${SITES}"
+# alias _i="cd ${DOCS}/Assets/images"
+alias _n="cd ${DOCS}/notes"
+alias _s="cd ${SITES}"
 alias _lsc="${SITES}/divi/lsc_odrs_app"
 alias _sc="cd ${SCRIPT_PATH}"
-alias _t="${DOCS}/Tuts"
-alias _v="cd ${HOME}/.vim/plugin/mappings"
-alias _vb="cd ${HOME}/.vim/pack/bundle/opt"
+alias _t="cd ${DOCS}/Tuts"
+alias _v="cd ${HOME}/.vim"
 alias _zshrc="vim ${HOME}/.zshrc"
 alias reload="source ${HOME}/.zshrc"
 alias _es="vim ${HOME}/.config/espanso/match/base.yml"
@@ -56,6 +53,72 @@ elif [[ "`uname -a`" == *"microsoft"* ]]; then
   alias open='explorer.exe'
   alias ahkconfig="cd /home/cam/Documents/scripts/windows-hotkeys"
 elif [[ "`uname -a`" == *"Linux"* ]]; then
-  alias copy="xclip -i -selection clibpboard"
+  alias pbcopy='xclip -selection clipboard'
+  alias pbpaste='xclip -selection clipboard -o'
   alias google-chrome="flatpak run com.google.Chrome"
 fi
+
+alias _k="systemctl --user restart systemd-kmonad-external-keyboard"
+
+switch_monitors() {
+   xrandr --output eDP --off
+   sleep 1
+   xrandr --output eDP --mode 1440x900 --left-of DisplayPort-2 --auto
+   # sleep 2
+   # xrandr -s 2560x1440
+}
+
+restart_chrony() {
+  sudo systemctl restart chronyd
+}
+
+restore_layouts() {
+  bash  ~/.config/i3-layouts/restore.sh
+}
+
+restore_kmonad() {
+  sudo systemctl enable kmonad && sudo systemctl restart kmonad
+}
+
+home_setup() {
+  restart_chrony;
+  restore_kmonad;
+  sleep 3;
+  restore_layouts;
+  sleep 3;
+  switch_monitors;
+}
+
+ol() {
+  model="$1"
+  if [ -z "$model" ]; then
+    model="llama3"
+  fi
+
+  case ("$model") in
+    "llama3")
+      OLLAMA_HOST='http://192.168.0.30' ollama run llama3;
+      ;;
+    "llama3:70b")
+      OLLAMA_HOST='http://192.168.0.30' ollama run llama3:70b;
+      ;;
+  esac
+}
+
+source "${HOME}/.zsh/para/para.sh"
+
+hifipod() {
+  bash "${HOME}/Documents/Sites/home/hifipod/hifipod.sh"
+}
+
+# https://unix.stackexchange.com/questions/230673/how-to-generate-a-random-string
+random_password() {
+  tr -dc A-Za-z0-9 </dev/urandom | head -c 13; echo
+}
+
+
+d() {
+  STRING="$@"
+  date --date="$STRING" "+%Y-%m-%d" | tee /dev/tty | wl-copy
+}
+
